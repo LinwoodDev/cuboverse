@@ -7,26 +7,17 @@ import java.math.BigInteger
 data class ChunkContext(
     val world: World,
     val chunk: Chunk,
-    val chunkSize: Pair<Int, Int>
-)
-
-data class RenderContext(
-    val canvas: Canvas,
-    val chunkPosition: Pair<BigInteger, BigInteger>,
-    val chunkContext: ChunkContext,
-    val renderLocation: Pair<BigDecimal, BigDecimal>,
-    val renderSize: Pair<Double, Double>,
-    val renderScale: Pair<Float, Float>,
 ) {
-    val offset get() = chunkContext.world.offset
-    val chunkSize get() = chunkContext.chunkSize
+    val chunkSize get() = world.chunkSize
+}
 
-    fun getPointFromVector(vector: Pair<Float, Float>): Pair<Float, Float> {
-        return Pair(
-            vector.first * offset.first,
-            vector.second * offset.second
-        );
-    }
+data class GlobalChunkContext(
+    val chunkPosition: Pair<BigInteger, BigInteger>,
+    val chunkContext: ChunkContext
+) {
+    val world get() = chunkContext.world
+    val chunk get() = chunkContext.chunk
+    val chunkSize get() = chunkContext.chunkSize
 
     fun getPositionFromVector(vector: Pair<Float, Float>): Pair<BigDecimal, BigDecimal> {
         val chunkPos = getGlobalChunkPosition()
@@ -36,28 +27,62 @@ data class RenderContext(
         );
     }
 
-    fun getLocationFromVector(vector: Pair<Float, Float>) = getLocationFromPoint(getPointFromVector(vector))
-
-    fun getLocationFromPoint(point: Pair<Float, Float>): Pair<BigDecimal, BigDecimal> {
-        val chunkLoc = getGlobalChunkLocation()
-        return Pair(
-            point.first.toBigDecimal() + chunkLoc.first,
-            point.second.toBigDecimal() + chunkLoc.second
-        );
-    }
-
     fun getGlobalChunkPosition(): Pair<BigDecimal, BigDecimal> {
+        val globChunkPos = getGlobalChunkPosition()
         return Pair(
-            chunkPosition.first.toBigDecimal() * chunkSize.first.toBigDecimal(),
-            chunkPosition.second.toBigDecimal() * chunkSize.second.toBigDecimal()
+            globChunkPos.first * chunkSize.first.toBigDecimal(),
+            globChunkPos.second * chunkSize.second.toBigDecimal()
         )
     }
 
-    fun getGlobalChunkLocation(): Pair<BigDecimal, BigDecimal> {
+}
+
+data class RenderContext(
+    val canvas: Canvas,
+    val globalChunkContext: GlobalChunkContext,
+    val renderPosition: Pair<BigDecimal, BigDecimal>,
+    val renderSize: Pair<Double, Double>,
+    val renderScale: Pair<Int, Int>,
+) {
+    val chunkPosition get() = globalChunkContext.chunkPosition
+    val chunkContext get() = globalChunkContext.chunkContext
+    val world get() = chunkContext.world
+    val chunk get() = chunkContext.chunk
+    val chunkSize get() = chunkContext.chunkSize
+    val offset get() = chunkContext.world.offset
+    val renderChunkScale get() = Pair(renderScale.first * chunkSize.first, renderScale.second * chunkSize.second)
+    fun getPositionFromVector(vector : Pair<Float, Float>) = globalChunkContext.getPositionFromVector(getPointFromVector(vector))
+    fun getGlobalChunkPosition() = globalChunkContext.getGlobalChunkPosition()
+
+    fun getPointFromVector(vector: Pair<Float, Float>): Pair<Float, Float> {
         return Pair(
-            chunkPosition.first.toBigDecimal() * chunkSize.first.toBigDecimal() * offset.first.toBigDecimal(),
-            chunkPosition.second.toBigDecimal() * chunkSize.second.toBigDecimal() * offset.second.toBigDecimal()
+            vector.first + offset,
+            vector.second
         );
     }
+
+    fun getLocationFromVector(vector: Pair<Float, Float>) = getLocationFromPoint(getPointFromVector(vector))
+
+    fun getLocationFromPoint(point: Pair<Float, Float>): Pair<BigDecimal, BigDecimal> {
+        val chunkLoc = getGlobalChunkPosition()
+        val y = (point.second.toBigDecimal() + chunkLoc.second) * renderSize.first.toBigDecimal()
+        val x = (point.first.toBigDecimal() + chunkLoc.first + y * offset.toBigDecimal()) * renderSize.second.toBigDecimal()
+        return Pair(
+            x,
+            y
+        );
+    }
+
+    fun getChunkLocation(): Pair<BigDecimal, BigDecimal> = getLocationFromPoint(Pair(0f, 0f))
+
+    fun getRenderPositionFromPosition(position: Pair<BigDecimal, BigDecimal>): Pair<BigDecimal, BigDecimal> {
+        return Pair(
+            position.first - renderPosition.first,
+            position.second - renderPosition.second
+        )
+    }
+
+    fun getRenderPositionFromVector(vector: Pair<Float, Float>) =
+        getRenderPositionFromPosition(getLocationFromVector(vector))
 
 }

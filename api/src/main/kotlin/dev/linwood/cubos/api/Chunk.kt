@@ -9,6 +9,7 @@ class Chunk {
     private val objects = mutableListOf<ChunkObject>()
 
 
+
     fun getObjects(x: Double, y: Double, distance: Double): Iterable<ChunkObject> {
         return objects.filter {
             it.x >= x - distance && it.x <= x + distance &&
@@ -16,7 +17,7 @@ class Chunk {
         }
     }
 
-    inline fun <reified T : ChunkObject> getObjects(x: Double, y: Double, distance: Double): Iterable<T> {
+    inline fun <reified T : ChunkObject> getObjectsByType(x: Double, y: Double, distance: Double): Iterable<T> {
         return getObjects(x, y, distance).filterIsInstance<T>()
     }
 
@@ -24,20 +25,24 @@ class Chunk {
         return getObjects(x, y, distance).firstOrNull()
     }
 
-    inline fun <reified T : ChunkObject> getObject(x: Double, y: Double, distance: Double): T? {
-        return getObjects<T>(x, y, distance).firstOrNull()
+    inline fun <reified T : ChunkObject> getObjectByType(x: Double, y: Double, distance: Double): T? {
+        return getObjects(x, y, distance).filterIsInstance<T>().firstOrNull()
     }
 
-    fun load(world: World, size: Pair<Int, Int>) {
-        getObjectByPriority().forEach { it.load(ChunkContext(world, this, size)) }
+    fun load(world: World) {
+        getObjectByPriority().forEach { it.load(ChunkContext(world, this)) }
     }
 
-    fun update(world: World, size: Pair<Int, Int>) {
-        getObjectByPriority().forEach { it.update(ChunkContext(world, this, size)) }
+    fun update(world: World) {
+        getObjectByPriority().forEach { it.update(ChunkContext(world, this)) }
     }
 
-    fun unload(world: World, size: Pair<Int, Int>) {
-        getObjectByPriority().forEach { it.unload(ChunkContext(world, this, size)) }
+    fun tick(world : World, location : Pair<BigInteger, BigInteger>) {
+        getObjectByPriority().forEach { it.tick(GlobalChunkContext(location, ChunkContext(world, this))) }
+    }
+
+    fun unload(world: World) {
+        getObjectByPriority().forEach { it.unload(ChunkContext(world, this)) }
     }
 
     fun getObjectByPriority(): Iterable<ChunkObject> {
@@ -52,8 +57,15 @@ class Chunk {
         }
     }
 
-    fun paint(canvas: Canvas, world: World, renderLocation : Pair<BigDecimal, BigDecimal>, renderSize : Pair<Double, Double>, renderScale : Pair<Float, Float>, chunkPosition: Pair<BigInteger, BigInteger>, size: Pair<Int, Int>) {
-        val context = RenderContext(canvas, chunkPosition, ChunkContext(world, this, size),renderLocation, renderSize, renderScale)
+    fun paint(
+        canvas: Canvas,
+        world: World,
+        renderLocation: Pair<BigDecimal, BigDecimal>,
+        renderSize: Pair<Double, Double>,
+        renderScale: Pair<Int, Int>,
+        chunkPosition: Pair<BigInteger, BigInteger>
+    ) {
+        val context = RenderContext(canvas, GlobalChunkContext(chunkPosition, ChunkContext(world, this)),renderLocation, renderSize, renderScale)
         getObjectByPriority().forEach { it.paint(context) }
     }
 }

@@ -20,6 +20,7 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
+                implementation(project(mapOf("path" to ":api")))
             }
         }
         val commonTest by getting {
@@ -58,4 +59,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+}
+dependencies {
+    implementation("androidx.compose.material:material:1.1.1")
 }
