@@ -68,4 +68,8 @@ class Chunk {
         val context = RenderContext(canvas, GlobalChunkContext(chunkPosition, ChunkContext(world, this)),renderLocation, renderSize, renderScale)
         getObjectByPriority().forEach { it.paint(context) }
     }
+
+    fun addObject(chunkObject: ChunkObject) {
+        objects.add(chunkObject)
+    }
 }

@@ -1,9 +1,10 @@
 package dev.linwood.cubos.api
 
+import androidx.compose.ui.graphics.Canvas
 import java.math.BigDecimal
 import java.math.BigInteger
 
-class World(val chunkSize: Pair<Int, Int>, val offset : Float) {
+class World(val chunkSize: Pair<Int, Int>, val offset : Triple<Float, Float, Float>, val distanceOffsetX : Float) {
     private val chunks = mutableMapOf<Pair<BigInteger, BigInteger>, Chunk>()
 
     fun addChunk(chunk: Chunk, x: BigInteger, y: BigInteger) {
@@ -23,5 +24,24 @@ class World(val chunkSize: Pair<Int, Int>, val offset : Float) {
             position.first.toBigInteger() / chunkSize.first.toBigInteger(),
             position.second.toBigInteger() / chunkSize.second.toBigInteger()
         )
+    }
+
+    fun paint(
+        canvas: Canvas,
+        renderLocation: Pair<BigDecimal, BigDecimal>,
+        renderSize: Pair<Double, Double>,
+        renderScale: Pair<Int, Int> = Pair(1, 1)
+    ) {
+        chunks.forEach {
+            it.value.paint(
+                canvas,
+                this,
+                renderLocation,
+                renderSize,
+                renderScale,
+                it.key
+            )
+        }
+
     }
 }
