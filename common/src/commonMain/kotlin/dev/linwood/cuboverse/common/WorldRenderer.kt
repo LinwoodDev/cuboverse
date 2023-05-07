@@ -1,12 +1,22 @@
 package dev.linwood.cuboverse.common
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
 import dev.linwood.cubos.api.*
@@ -100,27 +110,56 @@ class DefaultPlayer(currentChunk: Chunk, vector3D: Vector3D) : Player(currentChu
     }
 }
 
-var player: DefaultPlayer? = null
-
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun WorldRenderer(
     renderLocation: Pair<BigDecimal, BigDecimal> = Pair(BigDecimal.ZERO, BigDecimal.ZERO),
     renderScale: Pair<Int, Int>
 ) {
+    val focusRequester = remember { FocusRequester() }
+    val player = remember {
+        world.getChunk(ChunkCoordinate(BigInteger.ZERO, BigInteger.ZERO))
+            .addEntityOfType<DefaultPlayer>(::DefaultPlayer, Vector3D(0f, 0f, 0f))
+    }
     Canvas(
         modifier = Modifier.fillMaxSize()
+            .onClick {
+                focusRequester.requestFocus()
+            }
+            .focusRequester(focusRequester)
+            .onKeyEvent { event ->
+                println("Key event: $event")
+                // Arrow
+                when (event.key) {
+                    Key.W -> {
+                        player.move(Vector3D(0f, 1f, 0f))
+                        true
+                    }
+
+                    Key.S -> {
+                        player.move(Vector3D(0f, -1f, 0f))
+                        true
+                    }
+
+                    Key.A -> {
+                        player.move(Vector3D(-1f, 0f, 0f))
+                        true
+                    }
+
+                    Key.D -> {
+                        player.move(Vector3D(1f, 0f, 0f))
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+            .focusable()
     ) {
         this.clipRect {
+            // println("Draw: ${lastTick.value}")
             drawIntoCanvas {
-                if (player == null)
-                    player = world.getChunk(ChunkCoordinate(BigInteger.ZERO, BigInteger.ZERO))
-                        .addEntityOfType(
-                            ::DefaultPlayer,
-                            Vector3D(renderLocation.first.toFloat(), renderLocation.second.toFloat(), 1f)
-                        )
-                else
-                    player?.vector3D = Vector3D(renderLocation.first.toFloat(), renderLocation.second.toFloat(), 1f)
-                player?.paintWorld(it, size)
+                player.paintWorld(it, size)
             }
         }
     }
