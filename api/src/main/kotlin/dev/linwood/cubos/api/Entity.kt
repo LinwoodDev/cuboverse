@@ -19,7 +19,7 @@ abstract class Entity(private var currentChunk: Chunk, var vector3D : Vector3D) 
     val vector get() = Vector(vector3D.first, vector3D.second)
     open fun load() {}
     open fun update() {}
-    open fun tick(context: GlobalChunkContext) {}
+    open fun tick() {}
     open fun unload() {}
     open fun canLoad(): Boolean = false
 
@@ -31,6 +31,11 @@ abstract class Entity(private var currentChunk: Chunk, var vector3D : Vector3D) 
 
     fun save(): String {
         return Json.encodeToString(this)
+    }
+
+    fun move(delta : Vector3D) {
+        // Change chunk if needed
+
     }
 
     companion object {

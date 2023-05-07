@@ -4,18 +4,18 @@ import androidx.compose.ui.graphics.Canvas
 import java.math.BigDecimal
 import java.math.BigInteger
 
-class World(val chunkSize: Pair<Int, Int>, val offset: Triple<Float, Float, Float>, val distanceOffsetX: Float) {
-    private val chunks = mutableMapOf<Pair<BigInteger, BigInteger>, Chunk>()
-    internal val entityBuilders = mutableMapOf<String, EntityBuilder>()
+class World(val chunkSize: Pair<Int, Int>, val offset: Triple<Float, Float, Float>, val distanceOffsetX: Float, val chunkBuilder : ChunkBuilder = EmptyChunkBuilder) {
+    private val chunks = mutableListOf<Chunk>()
 
     fun addChunk(coordinate: ChunkCoordinate): Chunk {
-        val chunk = Chunk(this)
-        chunks[coordinate] = chunk
+        val chunk = Chunk(this, coordinate)
+        chunks.add(chunk)
+        chunkBuilder(chunk)
         return chunk
     }
 
     fun getChunk(coordinate: ChunkCoordinate): Chunk {
-        return chunks.getOrPut(coordinate) { Chunk(this) }
+        return chunks.firstOrNull { it.coordinate == coordinate } ?: addChunk(coordinate)
     }
 
     fun getChunkByPosition(position: Position): Chunk {
@@ -34,22 +34,17 @@ class World(val chunkSize: Pair<Int, Int>, val offset: Triple<Float, Float, Floa
         renderScale: Pair<Int, Int> = Pair(1, 1)
     ) {
         chunks.forEach {
-            it.value.paint(
+            it.paint(
                 canvas,
                 this,
                 renderLocation,
                 renderSize,
-                renderScale,
-                it.key
+                renderScale
             )
         }
     }
 
     fun getChunkByObject(entity: Entity): Chunk? {
-        return chunks.values.firstOrNull { it.getObjects().contains(entity) }
-    }
-
-    fun getChunkPositionByObject(entity: Entity): Pair<BigInteger, BigInteger>? {
-        return chunks.keys.firstOrNull { chunks[it]?.getObjects()?.contains(entity) ?: false }
+        return chunks.firstOrNull { it.getObjects().contains(entity) }
     }
 }

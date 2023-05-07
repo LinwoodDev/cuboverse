@@ -17,59 +17,20 @@ typealias ChunkCoordinate = Pair<BigInteger, BigInteger>
 /// Chunk coordinates multiplied with its size
 typealias ChunkPlace = Pair<BigInteger, BigInteger>
 
-data class GlobalChunkContext(
-    val chunkCoordinate: ChunkCoordinate,
-    val chunk: Chunk,
-) {
-    val world get() = chunk.world
-    val chunkSize get() = world.chunkSize
-
-    fun getPositionFromVector(vector: Vector): Position {
-        val chunkPos = getChunkPlace()
-        return Pair(
-            vector.first.toBigDecimal() + chunkPos.first.toBigDecimal(),
-            vector.second.toBigDecimal() + chunkPos.second.toBigDecimal()
-        );
-    }
-
-    fun getChunkPlace(): ChunkPlace {
-        val globChunkPos = chunkCoordinate
-        return Pair(
-            globChunkPos.first * chunkSize.first.toBigInteger(),
-            globChunkPos.second * chunkSize.second.toBigInteger()
-        )
-    }
-
-}
-
 data class RenderContext(
     val canvas: Canvas,
-    val globalChunkContext: GlobalChunkContext,
+    val chunk: Chunk,
     val renderPosition: Position,
     val renderSize: Pair<Float, Float>,
     val renderScale: Pair<Int, Int>,
 ) {
-    val chunkCoordinate get() = globalChunkContext.chunkCoordinate
-    val world get() = globalChunkContext.world
-    val chunk get() = globalChunkContext.chunk
-    val chunkSize get() = globalChunkContext.chunkSize
-    val offset get() = globalChunkContext.world.offset
-    val distanceOffsetX get() = globalChunkContext.world.distanceOffsetX
-    val renderChunkScale get() = Pair(renderScale.first * chunkSize.first, renderScale.second * chunkSize.second)
-    fun getPositionFromVector(vector: Pair<Float, Float>) =
-        globalChunkContext.getPositionFromVector(getPointFromVector(vector))
+    val offset get() = chunk.world.offset
+    val distanceOffsetX get() = chunk.world.distanceOffsetX
+    val chunkSize get() = chunk.chunkSize
 
-    fun getChunkPlace() = globalChunkContext.getChunkPlace()
-    fun getChunkPosition(): Position {
-        val globChunkPos = getChunkPlace()
-        val y = globChunkPos.second.toBigDecimal() * offset.second.toBigDecimal() * renderScale.second.toBigDecimal()
-        val x =
-            (globChunkPos.first.toBigDecimal() * offset.first.toBigDecimal() + globChunkPos.second.toBigDecimal() * offset.second.toBigDecimal() * distanceOffsetX.toBigDecimal()) * renderScale.first.toBigDecimal()
-        return Pair(
-            x,
-            y
-        );
-    }
+    val renderChunkScale get() = Pair(renderScale.first * chunkSize.first, renderScale.second * chunkSize.second)
+
+    fun getChunkPlace() = chunk.getChunkPlace()
 
     fun getPointFromVector(vector: Vector): Pair<Float, Float> {
         val y = vector.second * offset.second * renderScale.second
@@ -83,14 +44,23 @@ data class RenderContext(
     fun getLocationFromVector(vector: Pair<Float, Float>) = getLocationFromPoint(getPointFromVector(vector))
 
     fun getLocationFromPoint(point: Pair<Float, Float>): Pair<BigDecimal, BigDecimal> {
-        val globalChunkLocation = getChunkPosition()
+        val globalChunkLocation = getChunkLocation()
         return Pair(
             globalChunkLocation.first + point.first.toBigDecimal(),
             globalChunkLocation.second + point.second.toBigDecimal()
         )
     }
 
-    fun getChunkLocation(): Pair<BigDecimal, BigDecimal> = getLocationFromPoint(Pair(0f, 0f))
+    fun getChunkLocation(): Location {
+        val globChunkPos = getChunkPlace()
+        val y = globChunkPos.second.toBigDecimal() * offset.second.toBigDecimal()
+        val x =
+            (globChunkPos.first.toBigDecimal() * offset.first.toBigDecimal() + globChunkPos.second.toBigDecimal() * offset.second.toBigDecimal() * distanceOffsetX.toBigDecimal()) * renderScale.first.toBigDecimal()
+        return Pair(
+            x,
+            y
+        );
+    }
 
     fun getRenderLocationFromLocation(position: Pair<BigDecimal, BigDecimal>): Pair<BigDecimal, BigDecimal> {
         return Pair(
