@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.res.loadImageBitmap
 import androidx.compose.ui.res.useResource
@@ -18,83 +19,88 @@ val world = World(
         16.0f,
         48.0f
     ), -1f
-).let {
-    val firstChunk = Chunk().apply {
+).apply {
+    addChunk(ChunkCoordinate(BigInteger.ZERO, BigInteger.ZERO)).let {
         // H
-        addObject(TestBlock(1f, 0f))
-        addObject(TestBlock(1f, 1f))
-        addObject(TestBlock(1f, 2f))
-        addObject(TestBlock(2f, 1f))
-        addObject(TestBlock(3f, 0f))
-        addObject(TestBlock(3f, 1f))
-        addObject(TestBlock(3f, 2f))
+        it.addEntity(::TestBlock, Vector3D(1f, 0f, 0f))
+        it.addEntity(::TestBlock, Vector3D(1f, 1f, 0f))
+        it.addEntity(::TestBlock, Vector3D(1f, 2f, 0f))
+        it.addEntity(::TestBlock, Vector3D(2f, 1f, 0f))
+        it.addEntity(::TestBlock, Vector3D(3f, 0f, 0f))
+        it.addEntity(::TestBlock, Vector3D(3f, 1f, 0f))
+        it.addEntity(::TestBlock, Vector3D(3f, 2f, 0f))
 
         // I
-        addObject(TestBlock(5f, 0f))
-        addObject(TestBlock(5f, 1f))
-        addObject(TestBlock(5f, 2f))
+        it.addEntity(::TestBlock, Vector3D(5f, 0f, 0f))
+        it.addEntity(::TestBlock, Vector3D(5f, 1f, 0f))
+        it.addEntity(::TestBlock, Vector3D(5f, 2f, 0f))
     }
-    it.addChunk(firstChunk, BigInteger.ZERO, BigInteger.ZERO)
-    it.addChunk(Chunk().apply {
+    addChunk(ChunkCoordinate(BigInteger.ONE, BigInteger.ZERO)).let {
         // O
-        addObject(TestBlock(7f, 0f))
-        addObject(TestBlock(7f, 1f))
-        addObject(TestBlock(7f, 2f))
-        addObject(TestBlock(8f, 0f))
-        addObject(TestBlock(8f, 2f))
-        addObject(TestBlock(9f, 0f))
-        addObject(TestBlock(9f, 1f))
-        addObject(TestBlock(9f, 2f))
+        it.addEntity(::TestBlock, Vector3D(7f, 0f, 0f))
+        it.addEntity(::TestBlock, Vector3D(7f, 1f, 0f))
+        it.addEntity(::TestBlock, Vector3D(7f, 2f, 0f))
+        it.addEntity(::TestBlock, Vector3D(8f, 0f, 0f))
+        it.addEntity(::TestBlock, Vector3D(8f, 2f, 0f))
+        it.addEntity(::TestBlock, Vector3D(9f, 0f, 0f))
+        it.addEntity(::TestBlock, Vector3D(9f, 1f, 0f))
+        it.addEntity(::TestBlock, Vector3D(9f, 2f, 0f))
 
         for (i in 0..15) {
-            addObject(TestBlock(0f, i.toFloat()))
+            it.addEntity(::TestBlock, Vector3D(0f, i.toFloat(), 0f))
         }
-    }, BigInteger.ONE, BigInteger.ZERO)
-    it.addChunk(Chunk().apply {
+    }
+    addChunk(ChunkCoordinate(BigInteger.ONE, BigInteger.ONE)).let {
         for (i in 0..15) {
-            addObject(TestBlock(0f, i.toFloat()))
+            it.addEntity(::TestBlock, Vector3D(0f, i.toFloat(), 0f))
         }
-    }, BigInteger.ONE, BigInteger.ONE)
-    it.addChunk(firstChunk, BigInteger.TWO, BigInteger.TWO)
-    it.addChunk(Chunk().apply {
+    }
+    addChunk(ChunkCoordinate(BigInteger.TWO, BigInteger.valueOf(3))).let {
         for (i in 0..15) {
             for (j in 0..15) {
-                addObject(TestBlock(i.toFloat(), j.toFloat()))
+                it.addEntity(::TestBlock, Vector3D(i.toFloat(), j.toFloat(), 0f))
             }
         }
-    }, BigInteger.TWO, BigInteger.valueOf(3))
-    it.addChunk(Chunk().apply {
-        addObject(TestBlock(0.0f, 0.0f, 0.0f))
-        addObject(TestBlock(1.0f, 0.0f, 0.0f))
-        addObject(TestBlock(1.0f, 0.0f, 1.0f))
-        addObject(TestBlock(2.0f, 0.0f, 0.0f))
-        addObject(TestBlock(2.0f, 0.0f, 1.0f))
-        addObject(TestBlock(2.0f, 0.0f, 2.0f))
-        addObject(TestBlock(3.0f, 0.0f, 0.0f))
-        addObject(TestBlock(3.0f, 0.0f, 1.0f))
-        addObject(TestBlock(4.0f, 0.0f, 0.0f))
+    }
+    addChunk(ChunkCoordinate(BigInteger.valueOf(3), BigInteger.ZERO)).let {
+        it.addEntity(::TestBlock, Vector3D(0.0f, 0.0f, 0.0f))
+        it.addEntity(::TestBlock, Vector3D(1.0f, 0.0f, 0.0f))
+        it.addEntity(::TestBlock, Vector3D(1.0f, 0.0f, 1.0f))
+        it.addEntity(::TestBlock, Vector3D(2.0f, 0.0f, 0.0f))
+        it.addEntity(::TestBlock, Vector3D(2.0f, 0.0f, 1.0f))
+        it.addEntity(::TestBlock, Vector3D(2.0f, 0.0f, 2.0f))
+        it.addEntity(::TestBlock, Vector3D(3.0f, 0.0f, 0.0f))
+        it.addEntity(::TestBlock, Vector3D(3.0f, 0.0f, 1.0f))
+        it.addEntity(::TestBlock, Vector3D(4.0f, 0.0f, 0.0f))
 
-        addObject(TestBlock(1.0f, 1.0f, 0.0f))
-        addObject(TestBlock(2.0f, 1.0f, 0.0f))
-        addObject(TestBlock(2.0f, 1.0f, 1.0f))
-        addObject(TestBlock(3.0f, 1.0f, 0.0f))
-        addObject(TestBlock(2.0f, 2.0f, 0.0f))
+        it.addEntity(::TestBlock, Vector3D(1.0f, 1.0f, 0.0f))
+        it.addEntity(::TestBlock, Vector3D(2.0f, 1.0f, 0.0f))
+        it.addEntity(::TestBlock, Vector3D(2.0f, 1.0f, 1.0f))
+        it.addEntity(::TestBlock, Vector3D(3.0f, 1.0f, 0.0f))
+        it.addEntity(::TestBlock, Vector3D(2.0f, 2.0f, 0.0f))
 
-        addObject(TestBlock(1.0f, 0.0f, -1.0f))
-        addObject(TestBlock(2.0f, 0.0f, -1.0f))
-        addObject(TestBlock(2.0f, 0.0f, -2.0f))
-        addObject(TestBlock(3.0f, 0.0f, -1.0f))
-        addObject(TestBlock(2.0f, 1.0f, -1.0f))
-    }, BigInteger.valueOf(3), BigInteger.ZERO)
-    it
+        it.addEntity(::TestBlock, Vector3D(1.0f, 0.0f, -1.0f))
+        it.addEntity(::TestBlock, Vector3D(2.0f, 0.0f, -1.0f))
+        it.addEntity(::TestBlock, Vector3D(2.0f, 0.0f, -2.0f))
+        it.addEntity(::TestBlock, Vector3D(3.0f, 0.0f, -1.0f))
+        it.addEntity(::TestBlock, Vector3D(2.0f, 1.0f, -1.0f))
+    }
 }
 
-class TestBlock(x: Float, y: Float, z: Float = 0.0f) : CubicChunkObject(x, y, z) {
+class TestBlock(chunk: Chunk, vector3D: Vector3D) : CubicEntity(chunk, vector3D) {
     override fun getImage(context: RenderContext): ImageBitmap {
         // Load from resources
         return useResource("test.png", ::loadImageBitmap)
     }
 }
+
+class DefaultPlayer(currentChunk: Chunk, vector3D: Vector3D) : Player(currentChunk, vector3D) {
+    override fun getImage(context: RenderContext): ImageBitmap {
+        return useResource("player.png", ::loadImageBitmap)
+    }
+}
+
+var player: DefaultPlayer? = null
 
 @Composable
 fun WorldRenderer(
@@ -104,14 +110,18 @@ fun WorldRenderer(
     Canvas(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Set width and height
-        drawIntoCanvas {
-            world.paint(
-                it,
-                renderLocation,
-                Pair(1920.0, 1080.0),
-                renderScale,
-            )
+        this.clipRect {
+            drawIntoCanvas {
+                if (player == null)
+                    player = world.getChunk(ChunkCoordinate(BigInteger.ZERO, BigInteger.ZERO))
+                        .addEntityOfType(
+                            ::DefaultPlayer,
+                            Vector3D(renderLocation.first.toFloat(), renderLocation.second.toFloat(), 1f)
+                        )
+                else
+                    player?.vector3D = Vector3D(renderLocation.first.toFloat(), renderLocation.second.toFloat(), 1f)
+                player?.paintWorld(it, size)
+            }
         }
     }
 }

@@ -4,32 +4,33 @@ import androidx.compose.ui.graphics.Canvas
 import java.math.BigDecimal
 import java.math.BigInteger
 
-class World(val chunkSize: Pair<Int, Int>, val offset : Triple<Float, Float, Float>, val distanceOffsetX : Float) {
+class World(val chunkSize: Pair<Int, Int>, val offset: Triple<Float, Float, Float>, val distanceOffsetX: Float) {
     private val chunks = mutableMapOf<Pair<BigInteger, BigInteger>, Chunk>()
+    internal val entityBuilders = mutableMapOf<String, EntityBuilder>()
 
-    fun addChunk(chunk: Chunk, x: BigInteger, y: BigInteger) {
-        chunks[Pair(x, y)] = chunk
+    fun addChunk(coordinate: ChunkCoordinate): Chunk {
+        val chunk = Chunk(this)
+        chunks[coordinate] = chunk
+        return chunk
     }
 
-    fun getChunk(x: BigInteger, y: BigInteger): Chunk {
-        return chunks.getOrPut(Pair(x, y)) { Chunk() }
+    fun getChunk(coordinate: ChunkCoordinate): Chunk {
+        return chunks.getOrPut(coordinate) { Chunk(this) }
     }
 
-    fun getChunk(x: Int, y: Int): Chunk {
-        return getChunk(x.toBigInteger(), y.toBigInteger())
-    }
-
-    fun getChunkByPosition(position : Pair<BigDecimal, BigDecimal>) : Chunk {
+    fun getChunkByPosition(position: Position): Chunk {
         return getChunk(
-            position.first.toBigInteger() / chunkSize.first.toBigInteger(),
-            position.second.toBigInteger() / chunkSize.second.toBigInteger()
+            ChunkCoordinate(
+                position.first.toBigInteger() / chunkSize.first.toBigInteger(),
+                position.second.toBigInteger() / chunkSize.second.toBigInteger()
+            )
         )
     }
 
     fun paint(
         canvas: Canvas,
         renderLocation: Pair<BigDecimal, BigDecimal>,
-        renderSize: Pair<Double, Double>,
+        renderSize: Pair<Float, Float>,
         renderScale: Pair<Int, Int> = Pair(1, 1)
     ) {
         chunks.forEach {
@@ -42,6 +43,13 @@ class World(val chunkSize: Pair<Int, Int>, val offset : Triple<Float, Float, Flo
                 it.key
             )
         }
+    }
 
+    fun getChunkByObject(entity: Entity): Chunk? {
+        return chunks.values.firstOrNull { it.getObjects().contains(entity) }
+    }
+
+    fun getChunkPositionByObject(entity: Entity): Pair<BigInteger, BigInteger>? {
+        return chunks.keys.firstOrNull { chunks[it]?.getObjects()?.contains(entity) ?: false }
     }
 }
