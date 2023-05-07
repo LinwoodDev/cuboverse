@@ -81,13 +81,12 @@ class Chunk(val world: World, val coordinate: ChunkCoordinate) {
         renderScale: Pair<Int, Int>
     ) {
         val context = RenderContext(
-            canvas,
             this,
             renderLocation,
             renderSize,
             renderScale
         )
-        getObjectByPriority().forEach { it.paint(context) }
+        getObjectByPriority().forEach { it.paint(canvas, context) }
     }
 
     fun addEntity(entityBuilder: EntityBuilder<Entity>, pos: Vector3D): Entity {

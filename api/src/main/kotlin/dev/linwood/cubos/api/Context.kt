@@ -18,7 +18,6 @@ typealias ChunkCoordinate = Pair<BigInteger, BigInteger>
 typealias ChunkPlace = Pair<BigInteger, BigInteger>
 
 data class RenderContext(
-    val canvas: Canvas,
     val chunk: Chunk,
     val renderPosition: Position,
     val renderSize: Pair<Float, Float>,

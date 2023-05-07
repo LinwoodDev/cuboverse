@@ -1,6 +1,7 @@
 package dev.linwood.cubos.api
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.unit.IntOffset
@@ -37,7 +38,7 @@ abstract class Entity(currentChunk: Chunk, vector3D: Vector3D) {
     open fun unload() {}
     open fun canLoad(): Boolean = false
 
-    open fun paint(context: RenderContext) {}
+    open fun paint(canvas : Canvas, context: RenderContext) {}
 
     fun getRenderPriority(): Int = 0
 
@@ -52,7 +53,7 @@ abstract class Entity(currentChunk: Chunk, vector3D: Vector3D) {
         )
         val globalPos = chunk.getPositionFromVector(newVector)
         val newChunk = chunk.world.getChunkByPosition(globalPos)
-        var chunkPlace = newChunk.getChunkPlace()
+        val chunkPlace = newChunk.getChunkPlace()
         if (newChunk != chunk) {
             chunk = newChunk
         }
@@ -63,20 +64,6 @@ abstract class Entity(currentChunk: Chunk, vector3D: Vector3D) {
         )
 
     }
-
-    companion object {
-        inline fun <reified T : Entity> fromJson(json: String): T {
-            return Json.decodeFromString(json)
-        }
-
-        inline fun <reified T : Entity> create(chunk: Chunk, vector3D: Vector3D): T {
-            // Get constructor with Chunk and Vector3D
-            val constructor = T::class.constructors.first { it.parameters.size == 2 }
-            val entity = constructor.call(chunk, vector3D)
-            chunk.addEntity(entity)
-            return entity
-        }
-    }
 }
 
 
@@ -84,7 +71,7 @@ abstract class CubicEntity(chunk: Chunk, vector3D: Vector3D) : Entity(chunk, vec
     abstract fun getImage(context: RenderContext): ImageBitmap
     fun getPaint(context: RenderContext): Paint = Paint()
 
-    override fun paint(context: RenderContext) {
+    override fun paint(canvas : Canvas, context: RenderContext) {
         val image = getImage(context)
         val paint = getPaint(context)
         val location = context.getRenderLocationFrom3DVector(vector3D)
@@ -92,7 +79,7 @@ abstract class CubicEntity(chunk: Chunk, vector3D: Vector3D) : Entity(chunk, vec
             context.renderScale.first * image.width,
             context.renderScale.second * image.height
         )
-        context.canvas.drawImageRect(
+        canvas.drawImageRect(
             image,
             IntOffset.Zero,
             IntSize(image.width, image.height),
