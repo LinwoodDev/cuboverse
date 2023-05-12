@@ -11,9 +11,12 @@ import dev.linwood.cubos.api.RenderContext
 import dev.linwood.cubos.api.Vector3D
 
 class CuboversePlayer(currentChunk: Chunk, vector3D: Vector3D) : Player(currentChunk, vector3D) {
-    override fun getImage(context: RenderContext): ImageBitmap {
-        return useResource("player.png", ::loadImageBitmap)
+    companion object {
+        val image = useResource("player.png", ::loadImageBitmap).apply {
+            prepareToDraw()
+        }
     }
+    override fun getImage(context: RenderContext) = image
 
     @OptIn(ExperimentalComposeUiApi::class)
     fun onKeyEvent(event: KeyEvent): Boolean {

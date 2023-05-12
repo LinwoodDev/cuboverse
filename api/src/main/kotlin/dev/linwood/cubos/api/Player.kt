@@ -25,4 +25,6 @@ abstract class Player(currentChunk: Chunk, vector3D: Vector3D) : CubicEntity(cur
             Pair(1, 1)
         )
     }
+
+    override fun canLoad(): Int = 2
 }

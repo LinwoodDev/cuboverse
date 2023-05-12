@@ -20,7 +20,7 @@ class CuboverseGame {
         ::chunkBuilder
     )
     private val player: CuboversePlayer = world.getChunk(ChunkCoordinate(BigInteger.ZERO, BigInteger.ZERO))
-        .addEntityOfType(::CuboversePlayer, Vector3D(0f, 0f, 0f))
+        .addEntityOfType(::CuboversePlayer, Vector3D(0f, 0f, 1f))
 
     private fun chunkBuilder(chunk: Chunk) {
         for (i in 0..15) {

@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.withSave
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import kotlinx.serialization.*
@@ -14,17 +15,21 @@ typealias EntityBuilder<T> = (chunk: Chunk, vector3D: Vector3D) -> T
 abstract class Entity(currentChunk: Chunk, vector3D: Vector3D) {
     private var currentChunk = mutableStateOf(currentChunk)
     private var currentVector3D = mutableStateOf(vector3D)
+    private val loadedChunks = mutableSetOf<ChunkCoordinate>()
+
     open var chunk
         get() = currentChunk.value
         set(value) {
             chunk.removeEntity(this)
             currentChunk.value = value
             value.addEntity(this)
+            checkChunks()
         }
     var vector3D
         get() = currentVector3D.value
         set(value) {
             currentVector3D.value = value
+            checkChunks()
         }
     var vector
         get() = Vector(vector3D.first, vector3D.second)
@@ -36,11 +41,30 @@ abstract class Entity(currentChunk: Chunk, vector3D: Vector3D) {
     open fun update() {}
     open fun tick() {}
     open fun unload() {}
-    open fun canLoad(): Boolean = false
+    open fun canLoad(): Int = 0
 
-    open fun paint(canvas : Canvas, context: RenderContext) {}
+    open fun paint(canvas: Canvas, context: RenderContext) {}
 
     fun getRenderPriority(): Int = 0
+
+    fun checkChunks() {
+        val load = canLoad()
+        val newChunks = mutableSetOf<ChunkCoordinate>()
+        for (x in -load..load) {
+            for (y in -load..load) {
+                newChunks.add(ChunkCoordinate(
+                    chunk.coordinate.first + x.toBigInteger(),
+                    chunk.coordinate.second + y.toBigInteger()
+                ))
+            }
+        }
+        val toLoad = newChunks - loadedChunks
+        val toUnload = loadedChunks - newChunks
+        toLoad.forEach { chunk.world.addChunk(it) }
+        toUnload.forEach { chunk.world.removeChunk(it) }
+        loadedChunks.clear()
+        loadedChunks.addAll(newChunks)
+    }
 
     fun save(): String {
         return Json.encodeToString(this)
@@ -62,7 +86,6 @@ abstract class Entity(currentChunk: Chunk, vector3D: Vector3D) {
             (globalPos.second - chunkPlace.second.toBigDecimal()).toFloat(),
             vector3D.third + delta.third
         )
-
     }
 }
 
@@ -71,7 +94,7 @@ abstract class CubicEntity(chunk: Chunk, vector3D: Vector3D) : Entity(chunk, vec
     abstract fun getImage(context: RenderContext): ImageBitmap
     fun getPaint(context: RenderContext): Paint = Paint()
 
-    override fun paint(canvas : Canvas, context: RenderContext) {
+    override fun paint(canvas: Canvas, context: RenderContext) {
         val image = getImage(context)
         val paint = getPaint(context)
         val location = context.getRenderLocationFrom3DVector(vector3D)
@@ -79,13 +102,15 @@ abstract class CubicEntity(chunk: Chunk, vector3D: Vector3D) : Entity(chunk, vec
             context.renderScale.first * image.width,
             context.renderScale.second * image.height
         )
-        canvas.drawImageRect(
-            image,
-            IntOffset.Zero,
-            IntSize(image.width, image.height),
-            IntOffset(location.first.toInt(), location.second.toInt()),
-            size,
-            paint
-        )
+        canvas.withSave {
+            canvas.drawImageRect(
+                image,
+                IntOffset.Zero,
+                IntSize(image.width, image.height),
+                IntOffset(location.first.toInt(), location.second.toInt()),
+                size,
+                paint
+            )
+        }
     }
 }

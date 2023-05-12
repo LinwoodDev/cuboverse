@@ -44,38 +44,35 @@ class Chunk(val world: World, val coordinate: ChunkCoordinate) {
     }
 
     fun load() {
-        getObjectByPriority().forEach { it.load() }
+        getObjectsByPriority().forEach { it.load() }
     }
 
     fun update() {
-        getObjectByPriority().forEach { it.update() }
+        getObjectsByPriority().forEach { it.update() }
     }
 
     fun tick(location: Pair<BigInteger, BigInteger>) {
-        getObjectByPriority().forEach { it.tick() }
+        getObjectsByPriority().forEach { it.tick() }
     }
 
     fun unload() {
-        getObjectByPriority().forEach { it.unload() }
+        getObjectsByPriority().forEach { it.unload() }
     }
 
-    fun getObjectByPriority(): Iterable<Entity> {
-        return objects.sortedWith { a, b ->
-            val priority = a.getRenderPriority().compareTo(b.getRenderPriority())
-            if (priority != 0) return@sortedWith priority
-            val aVec = a.vector3D
-            val bVec = b.vector3D
-            val z = aVec.third.compareTo(bVec.third)
-            if (z != 0) return@sortedWith z
-            val y = aVec.second.compareTo(bVec.second)
-            if (y != 0) return@sortedWith y
-            return@sortedWith aVec.first.compareTo(bVec.first)
-        }
+    fun getObjectsByPriority(): Iterable<Entity> = objects.sortedWith { a, b ->
+        val priority = a.getRenderPriority().compareTo(b.getRenderPriority())
+        if (priority != 0) return@sortedWith priority
+        val aVec = a.vector3D
+        val bVec = b.vector3D
+        val z = aVec.third.compareTo(bVec.third)
+        if (z != 0) return@sortedWith z
+        val y = aVec.second.compareTo(bVec.second)
+        if (y != 0) return@sortedWith y
+        return@sortedWith aVec.first.compareTo(bVec.first)
     }
 
     fun paint(
         canvas: Canvas,
-        world: World,
         renderLocation: Pair<BigDecimal, BigDecimal>,
         renderSize: Pair<Float, Float>,
         renderScale: Pair<Int, Int>
@@ -86,7 +83,7 @@ class Chunk(val world: World, val coordinate: ChunkCoordinate) {
             renderSize,
             renderScale
         )
-        getObjectByPriority().forEach { it.paint(canvas, context) }
+        getObjectsByPriority().forEach { it.paint(canvas, context) }
     }
 
     fun addEntity(entityBuilder: EntityBuilder<Entity>, pos: Vector3D): Entity {
