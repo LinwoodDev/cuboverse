@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "api",
+    "app/native",
+    "standard"
+]
+resolver = "2"

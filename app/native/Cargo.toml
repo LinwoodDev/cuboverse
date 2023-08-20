@@ -1,0 +1,15 @@
+[package]
+name = "native"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+crate-type = ["staticlib","cdylib","lib"]
+
+[dependencies]
+flutter_rust_bridge = "1"
+api = { path = "../../api" }
+
+[build-dependencies]
+flutter_rust_bridge_codegen = "1"
