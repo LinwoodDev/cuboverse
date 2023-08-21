@@ -125,7 +125,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => GameWidget(game: CuboverseWorld()))),
+                  builder: (context) => Scaffold(
+                      appBar: AppBar(title: const Text("Game")),
+                      body: GameWidget(game: CuboverseWorld())))),
               child: const Text("Game"),
             ),
           ],

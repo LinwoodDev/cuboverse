@@ -1,13 +1,16 @@
-mod message;
+pub mod message;
 
 pub use std::sync::Mutex;
-use api::chunk::ChunkPosition;
-pub use api::world::{World, Entity, ChunkLocation};
-use flutter_rust_bridge::RustOpaque;
+pub use api::chunk::*;
+pub use api::world::*;
 
-#[derive(Debug)]
+use flutter_rust_bridge::{RustOpaque, StreamSink};
+
+pub use self::message::*;
+
 pub struct WorldManager {
     pub(crate) world: RustOpaque<Mutex<World>>,
+    pub(crate) sink : RustOpaque<Mutex<Option<StreamSink<NativeMessage>>>>,
 }
 
 pub fn create_world_manager() -> WorldManager {
@@ -15,6 +18,7 @@ pub fn create_world_manager() -> WorldManager {
         world: RustOpaque::new(Mutex::new(World {
             ..Default::default()
         })),
+        sink: RustOpaque::new(Mutex::new(None)),
     }
 }
 
@@ -43,5 +47,8 @@ impl WorldManager {
     pub fn entities(&self) -> usize {
         let world = self.world.lock().unwrap();
         world.entities.values().flatten().count()
+    }
+    pub fn create_message_stream(&self, s: StreamSink<NativeMessage>) {
+        *self.sink.lock().unwrap() = Some(s);
     }
 }

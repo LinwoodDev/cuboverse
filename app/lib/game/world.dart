@@ -4,9 +4,9 @@ import 'package:cuboverse/game/chunk.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 
-final FORWARD_OFFSET = Vector2(8, -4);
-final RIGHT_OFFSET = Vector2(8, 4);
-final TOP_OFFSET = Vector2(0, -8);
+final forwardOffset = Vector2(8, -4);
+final rightOffset = Vector2(8, 4);
+final topOffset = Vector2(0, -8);
 
 class CuboverseWorld extends FlameGame {
   final world = World();

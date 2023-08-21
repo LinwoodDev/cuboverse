@@ -19,7 +19,7 @@ pub struct Block {
 
 #[derive(Debug, Clone, Default)]
 pub struct Chunk {
-    pub blocks: HashMap<ChunkPosition, Block>,
+    blocks: HashMap<ChunkPosition, Block>,
 }
 
 impl Chunk {
@@ -36,5 +36,9 @@ impl Chunk {
         self.blocks.insert(position, Block {
             name: block,
         });
+    }
+
+    pub fn remove_block(&mut self, position : &ChunkPosition) -> Option<Block> {
+        self.blocks.remove(position)
     }
 }

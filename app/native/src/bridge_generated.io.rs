@@ -25,7 +25,21 @@ pub extern "C" fn wire_entities__method__WorldManager(port_: i64, that: *mut wir
     wire_entities__method__WorldManager_impl(port_, that)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_create_message_stream__method__WorldManager(
+    port_: i64,
+    that: *mut wire_WorldManager,
+) {
+    wire_create_message_stream__method__WorldManager_impl(port_, that)
+}
+
 // Section: allocate functions
+
+#[no_mangle]
+pub extern "C" fn new_MutexOptionStreamSinkNativeMessage() -> wire_MutexOptionStreamSinkNativeMessage
+{
+    wire_MutexOptionStreamSinkNativeMessage::new_with_null_ptr()
+}
 
 #[no_mangle]
 pub extern "C" fn new_MutexWorld() -> wire_MutexWorld {
@@ -49,6 +63,23 @@ pub extern "C" fn new_uint_8_list_0(len: i32) -> *mut wire_uint_8_list {
 // Section: related functions
 
 #[no_mangle]
+pub extern "C" fn drop_opaque_MutexOptionStreamSinkNativeMessage(ptr: *const c_void) {
+    unsafe {
+        Arc::<Mutex<Option<StreamSink<NativeMessage>>>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn share_opaque_MutexOptionStreamSinkNativeMessage(
+    ptr: *const c_void,
+) -> *const c_void {
+    unsafe {
+        Arc::<Mutex<Option<StreamSink<NativeMessage>>>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
+
+#[no_mangle]
 pub extern "C" fn drop_opaque_MutexWorld(ptr: *const c_void) {
     unsafe {
         Arc::<Mutex<World>>::decrement_strong_count(ptr as _);
@@ -65,6 +96,13 @@ pub extern "C" fn share_opaque_MutexWorld(ptr: *const c_void) -> *const c_void {
 
 // Section: impl Wire2Api
 
+impl Wire2Api<RustOpaque<Mutex<Option<StreamSink<NativeMessage>>>>>
+    for wire_MutexOptionStreamSinkNativeMessage
+{
+    fn wire2api(self) -> RustOpaque<Mutex<Option<StreamSink<NativeMessage>>>> {
+        unsafe { support::opaque_from_dart(self.ptr as _) }
+    }
+}
 impl Wire2Api<RustOpaque<Mutex<World>>> for wire_MutexWorld {
     fn wire2api(self) -> RustOpaque<Mutex<World>> {
         unsafe { support::opaque_from_dart(self.ptr as _) }
@@ -95,10 +133,17 @@ impl Wire2Api<WorldManager> for wire_WorldManager {
     fn wire2api(self) -> WorldManager {
         WorldManager {
             world: self.world.wire2api(),
+            sink: self.sink.wire2api(),
         }
     }
 }
 // Section: wire structs
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_MutexOptionStreamSinkNativeMessage {
+    ptr: *const core::ffi::c_void,
+}
 
 #[repr(C)]
 #[derive(Clone)]
@@ -117,6 +162,7 @@ pub struct wire_uint_8_list {
 #[derive(Clone)]
 pub struct wire_WorldManager {
     world: wire_MutexWorld,
+    sink: wire_MutexOptionStreamSinkNativeMessage,
 }
 
 // Section: impl NewWithNullPtr
@@ -131,6 +177,13 @@ impl<T> NewWithNullPtr for *mut T {
     }
 }
 
+impl NewWithNullPtr for wire_MutexOptionStreamSinkNativeMessage {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            ptr: core::ptr::null(),
+        }
+    }
+}
 impl NewWithNullPtr for wire_MutexWorld {
     fn new_with_null_ptr() -> Self {
         Self {
@@ -143,6 +196,7 @@ impl NewWithNullPtr for wire_WorldManager {
     fn new_with_null_ptr() -> Self {
         Self {
             world: wire_MutexWorld::new_with_null_ptr(),
+            sink: wire_MutexOptionStreamSinkNativeMessage::new_with_null_ptr(),
         }
     }
 }

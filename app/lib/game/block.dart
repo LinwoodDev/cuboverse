@@ -13,8 +13,8 @@ class CuboverseBlock extends Component {
   Future<void> onLoad() async {
     final image = await Flame.images.load("blocks/test.png");
     add(SpriteComponent.fromImage(image,
-        position: RIGHT_OFFSET * position.x +
-            FORWARD_OFFSET * position.y +
-            TOP_OFFSET * position.z));
+        position: rightOffset * position.x +
+            forwardOffset * position.y +
+            topOffset * position.z));
   }
 }

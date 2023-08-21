@@ -21,6 +21,11 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
 // Section: api2wire
 
   @protected
+  Object api2wire_MutexOptionStreamSinkNativeMessage(MutexOptionStreamSinkNativeMessage raw) {
+    return raw.shareOrMove();
+  }
+
+  @protected
   Object api2wire_MutexWorld(MutexWorld raw) {
     return raw.shareOrMove();
   }
@@ -43,11 +48,14 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
   @protected
   List<dynamic> api2wire_world_manager(WorldManager raw) {
     return [
-      api2wire_MutexWorld(raw.world)
+      api2wire_MutexWorld(raw.world),
+      api2wire_MutexOptionStreamSinkNativeMessage(raw.sink)
     ];
   }
 // Section: finalizer
 
+  late final Finalizer<PlatformPointer> _MutexOptionStreamSinkNativeMessageFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexOptionStreamSinkNativeMessage);
+  Finalizer<PlatformPointer> get MutexOptionStreamSinkNativeMessageFinalizer => _MutexOptionStreamSinkNativeMessageFinalizer;
   late final Finalizer<PlatformPointer> _MutexWorldFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexWorld);
   Finalizer<PlatformPointer> get MutexWorldFinalizer => _MutexWorldFinalizer;
 }
@@ -70,6 +78,12 @@ class NativeWasmModule implements WasmModule {
 
   external dynamic /* void */ wire_entities__method__WorldManager(NativePortType port_, List<dynamic> that);
 
+  external dynamic /* void */ wire_create_message_stream__method__WorldManager(NativePortType port_, List<dynamic> that);
+
+  external dynamic /*  */ drop_opaque_MutexOptionStreamSinkNativeMessage(ptr);
+
+  external int /* *const c_void */ share_opaque_MutexOptionStreamSinkNativeMessage(ptr);
+
   external dynamic /*  */ drop_opaque_MutexWorld(ptr);
 
   external int /* *const c_void */ share_opaque_MutexWorld(ptr);
@@ -87,6 +101,12 @@ class NativeWire extends FlutterRustBridgeWasmWireBase<NativeWasmModule> {
   void wire_add_entity__method__WorldManager(NativePortType port_, List<dynamic> that, String entity) => wasmModule.wire_add_entity__method__WorldManager(port_, that, entity);
 
   void wire_entities__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_entities__method__WorldManager(port_, that);
+
+  void wire_create_message_stream__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_create_message_stream__method__WorldManager(port_, that);
+
+  dynamic /*  */ drop_opaque_MutexOptionStreamSinkNativeMessage(ptr) => wasmModule.drop_opaque_MutexOptionStreamSinkNativeMessage(ptr);
+
+  int /* *const c_void */ share_opaque_MutexOptionStreamSinkNativeMessage(ptr) => wasmModule.share_opaque_MutexOptionStreamSinkNativeMessage(ptr);
 
   dynamic /*  */ drop_opaque_MutexWorld(ptr) => wasmModule.drop_opaque_MutexWorld(ptr);
 

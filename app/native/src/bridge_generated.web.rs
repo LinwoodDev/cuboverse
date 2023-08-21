@@ -21,9 +21,29 @@ pub fn wire_entities__method__WorldManager(port_: MessagePort, that: JsValue) {
     wire_entities__method__WorldManager_impl(port_, that)
 }
 
+#[wasm_bindgen]
+pub fn wire_create_message_stream__method__WorldManager(port_: MessagePort, that: JsValue) {
+    wire_create_message_stream__method__WorldManager_impl(port_, that)
+}
+
 // Section: allocate functions
 
 // Section: related functions
+
+#[wasm_bindgen]
+pub fn drop_opaque_MutexOptionStreamSinkNativeMessage(ptr: *const c_void) {
+    unsafe {
+        Arc::<Mutex<Option<StreamSink<NativeMessage>>>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[wasm_bindgen]
+pub fn share_opaque_MutexOptionStreamSinkNativeMessage(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<Mutex<Option<StreamSink<NativeMessage>>>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
 
 #[wasm_bindgen]
 pub fn drop_opaque_MutexWorld(ptr: *const c_void) {
@@ -58,17 +78,28 @@ impl Wire2Api<WorldManager> for JsValue {
         let self_ = self.dyn_into::<JsArray>().unwrap();
         assert_eq!(
             self_.length(),
-            1,
-            "Expected 1 elements, got {}",
+            2,
+            "Expected 2 elements, got {}",
             self_.length()
         );
         WorldManager {
             world: self_.get(0).wire2api(),
+            sink: self_.get(1).wire2api(),
         }
     }
 }
 // Section: impl Wire2Api for JsValue
 
+impl Wire2Api<RustOpaque<Mutex<Option<StreamSink<NativeMessage>>>>> for JsValue {
+    fn wire2api(self) -> RustOpaque<Mutex<Option<StreamSink<NativeMessage>>>> {
+        #[cfg(target_pointer_width = "64")]
+        {
+            compile_error!("64-bit pointers are not supported.");
+        }
+
+        unsafe { support::opaque_from_dart((self.as_f64().unwrap() as usize) as _) }
+    }
+}
 impl Wire2Api<RustOpaque<Mutex<World>>> for JsValue {
     fn wire2api(self) -> RustOpaque<Mutex<World>> {
         #[cfg(target_pointer_width = "64")]

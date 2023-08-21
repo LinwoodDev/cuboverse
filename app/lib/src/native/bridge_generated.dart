@@ -91,6 +91,30 @@ class NativeImpl implements Native {
         ],
       );
 
+  Stream<NativeMessage> createMessageStreamMethodWorldManager({required WorldManager that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
+    return _platform.executeStream(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_create_message_stream__method__WorldManager(port_, arg0),
+      parseSuccessData: _wire2api_native_message,
+      constMeta: kCreateMessageStreamMethodWorldManagerConstMeta,
+      argValues: [
+        that
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kCreateMessageStreamMethodWorldManagerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "create_message_stream__method__WorldManager",
+        argNames: [
+          "that"
+        ],
+      );
+
+  DropFnType get dropOpaqueMutexOptionStreamSinkNativeMessage => _platform.inner.drop_opaque_MutexOptionStreamSinkNativeMessage;
+  ShareFnType get shareOpaqueMutexOptionStreamSinkNativeMessage => _platform.inner.share_opaque_MutexOptionStreamSinkNativeMessage;
+  OpaqueTypeFinalizer get MutexOptionStreamSinkNativeMessageFinalizer => _platform.MutexOptionStreamSinkNativeMessageFinalizer;
+
   DropFnType get dropOpaqueMutexWorld => _platform.inner.drop_opaque_MutexWorld;
   ShareFnType get shareOpaqueMutexWorld => _platform.inner.share_opaque_MutexWorld;
   OpaqueTypeFinalizer get MutexWorldFinalizer => _platform.MutexWorldFinalizer;
@@ -100,6 +124,13 @@ class NativeImpl implements Native {
   }
 // Section: wire2api
 
+  MutexOptionStreamSinkNativeMessage _wire2api_MutexOptionStreamSinkNativeMessage(dynamic raw) {
+    return MutexOptionStreamSinkNativeMessage.fromRaw(
+      raw[0],
+      raw[1],
+    );
+  }
+
   MutexWorld _wire2api_MutexWorld(dynamic raw) {
     return MutexWorld.fromRaw(
       raw[0],
@@ -107,8 +138,112 @@ class NativeImpl implements Native {
     );
   }
 
+  String _wire2api_String(dynamic raw) {
+    return raw as String;
+  }
+
+  BlockInformation _wire2api_block_information(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return BlockInformation(
+      name: _wire2api_String(arr[0]),
+      position: _wire2api_chunk_position(arr[1]),
+    );
+  }
+
+  BlockInformation _wire2api_box_autoadd_block_information(dynamic raw) {
+    return _wire2api_block_information(raw);
+  }
+
+  ChunkLocation _wire2api_box_autoadd_chunk_location(dynamic raw) {
+    return _wire2api_chunk_location(raw);
+  }
+
+  ChunkPosition _wire2api_box_autoadd_chunk_position(dynamic raw) {
+    return _wire2api_chunk_position(raw);
+  }
+
+  GlobalPosition _wire2api_box_autoadd_global_position(dynamic raw) {
+    return _wire2api_global_position(raw);
+  }
+
+  ChunkLocation _wire2api_chunk_location(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return ChunkLocation(
+      field0: _wire2api_i32(arr[0]),
+      field1: _wire2api_i32(arr[1]),
+      field2: _wire2api_i32(arr[2]),
+    );
+  }
+
+  ChunkPosition _wire2api_chunk_position(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return ChunkPosition(
+      field0: _wire2api_i8(arr[0]),
+      field1: _wire2api_i8(arr[1]),
+      field2: _wire2api_i8(arr[2]),
+    );
+  }
+
+  GlobalPosition _wire2api_global_position(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    return GlobalPosition(
+      field0: _wire2api_chunk_location(arr[0]),
+      field1: _wire2api_chunk_position(arr[1]),
+    );
+  }
+
   int _wire2api_i32(dynamic raw) {
     return raw as int;
+  }
+
+  int _wire2api_i8(dynamic raw) {
+    return raw as int;
+  }
+
+  List<BlockInformation> _wire2api_list_block_information(dynamic raw) {
+    return (raw as List<dynamic>).map(_wire2api_block_information).toList();
+  }
+
+  NativeMessage _wire2api_native_message(dynamic raw) {
+    switch (raw[0]) {
+      case 0:
+        return NativeMessage_AddBlock(
+          chunk: _wire2api_box_autoadd_chunk_location(raw[1]),
+          block: _wire2api_box_autoadd_block_information(raw[2]),
+        );
+      case 1:
+        return NativeMessage_RemoveBlock(
+          position: _wire2api_box_autoadd_chunk_position(raw[1]),
+          chunk: _wire2api_box_autoadd_chunk_location(raw[2]),
+        );
+      case 2:
+        return NativeMessage_AddChunk(
+          location: _wire2api_box_autoadd_chunk_location(raw[1]),
+          blocks: _wire2api_list_block_information(raw[2]),
+        );
+      case 3:
+        return NativeMessage_RemoveChunk(
+          location: _wire2api_box_autoadd_chunk_location(raw[1]),
+        );
+      case 4:
+        return NativeMessage_PlayerTeleported(
+          _wire2api_box_autoadd_global_position(raw[1]),
+        );
+      default:
+        throw Exception("unreachable");
+    }
+  }
+
+  int _wire2api_u8(dynamic raw) {
+    return raw as int;
+  }
+
+  Uint8List _wire2api_uint_8_list(dynamic raw) {
+    return raw as Uint8List;
   }
 
   void _wire2api_unit(dynamic raw) {
@@ -121,9 +256,10 @@ class NativeImpl implements Native {
 
   WorldManager _wire2api_world_manager(dynamic raw) {
     final arr = raw as List<dynamic>;
-    if (arr.length != 1) throw Exception('unexpected arr length: expect 1 but see ${arr.length}');
+    if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
     return WorldManager(
       world: _wire2api_MutexWorld(arr[0]),
+      sink: _wire2api_MutexOptionStreamSinkNativeMessage(arr[1]),
     );
   }
 }

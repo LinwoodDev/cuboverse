@@ -76,10 +76,59 @@ fn wire_entities__method__WorldManager_impl(
         },
     )
 }
+fn wire_create_message_stream__method__WorldManager_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<WorldManager> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "create_message_stream__method__WorldManager",
+            port: Some(port_),
+            mode: FfiCallMode::Stream,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| {
+                Ok(WorldManager::create_message_stream(
+                    &api_that,
+                    task_callback.stream_sink::<_, NativeMessage>(),
+                ))
+            }
+        },
+    )
+}
 // Section: wrapper structs
+
+#[derive(Clone)]
+pub struct mirror_ChunkLocation(ChunkLocation);
+
+#[derive(Clone)]
+pub struct mirror_ChunkPosition(ChunkPosition);
+
+#[derive(Clone)]
+pub struct mirror_GlobalPosition(GlobalPosition);
 
 // Section: static checks
 
+const _: fn() = || {
+    {
+        let ChunkLocation_ = None::<ChunkLocation>.unwrap();
+        let _: i32 = ChunkLocation_.0;
+        let _: i32 = ChunkLocation_.1;
+        let _: i32 = ChunkLocation_.2;
+    }
+    {
+        let ChunkPosition_ = None::<ChunkPosition>.unwrap();
+        let _: i8 = ChunkPosition_.0;
+        let _: i8 = ChunkPosition_.1;
+        let _: i8 = ChunkPosition_.2;
+    }
+    {
+        let GlobalPosition_ = None::<GlobalPosition>.unwrap();
+        let _: ChunkLocation = GlobalPosition_.0;
+        let _: ChunkPosition = GlobalPosition_.1;
+    }
+};
 // Section: allocate functions
 
 // Section: related functions
@@ -107,9 +156,110 @@ impl Wire2Api<u8> for u8 {
 
 // Section: impl IntoDart
 
+impl support::IntoDart for BlockInformation {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.name.into_into_dart().into_dart(),
+            self.position.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for BlockInformation {}
+impl rust2dart::IntoIntoDart<BlockInformation> for BlockInformation {
+    fn into_into_dart(self) -> Self {
+        self
+    }
+}
+
+impl support::IntoDart for mirror_ChunkLocation {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.0 .0.into_into_dart().into_dart(),
+            self.0 .1.into_into_dart().into_dart(),
+            self.0 .2.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for mirror_ChunkLocation {}
+impl rust2dart::IntoIntoDart<mirror_ChunkLocation> for ChunkLocation {
+    fn into_into_dart(self) -> mirror_ChunkLocation {
+        mirror_ChunkLocation(self)
+    }
+}
+
+impl support::IntoDart for mirror_ChunkPosition {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.0 .0.into_into_dart().into_dart(),
+            self.0 .1.into_into_dart().into_dart(),
+            self.0 .2.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for mirror_ChunkPosition {}
+impl rust2dart::IntoIntoDart<mirror_ChunkPosition> for ChunkPosition {
+    fn into_into_dart(self) -> mirror_ChunkPosition {
+        mirror_ChunkPosition(self)
+    }
+}
+
+impl support::IntoDart for mirror_GlobalPosition {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.0 .0.into_into_dart().into_dart(),
+            self.0 .1.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for mirror_GlobalPosition {}
+impl rust2dart::IntoIntoDart<mirror_GlobalPosition> for GlobalPosition {
+    fn into_into_dart(self) -> mirror_GlobalPosition {
+        mirror_GlobalPosition(self)
+    }
+}
+
+impl support::IntoDart for NativeMessage {
+    fn into_dart(self) -> support::DartAbi {
+        match self {
+            Self::AddBlock { chunk, block } => vec![
+                0.into_dart(),
+                chunk.into_into_dart().into_dart(),
+                block.into_into_dart().into_dart(),
+            ],
+            Self::RemoveBlock { position, chunk } => vec![
+                1.into_dart(),
+                position.into_into_dart().into_dart(),
+                chunk.into_into_dart().into_dart(),
+            ],
+            Self::AddChunk { location, blocks } => vec![
+                2.into_dart(),
+                location.into_into_dart().into_dart(),
+                blocks.into_into_dart().into_dart(),
+            ],
+            Self::RemoveChunk { location } => {
+                vec![3.into_dart(), location.into_into_dart().into_dart()]
+            }
+            Self::PlayerTeleported(field0) => {
+                vec![4.into_dart(), field0.into_into_dart().into_dart()]
+            }
+        }
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for NativeMessage {}
+impl rust2dart::IntoIntoDart<NativeMessage> for NativeMessage {
+    fn into_into_dart(self) -> Self {
+        self
+    }
+}
+
 impl support::IntoDart for WorldManager {
     fn into_dart(self) -> support::DartAbi {
-        vec![self.world.into_dart()].into_dart()
+        vec![self.world.into_dart(), self.sink.into_dart()].into_dart()
     }
 }
 impl support::IntoDartExceptPrimitive for WorldManager {}

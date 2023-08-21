@@ -19,6 +19,13 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 // Section: api2wire
 
   @protected
+  wire_MutexOptionStreamSinkNativeMessage api2wire_MutexOptionStreamSinkNativeMessage(MutexOptionStreamSinkNativeMessage raw) {
+    final ptr = inner.new_MutexOptionStreamSinkNativeMessage();
+    _api_fill_to_wire_MutexOptionStreamSinkNativeMessage(raw, ptr);
+    return ptr;
+  }
+
+  @protected
   wire_MutexWorld api2wire_MutexWorld(MutexWorld raw) {
     final ptr = inner.new_MutexWorld();
     _api_fill_to_wire_MutexWorld(raw, ptr);
@@ -46,9 +53,15 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 
 // Section: finalizer
 
+  late final OpaqueTypeFinalizer _MutexOptionStreamSinkNativeMessageFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexOptionStreamSinkNativeMessagePtr);
+  OpaqueTypeFinalizer get MutexOptionStreamSinkNativeMessageFinalizer => _MutexOptionStreamSinkNativeMessageFinalizer;
   late final OpaqueTypeFinalizer _MutexWorldFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexWorldPtr);
   OpaqueTypeFinalizer get MutexWorldFinalizer => _MutexWorldFinalizer;
 // Section: api_fill_to_wire
+
+  void _api_fill_to_wire_MutexOptionStreamSinkNativeMessage(MutexOptionStreamSinkNativeMessage apiObj, wire_MutexOptionStreamSinkNativeMessage wireObj) {
+    wireObj.ptr = apiObj.shareOrMove();
+  }
 
   void _api_fill_to_wire_MutexWorld(MutexWorld apiObj, wire_MutexWorld wireObj) {
     wireObj.ptr = apiObj.shareOrMove();
@@ -60,6 +73,7 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 
   void _api_fill_to_wire_world_manager(WorldManager apiObj, wire_WorldManager wireObj) {
     wireObj.world = api2wire_MutexWorld(apiObj.world);
+    wireObj.sink = api2wire_MutexOptionStreamSinkNativeMessage(apiObj.sink);
   }
 }
 
@@ -189,6 +203,26 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_entities__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>)>>('wire_entities__method__WorldManager');
   late final _wire_entities__method__WorldManager = _wire_entities__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>)>();
 
+  void wire_create_message_stream__method__WorldManager(
+    int port_,
+    ffi.Pointer<wire_WorldManager> that,
+  ) {
+    return _wire_create_message_stream__method__WorldManager(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_create_message_stream__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>)>>('wire_create_message_stream__method__WorldManager');
+  late final _wire_create_message_stream__method__WorldManager = _wire_create_message_stream__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>)>();
+
+  wire_MutexOptionStreamSinkNativeMessage new_MutexOptionStreamSinkNativeMessage() {
+    return _new_MutexOptionStreamSinkNativeMessage();
+  }
+
+  late final _new_MutexOptionStreamSinkNativeMessagePtr = _lookup<ffi.NativeFunction<wire_MutexOptionStreamSinkNativeMessage Function()>>('new_MutexOptionStreamSinkNativeMessage');
+  late final _new_MutexOptionStreamSinkNativeMessage = _new_MutexOptionStreamSinkNativeMessagePtr.asFunction<wire_MutexOptionStreamSinkNativeMessage Function()>();
+
   wire_MutexWorld new_MutexWorld() {
     return _new_MutexWorld();
   }
@@ -213,6 +247,28 @@ class NativeWire implements FlutterRustBridgeWireBase {
 
   late final _new_uint_8_list_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<wire_uint_8_list> Function(ffi.Int32)>>('new_uint_8_list_0');
   late final _new_uint_8_list_0 = _new_uint_8_list_0Ptr.asFunction<ffi.Pointer<wire_uint_8_list> Function(int)>();
+
+  void drop_opaque_MutexOptionStreamSinkNativeMessage(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _drop_opaque_MutexOptionStreamSinkNativeMessage(
+      ptr,
+    );
+  }
+
+  late final _drop_opaque_MutexOptionStreamSinkNativeMessagePtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>('drop_opaque_MutexOptionStreamSinkNativeMessage');
+  late final _drop_opaque_MutexOptionStreamSinkNativeMessage = _drop_opaque_MutexOptionStreamSinkNativeMessagePtr.asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<ffi.Void> share_opaque_MutexOptionStreamSinkNativeMessage(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _share_opaque_MutexOptionStreamSinkNativeMessage(
+      ptr,
+    );
+  }
+
+  late final _share_opaque_MutexOptionStreamSinkNativeMessagePtr = _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>('share_opaque_MutexOptionStreamSinkNativeMessage');
+  late final _share_opaque_MutexOptionStreamSinkNativeMessage = _share_opaque_MutexOptionStreamSinkNativeMessagePtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
 
   void drop_opaque_MutexWorld(
     ffi.Pointer<ffi.Void> ptr,
@@ -254,8 +310,14 @@ final class wire_MutexWorld extends ffi.Struct {
   external ffi.Pointer<ffi.Void> ptr;
 }
 
+final class wire_MutexOptionStreamSinkNativeMessage extends ffi.Struct {
+  external ffi.Pointer<ffi.Void> ptr;
+}
+
 final class wire_WorldManager extends ffi.Struct {
   external wire_MutexWorld world;
+
+  external wire_MutexOptionStreamSinkNativeMessage sink;
 }
 
 final class wire_uint_8_list extends ffi.Struct {
