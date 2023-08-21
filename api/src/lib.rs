@@ -1,3 +1,4 @@
+pub mod chunk;
 pub mod event;
 pub mod modification;
 pub mod world;

@@ -1,36 +1,47 @@
-use flutter_rust_bridge::RustOpaque;
-pub use api::world::World;
+mod message;
 
-pub mod manager;
+pub use std::sync::Mutex;
+use api::chunk::ChunkPosition;
+pub use api::world::{World, Entity, ChunkLocation};
+use flutter_rust_bridge::RustOpaque;
 
 #[derive(Debug)]
 pub struct WorldManager {
-    pub(crate) world: RustOpaque<World>,
+    pub(crate) world: RustOpaque<Mutex<World>>,
 }
 
 pub fn create_world_manager() -> WorldManager {
     WorldManager {
-        world: RustOpaque::new(World {
+        world: RustOpaque::new(Mutex::new(World {
             ..Default::default()
-        }),
+        })),
     }
 }
 
 pub fn what_is_the_answer() -> i32 {
-    21
-}
-
-pub fn world_manager_info(manager: &WorldManager) -> String {
-    format!("WorldManager: {:?}", manager)
+    42
 }
 
 impl WorldManager {
-    pub fn hello() {
-        println!("Hello from Rust!");
+    pub fn add_entity(&self, entity: String) {
+        let mut world = self.world.lock().unwrap();
+        let key = ChunkLocation(0, 0, 0);
+        let new_value = Entity {
+            position: ChunkPosition(0,0,0),
+            name: entity,
+            health: 100,
+            max_health: 100,
+        };
+        let entities = &mut world.entities;
+        let currents = entities.get_mut(&key);
+        if let Some(k) = currents {
+            k.push(new_value);
+        } else {
+            entities.insert(key, vec![new_value]);
+        }
     }
-
-    pub fn concatenate_static(a: String, b: String) -> String {
-        format!("{a}{b}")
+    pub fn entities(&self) -> usize {
+        let world = self.world.lock().unwrap();
+        world.entities.values().flatten().count()
     }
 }
-

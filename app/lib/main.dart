@@ -1,8 +1,9 @@
-import 'package:cuboverse/src/native/bridge_definitions.dart';
-import 'package:cuboverse/src/native/ffi.io.dart';
+import 'package:cuboverse/game/world.dart';
+import 'package:cuboverse/src/native.dart';
+import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
   runApp(const MyApp());
 }
 
@@ -57,10 +58,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final WorldManager worldManager;
+  WorldManager? worldManager;
+  int counter = 0;
 
-  void _incrementCounter() {
+  @override
+  void initState() {
+    super.initState();
+    initManager();
+  }
+
+  Future<void> initManager() async {
+    worldManager = await api.createWorldManager();
+  }
+
+  Future<void> _incrementCounter() async {
+    await worldManager?.addEntity(entity: "Hello World");
+    final newCounter = await worldManager?.entities();
     setState(() {
+      counter = newCounter ?? -1;
     });
   }
 
@@ -105,8 +120,13 @@ class _MyHomePageState extends State<MyHomePage> {
               'You have pushed the button this many times:',
             ),
             Text(
-              '${api}',
+              '$counter',
               style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => GameWidget(game: CuboverseWorld()))),
+              child: const Text("Game"),
             ),
           ],
         ),

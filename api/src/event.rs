@@ -1,4 +1,4 @@
-use crate::world::*;
+use crate::{world::*, chunk::*};
 
 pub struct BlockTickEvent {
     pub block : Block,
