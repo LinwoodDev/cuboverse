@@ -42,6 +42,44 @@ fn wire_what_is_the_answer_impl(port_: MessagePort) {
         move || move |task_callback| Ok(what_is_the_answer()),
     )
 }
+fn wire_add_block__method__WorldManager_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<WorldManager> + UnwindSafe,
+    position: impl Wire2Api<GlobalPosition> + UnwindSafe,
+    block: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "add_block__method__WorldManager",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_position = position.wire2api();
+            let api_block = block.wire2api();
+            move |task_callback| Ok(WorldManager::add_block(&api_that, api_position, api_block))
+        },
+    )
+}
+fn wire_remove_block__method__WorldManager_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<WorldManager> + UnwindSafe,
+    position: impl Wire2Api<GlobalPosition> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "remove_block__method__WorldManager",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_position = position.wire2api();
+            move |task_callback| Ok(WorldManager::remove_block(&api_that, api_position))
+        },
+    )
+}
 fn wire_add_entity__method__WorldManager_impl(
     port_: MessagePort,
     that: impl Wire2Api<WorldManager> + UnwindSafe,
@@ -97,6 +135,62 @@ fn wire_create_message_stream__method__WorldManager_impl(
         },
     )
 }
+fn wire_player_position__method__WorldManager_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<WorldManager> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, mirror_GlobalPosition>(
+        WrapInfo {
+            debug_name: "player_position__method__WorldManager",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| Ok(WorldManager::player_position(&api_that))
+        },
+    )
+}
+fn wire_send_message__method__WorldManager_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<WorldManager> + UnwindSafe,
+    message: impl Wire2Api<NativeMessage> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "send_message__method__WorldManager",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_message = message.wire2api();
+            move |task_callback| Ok(WorldManager::send_message(&api_that, api_message))
+        },
+    )
+}
+fn wire_move_player__method__WorldManager_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<WorldManager> + UnwindSafe,
+    x: impl Wire2Api<i64> + UnwindSafe,
+    y: impl Wire2Api<i64> + UnwindSafe,
+    z: impl Wire2Api<i64> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "move_player__method__WorldManager",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            let api_x = x.wire2api();
+            let api_y = y.wire2api();
+            let api_z = z.wire2api();
+            move |task_callback| Ok(WorldManager::move_player(&api_that, api_x, api_y, api_z))
+        },
+    )
+}
 // Section: wrapper structs
 
 #[derive(Clone)]
@@ -145,6 +239,22 @@ where
 {
     fn wire2api(self) -> Option<T> {
         (!self.is_null()).then(|| self.wire2api())
+    }
+}
+
+impl Wire2Api<i32> for i32 {
+    fn wire2api(self) -> i32 {
+        self
+    }
+}
+impl Wire2Api<i64> for i64 {
+    fn wire2api(self) -> i64 {
+        self
+    }
+}
+impl Wire2Api<i8> for i8 {
+    fn wire2api(self) -> i8 {
+        self
     }
 }
 
@@ -243,9 +353,12 @@ impl support::IntoDart for NativeMessage {
             Self::RemoveChunk { location } => {
                 vec![3.into_dart(), location.into_into_dart().into_dart()]
             }
-            Self::PlayerTeleported(field0) => {
-                vec![4.into_dart(), field0.into_into_dart().into_dart()]
-            }
+            Self::PlayerTeleported { x, y, z } => vec![
+                4.into_dart(),
+                x.into_into_dart().into_dart(),
+                y.into_into_dart().into_dart(),
+                z.into_into_dart().into_dart(),
+            ],
         }
         .into_dart()
     }
@@ -259,7 +372,12 @@ impl rust2dart::IntoIntoDart<NativeMessage> for NativeMessage {
 
 impl support::IntoDart for WorldManager {
     fn into_dart(self) -> support::DartAbi {
-        vec![self.world.into_dart(), self.sink.into_dart()].into_dart()
+        vec![
+            self.world.into_dart(),
+            self.sink.into_dart(),
+            self.player.into_dart(),
+        ]
+        .into_dart()
     }
 }
 impl support::IntoDartExceptPrimitive for WorldManager {}

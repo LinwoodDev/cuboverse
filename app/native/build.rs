@@ -6,11 +6,14 @@ const DART_OUTPUT: &str = "../lib/src/native/bridge_generated.dart";
 fn main() {
     // Only rerun when the API file changes.
     println!("cargo:rerun-if-changed={}", RUST_INPUT);
+    println!("cargo:rerun-if-changed=src/api/*.rs");
     let configs = config_parse(RawOpts {
         rust_input: vec![RUST_INPUT.to_string()],
         dart_output: vec![DART_OUTPUT.to_string()],
         wasm: true,
         no_use_bridge_in_method: true,
+        dart3: true,
+        dart_enums_style: true,
         dart_decl_output: Some("../lib/src/native/bridge_definitions.dart".into()),
         ..Default::default()
     });

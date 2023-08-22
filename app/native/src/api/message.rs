@@ -29,5 +29,9 @@ pub enum NativeMessage {
     RemoveChunk {
         location : ChunkLocation,
     },
-    PlayerTeleported(GlobalPosition),
+    PlayerTeleported {
+        x : i64,
+        y : i64,
+        z : i64,
+    },
 }

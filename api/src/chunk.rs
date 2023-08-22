@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::world::CHUNK_SIZE;
 
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub struct ChunkPosition (pub i8, pub i8, pub i8);
 
 impl ChunkPosition {

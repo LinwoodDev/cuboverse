@@ -22,6 +22,14 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kWhatIsTheAnswerConstMeta;
 
+  Future<void> addBlockMethodWorldManager({required WorldManager that, required GlobalPosition position, required String block, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kAddBlockMethodWorldManagerConstMeta;
+
+  Future<void> removeBlockMethodWorldManager({required WorldManager that, required GlobalPosition position, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kRemoveBlockMethodWorldManagerConstMeta;
+
   Future<void> addEntityMethodWorldManager({required WorldManager that, required String entity, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kAddEntityMethodWorldManagerConstMeta;
@@ -34,9 +42,25 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kCreateMessageStreamMethodWorldManagerConstMeta;
 
+  Future<GlobalPosition> playerPositionMethodWorldManager({required WorldManager that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kPlayerPositionMethodWorldManagerConstMeta;
+
+  Future<void> sendMessageMethodWorldManager({required WorldManager that, required NativeMessage message, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSendMessageMethodWorldManagerConstMeta;
+
+  Future<void> movePlayerMethodWorldManager({required WorldManager that, required int x, required int y, required int z, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kMovePlayerMethodWorldManagerConstMeta;
+
   DropFnType get dropOpaqueMutexOptionStreamSinkNativeMessage;
   ShareFnType get shareOpaqueMutexOptionStreamSinkNativeMessage;
   OpaqueTypeFinalizer get MutexOptionStreamSinkNativeMessageFinalizer;
+
+  DropFnType get dropOpaqueMutexPlayer;
+  ShareFnType get shareOpaqueMutexPlayer;
+  OpaqueTypeFinalizer get MutexPlayerFinalizer;
 
   DropFnType get dropOpaqueMutexWorld;
   ShareFnType get shareOpaqueMutexWorld;
@@ -57,6 +81,22 @@ class MutexOptionStreamSinkNativeMessage extends FrbOpaque {
 
   @override
   OpaqueTypeFinalizer get staticFinalizer => api.MutexOptionStreamSinkNativeMessageFinalizer;
+}
+
+@sealed
+class MutexPlayer extends FrbOpaque {
+  MutexPlayer.fromRaw(
+    int ptr,
+    int size,
+  ) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => api.dropOpaqueMutexPlayer;
+
+  @override
+  ShareFnType get shareFn => api.shareOpaqueMutexPlayer;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => api.MutexPlayerFinalizer;
 }
 
 @sealed
@@ -120,7 +160,7 @@ class GlobalPosition {
 }
 
 @freezed
-class NativeMessage with _$NativeMessage {
+sealed class NativeMessage with _$NativeMessage {
   const factory NativeMessage.addBlock({
     required ChunkLocation chunk,
     required BlockInformation block,
@@ -136,19 +176,34 @@ class NativeMessage with _$NativeMessage {
   const factory NativeMessage.removeChunk({
     required ChunkLocation location,
   }) = NativeMessage_RemoveChunk;
-  const factory NativeMessage.playerTeleported(
-    GlobalPosition field0,
-  ) = NativeMessage_PlayerTeleported;
+  const factory NativeMessage.playerTeleported({
+    required int x,
+    required int y,
+    required int z,
+  }) = NativeMessage_PlayerTeleported;
 }
 
 class WorldManager {
   final MutexWorld world;
   final MutexOptionStreamSinkNativeMessage sink;
+  final MutexPlayer player;
 
   const WorldManager({
     required this.world,
     required this.sink,
+    required this.player,
   });
+
+  Future<void> addBlock({required GlobalPosition position, required String block, dynamic hint}) => api.addBlockMethodWorldManager(
+        that: this,
+        position: position,
+        block: block,
+      );
+
+  Future<void> removeBlock({required GlobalPosition position, dynamic hint}) => api.removeBlockMethodWorldManager(
+        that: this,
+        position: position,
+      );
 
   Future<void> addEntity({required String entity, dynamic hint}) => api.addEntityMethodWorldManager(
         that: this,
@@ -161,5 +216,21 @@ class WorldManager {
 
   Stream<NativeMessage> createMessageStream({dynamic hint}) => api.createMessageStreamMethodWorldManager(
         that: this,
+      );
+
+  Future<GlobalPosition> playerPosition({dynamic hint}) => api.playerPositionMethodWorldManager(
+        that: this,
+      );
+
+  Future<void> sendMessage({required NativeMessage message, dynamic hint}) => api.sendMessageMethodWorldManager(
+        that: this,
+        message: message,
+      );
+
+  Future<void> movePlayer({required int x, required int y, required int z, dynamic hint}) => api.movePlayerMethodWorldManager(
+        that: this,
+        x: x,
+        y: y,
+        z: z,
       );
 }

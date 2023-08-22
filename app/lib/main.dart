@@ -127,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => Scaffold(
                       appBar: AppBar(title: const Text("Game")),
-                      body: GameWidget(game: CuboverseWorld())))),
+                      body: GameWidget(game: CuboverseWorld(worldManager!))))),
               child: const Text("Game"),
             ),
           ],

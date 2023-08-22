@@ -21,7 +21,7 @@ mixin _$NativeMessage {
     required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(GlobalPosition field0) playerTeleported,
+    required TResult Function(int x, int y, int z) playerTeleported,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -30,7 +30,7 @@ mixin _$NativeMessage {
     TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(GlobalPosition field0)? playerTeleported,
+    TResult? Function(int x, int y, int z)? playerTeleported,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -39,7 +39,7 @@ mixin _$NativeMessage {
     TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(GlobalPosition field0)? playerTeleported,
+    TResult Function(int x, int y, int z)? playerTeleported,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -153,7 +153,7 @@ class _$NativeMessage_AddBlock implements NativeMessage_AddBlock {
     required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(GlobalPosition field0) playerTeleported,
+    required TResult Function(int x, int y, int z) playerTeleported,
   }) {
     return addBlock(chunk, block);
   }
@@ -165,7 +165,7 @@ class _$NativeMessage_AddBlock implements NativeMessage_AddBlock {
     TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(GlobalPosition field0)? playerTeleported,
+    TResult? Function(int x, int y, int z)? playerTeleported,
   }) {
     return addBlock?.call(chunk, block);
   }
@@ -177,7 +177,7 @@ class _$NativeMessage_AddBlock implements NativeMessage_AddBlock {
     TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(GlobalPosition field0)? playerTeleported,
+    TResult Function(int x, int y, int z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (addBlock != null) {
@@ -301,7 +301,7 @@ class _$NativeMessage_RemoveBlock implements NativeMessage_RemoveBlock {
     required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(GlobalPosition field0) playerTeleported,
+    required TResult Function(int x, int y, int z) playerTeleported,
   }) {
     return removeBlock(position, chunk);
   }
@@ -313,7 +313,7 @@ class _$NativeMessage_RemoveBlock implements NativeMessage_RemoveBlock {
     TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(GlobalPosition field0)? playerTeleported,
+    TResult? Function(int x, int y, int z)? playerTeleported,
   }) {
     return removeBlock?.call(position, chunk);
   }
@@ -325,7 +325,7 @@ class _$NativeMessage_RemoveBlock implements NativeMessage_RemoveBlock {
     TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(GlobalPosition field0)? playerTeleported,
+    TResult Function(int x, int y, int z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (removeBlock != null) {
@@ -454,7 +454,7 @@ class _$NativeMessage_AddChunk implements NativeMessage_AddChunk {
     required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(GlobalPosition field0) playerTeleported,
+    required TResult Function(int x, int y, int z) playerTeleported,
   }) {
     return addChunk(location, blocks);
   }
@@ -466,7 +466,7 @@ class _$NativeMessage_AddChunk implements NativeMessage_AddChunk {
     TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(GlobalPosition field0)? playerTeleported,
+    TResult? Function(int x, int y, int z)? playerTeleported,
   }) {
     return addChunk?.call(location, blocks);
   }
@@ -478,7 +478,7 @@ class _$NativeMessage_AddChunk implements NativeMessage_AddChunk {
     TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(GlobalPosition field0)? playerTeleported,
+    TResult Function(int x, int y, int z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (addChunk != null) {
@@ -595,7 +595,7 @@ class _$NativeMessage_RemoveChunk implements NativeMessage_RemoveChunk {
     required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(GlobalPosition field0) playerTeleported,
+    required TResult Function(int x, int y, int z) playerTeleported,
   }) {
     return removeChunk(location);
   }
@@ -607,7 +607,7 @@ class _$NativeMessage_RemoveChunk implements NativeMessage_RemoveChunk {
     TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(GlobalPosition field0)? playerTeleported,
+    TResult? Function(int x, int y, int z)? playerTeleported,
   }) {
     return removeChunk?.call(location);
   }
@@ -619,7 +619,7 @@ class _$NativeMessage_RemoveChunk implements NativeMessage_RemoveChunk {
     TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(GlobalPosition field0)? playerTeleported,
+    TResult Function(int x, int y, int z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (removeChunk != null) {
@@ -681,7 +681,7 @@ abstract class NativeMessage_RemoveChunk implements NativeMessage {
 abstract class _$$NativeMessage_PlayerTeleportedCopyWith<$Res> {
   factory _$$NativeMessage_PlayerTeleportedCopyWith(_$NativeMessage_PlayerTeleported value, $Res Function(_$NativeMessage_PlayerTeleported) then) = __$$NativeMessage_PlayerTeleportedCopyWithImpl<$Res>;
   @useResult
-  $Res call({GlobalPosition field0});
+  $Res call({int x, int y, int z});
 }
 
 /// @nodoc
@@ -691,13 +691,23 @@ class __$$NativeMessage_PlayerTeleportedCopyWithImpl<$Res> extends _$NativeMessa
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? field0 = null,
+    Object? x = null,
+    Object? y = null,
+    Object? z = null,
   }) {
     return _then(_$NativeMessage_PlayerTeleported(
-      null == field0
-          ? _value.field0
-          : field0 // ignore: cast_nullable_to_non_nullable
-              as GlobalPosition,
+      x: null == x
+          ? _value.x
+          : x // ignore: cast_nullable_to_non_nullable
+              as int,
+      y: null == y
+          ? _value.y
+          : y // ignore: cast_nullable_to_non_nullable
+              as int,
+      z: null == z
+          ? _value.z
+          : z // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -705,23 +715,27 @@ class __$$NativeMessage_PlayerTeleportedCopyWithImpl<$Res> extends _$NativeMessa
 /// @nodoc
 
 class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported {
-  const _$NativeMessage_PlayerTeleported(this.field0);
+  const _$NativeMessage_PlayerTeleported({required this.x, required this.y, required this.z});
 
   @override
-  final GlobalPosition field0;
+  final int x;
+  @override
+  final int y;
+  @override
+  final int z;
 
   @override
   String toString() {
-    return 'NativeMessage.playerTeleported(field0: $field0)';
+    return 'NativeMessage.playerTeleported(x: $x, y: $y, z: $z)';
   }
 
   @override
   bool operator ==(dynamic other) {
-    return identical(this, other) || (other.runtimeType == runtimeType && other is _$NativeMessage_PlayerTeleported && (identical(other.field0, field0) || other.field0 == field0));
+    return identical(this, other) || (other.runtimeType == runtimeType && other is _$NativeMessage_PlayerTeleported && (identical(other.x, x) || other.x == x) && (identical(other.y, y) || other.y == y) && (identical(other.z, z) || other.z == z));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, field0);
+  int get hashCode => Object.hash(runtimeType, x, y, z);
 
   @JsonKey(ignore: true)
   @override
@@ -735,9 +749,9 @@ class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported
     required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(GlobalPosition field0) playerTeleported,
+    required TResult Function(int x, int y, int z) playerTeleported,
   }) {
-    return playerTeleported(field0);
+    return playerTeleported(x, y, z);
   }
 
   @override
@@ -747,9 +761,9 @@ class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported
     TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(GlobalPosition field0)? playerTeleported,
+    TResult? Function(int x, int y, int z)? playerTeleported,
   }) {
-    return playerTeleported?.call(field0);
+    return playerTeleported?.call(x, y, z);
   }
 
   @override
@@ -759,11 +773,11 @@ class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported
     TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(GlobalPosition field0)? playerTeleported,
+    TResult Function(int x, int y, int z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (playerTeleported != null) {
-      return playerTeleported(field0);
+      return playerTeleported(x, y, z);
     }
     return orElse();
   }
@@ -810,9 +824,11 @@ class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported
 }
 
 abstract class NativeMessage_PlayerTeleported implements NativeMessage {
-  const factory NativeMessage_PlayerTeleported(final GlobalPosition field0) = _$NativeMessage_PlayerTeleported;
+  const factory NativeMessage_PlayerTeleported({required final int x, required final int y, required final int z}) = _$NativeMessage_PlayerTeleported;
 
-  GlobalPosition get field0;
+  int get x;
+  int get y;
+  int get z;
   @JsonKey(ignore: true)
   _$$NativeMessage_PlayerTeleportedCopyWith<_$NativeMessage_PlayerTeleported> get copyWith => throw _privateConstructorUsedError;
 }

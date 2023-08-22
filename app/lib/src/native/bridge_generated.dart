@@ -48,6 +48,55 @@ class NativeImpl implements Native {
         argNames: [],
       );
 
+  Future<void> addBlockMethodWorldManager({required WorldManager that, required GlobalPosition position, required String block, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
+    var arg1 = _platform.api2wire_box_autoadd_global_position(position);
+    var arg2 = _platform.api2wire_String(block);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_add_block__method__WorldManager(port_, arg0, arg1, arg2),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kAddBlockMethodWorldManagerConstMeta,
+      argValues: [
+        that,
+        position,
+        block
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kAddBlockMethodWorldManagerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "add_block__method__WorldManager",
+        argNames: [
+          "that",
+          "position",
+          "block"
+        ],
+      );
+
+  Future<void> removeBlockMethodWorldManager({required WorldManager that, required GlobalPosition position, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
+    var arg1 = _platform.api2wire_box_autoadd_global_position(position);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_remove_block__method__WorldManager(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kRemoveBlockMethodWorldManagerConstMeta,
+      argValues: [
+        that,
+        position
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kRemoveBlockMethodWorldManagerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "remove_block__method__WorldManager",
+        argNames: [
+          "that",
+          "position"
+        ],
+      );
+
   Future<void> addEntityMethodWorldManager({required WorldManager that, required String entity, dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
     var arg1 = _platform.api2wire_String(entity);
@@ -111,9 +160,85 @@ class NativeImpl implements Native {
         ],
       );
 
+  Future<GlobalPosition> playerPositionMethodWorldManager({required WorldManager that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_player_position__method__WorldManager(port_, arg0),
+      parseSuccessData: _wire2api_global_position,
+      constMeta: kPlayerPositionMethodWorldManagerConstMeta,
+      argValues: [
+        that
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kPlayerPositionMethodWorldManagerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "player_position__method__WorldManager",
+        argNames: [
+          "that"
+        ],
+      );
+
+  Future<void> sendMessageMethodWorldManager({required WorldManager that, required NativeMessage message, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
+    var arg1 = _platform.api2wire_box_autoadd_native_message(message);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_send_message__method__WorldManager(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kSendMessageMethodWorldManagerConstMeta,
+      argValues: [
+        that,
+        message
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSendMessageMethodWorldManagerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "send_message__method__WorldManager",
+        argNames: [
+          "that",
+          "message"
+        ],
+      );
+
+  Future<void> movePlayerMethodWorldManager({required WorldManager that, required int x, required int y, required int z, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
+    var arg1 = _platform.api2wire_i64(x);
+    var arg2 = _platform.api2wire_i64(y);
+    var arg3 = _platform.api2wire_i64(z);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_move_player__method__WorldManager(port_, arg0, arg1, arg2, arg3),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kMovePlayerMethodWorldManagerConstMeta,
+      argValues: [
+        that,
+        x,
+        y,
+        z
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kMovePlayerMethodWorldManagerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "move_player__method__WorldManager",
+        argNames: [
+          "that",
+          "x",
+          "y",
+          "z"
+        ],
+      );
+
   DropFnType get dropOpaqueMutexOptionStreamSinkNativeMessage => _platform.inner.drop_opaque_MutexOptionStreamSinkNativeMessage;
   ShareFnType get shareOpaqueMutexOptionStreamSinkNativeMessage => _platform.inner.share_opaque_MutexOptionStreamSinkNativeMessage;
   OpaqueTypeFinalizer get MutexOptionStreamSinkNativeMessageFinalizer => _platform.MutexOptionStreamSinkNativeMessageFinalizer;
+
+  DropFnType get dropOpaqueMutexPlayer => _platform.inner.drop_opaque_MutexPlayer;
+  ShareFnType get shareOpaqueMutexPlayer => _platform.inner.share_opaque_MutexPlayer;
+  OpaqueTypeFinalizer get MutexPlayerFinalizer => _platform.MutexPlayerFinalizer;
 
   DropFnType get dropOpaqueMutexWorld => _platform.inner.drop_opaque_MutexWorld;
   ShareFnType get shareOpaqueMutexWorld => _platform.inner.share_opaque_MutexWorld;
@@ -126,6 +251,13 @@ class NativeImpl implements Native {
 
   MutexOptionStreamSinkNativeMessage _wire2api_MutexOptionStreamSinkNativeMessage(dynamic raw) {
     return MutexOptionStreamSinkNativeMessage.fromRaw(
+      raw[0],
+      raw[1],
+    );
+  }
+
+  MutexPlayer _wire2api_MutexPlayer(dynamic raw) {
+    return MutexPlayer.fromRaw(
       raw[0],
       raw[1],
     );
@@ -163,10 +295,6 @@ class NativeImpl implements Native {
     return _wire2api_chunk_position(raw);
   }
 
-  GlobalPosition _wire2api_box_autoadd_global_position(dynamic raw) {
-    return _wire2api_global_position(raw);
-  }
-
   ChunkLocation _wire2api_chunk_location(dynamic raw) {
     final arr = raw as List<dynamic>;
     if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
@@ -200,6 +328,10 @@ class NativeImpl implements Native {
     return raw as int;
   }
 
+  int _wire2api_i64(dynamic raw) {
+    return castInt(raw);
+  }
+
   int _wire2api_i8(dynamic raw) {
     return raw as int;
   }
@@ -231,7 +363,9 @@ class NativeImpl implements Native {
         );
       case 4:
         return NativeMessage_PlayerTeleported(
-          _wire2api_box_autoadd_global_position(raw[1]),
+          x: _wire2api_i64(raw[1]),
+          y: _wire2api_i64(raw[2]),
+          z: _wire2api_i64(raw[3]),
         );
       default:
         throw Exception("unreachable");
@@ -256,15 +390,26 @@ class NativeImpl implements Native {
 
   WorldManager _wire2api_world_manager(dynamic raw) {
     final arr = raw as List<dynamic>;
-    if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
+    if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
     return WorldManager(
       world: _wire2api_MutexWorld(arr[0]),
       sink: _wire2api_MutexOptionStreamSinkNativeMessage(arr[1]),
+      player: _wire2api_MutexPlayer(arr[2]),
     );
   }
 }
 
 // Section: api2wire
+
+@protected
+int api2wire_i32(int raw) {
+  return raw;
+}
+
+@protected
+int api2wire_i8(int raw) {
+  return raw;
+}
 
 @protected
 int api2wire_u8(int raw) {

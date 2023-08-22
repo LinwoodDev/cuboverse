@@ -26,6 +26,11 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
   }
 
   @protected
+  Object api2wire_MutexPlayer(MutexPlayer raw) {
+    return raw.shareOrMove();
+  }
+
+  @protected
   Object api2wire_MutexWorld(MutexWorld raw) {
     return raw.shareOrMove();
   }
@@ -36,8 +41,118 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
   }
 
   @protected
+  List<dynamic> api2wire_block_information(BlockInformation raw) {
+    return [
+      api2wire_String(raw.name),
+      api2wire_chunk_position(raw.position)
+    ];
+  }
+
+  @protected
+  List<dynamic> api2wire_box_autoadd_block_information(BlockInformation raw) {
+    return api2wire_block_information(raw);
+  }
+
+  @protected
+  List<dynamic> api2wire_box_autoadd_chunk_location(ChunkLocation raw) {
+    return api2wire_chunk_location(raw);
+  }
+
+  @protected
+  List<dynamic> api2wire_box_autoadd_chunk_position(ChunkPosition raw) {
+    return api2wire_chunk_position(raw);
+  }
+
+  @protected
+  List<dynamic> api2wire_box_autoadd_global_position(GlobalPosition raw) {
+    return api2wire_global_position(raw);
+  }
+
+  @protected
+  List<dynamic> api2wire_box_autoadd_native_message(NativeMessage raw) {
+    return api2wire_native_message(raw);
+  }
+
+  @protected
   List<dynamic> api2wire_box_autoadd_world_manager(WorldManager raw) {
     return api2wire_world_manager(raw);
+  }
+
+  @protected
+  List<dynamic> api2wire_chunk_location(ChunkLocation raw) {
+    return [
+      api2wire_i32(raw.field0),
+      api2wire_i32(raw.field1),
+      api2wire_i32(raw.field2)
+    ];
+  }
+
+  @protected
+  List<dynamic> api2wire_chunk_position(ChunkPosition raw) {
+    return [
+      api2wire_i8(raw.field0),
+      api2wire_i8(raw.field1),
+      api2wire_i8(raw.field2)
+    ];
+  }
+
+  @protected
+  List<dynamic> api2wire_global_position(GlobalPosition raw) {
+    return [
+      api2wire_chunk_location(raw.field0),
+      api2wire_chunk_position(raw.field1)
+    ];
+  }
+
+  @protected
+  Object api2wire_i64(int raw) {
+    return castNativeBigInt(raw);
+  }
+
+  @protected
+  List<dynamic> api2wire_list_block_information(List<BlockInformation> raw) {
+    return raw.map(api2wire_block_information).toList();
+  }
+
+  @protected
+  List<dynamic> api2wire_native_message(NativeMessage raw) {
+    if (raw is NativeMessage_AddBlock) {
+      return [
+        0,
+        api2wire_box_autoadd_chunk_location(raw.chunk),
+        api2wire_box_autoadd_block_information(raw.block)
+      ];
+    }
+    if (raw is NativeMessage_RemoveBlock) {
+      return [
+        1,
+        api2wire_box_autoadd_chunk_position(raw.position),
+        api2wire_box_autoadd_chunk_location(raw.chunk)
+      ];
+    }
+    if (raw is NativeMessage_AddChunk) {
+      return [
+        2,
+        api2wire_box_autoadd_chunk_location(raw.location),
+        api2wire_list_block_information(raw.blocks)
+      ];
+    }
+    if (raw is NativeMessage_RemoveChunk) {
+      return [
+        3,
+        api2wire_box_autoadd_chunk_location(raw.location)
+      ];
+    }
+    if (raw is NativeMessage_PlayerTeleported) {
+      return [
+        4,
+        api2wire_i64(raw.x),
+        api2wire_i64(raw.y),
+        api2wire_i64(raw.z)
+      ];
+    }
+
+    throw Exception('unreachable');
   }
 
   @protected
@@ -49,13 +164,16 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
   List<dynamic> api2wire_world_manager(WorldManager raw) {
     return [
       api2wire_MutexWorld(raw.world),
-      api2wire_MutexOptionStreamSinkNativeMessage(raw.sink)
+      api2wire_MutexOptionStreamSinkNativeMessage(raw.sink),
+      api2wire_MutexPlayer(raw.player)
     ];
   }
 // Section: finalizer
 
   late final Finalizer<PlatformPointer> _MutexOptionStreamSinkNativeMessageFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexOptionStreamSinkNativeMessage);
   Finalizer<PlatformPointer> get MutexOptionStreamSinkNativeMessageFinalizer => _MutexOptionStreamSinkNativeMessageFinalizer;
+  late final Finalizer<PlatformPointer> _MutexPlayerFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexPlayer);
+  Finalizer<PlatformPointer> get MutexPlayerFinalizer => _MutexPlayerFinalizer;
   late final Finalizer<PlatformPointer> _MutexWorldFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexWorld);
   Finalizer<PlatformPointer> get MutexWorldFinalizer => _MutexWorldFinalizer;
 }
@@ -74,15 +192,29 @@ class NativeWasmModule implements WasmModule {
 
   external dynamic /* void */ wire_what_is_the_answer(NativePortType port_);
 
+  external dynamic /* void */ wire_add_block__method__WorldManager(NativePortType port_, List<dynamic> that, List<dynamic> position, String block);
+
+  external dynamic /* void */ wire_remove_block__method__WorldManager(NativePortType port_, List<dynamic> that, List<dynamic> position);
+
   external dynamic /* void */ wire_add_entity__method__WorldManager(NativePortType port_, List<dynamic> that, String entity);
 
   external dynamic /* void */ wire_entities__method__WorldManager(NativePortType port_, List<dynamic> that);
 
   external dynamic /* void */ wire_create_message_stream__method__WorldManager(NativePortType port_, List<dynamic> that);
 
+  external dynamic /* void */ wire_player_position__method__WorldManager(NativePortType port_, List<dynamic> that);
+
+  external dynamic /* void */ wire_send_message__method__WorldManager(NativePortType port_, List<dynamic> that, List<dynamic> message);
+
+  external dynamic /* void */ wire_move_player__method__WorldManager(NativePortType port_, List<dynamic> that, Object x, Object y, Object z);
+
   external dynamic /*  */ drop_opaque_MutexOptionStreamSinkNativeMessage(ptr);
 
   external int /* *const c_void */ share_opaque_MutexOptionStreamSinkNativeMessage(ptr);
+
+  external dynamic /*  */ drop_opaque_MutexPlayer(ptr);
+
+  external int /* *const c_void */ share_opaque_MutexPlayer(ptr);
 
   external dynamic /*  */ drop_opaque_MutexWorld(ptr);
 
@@ -98,15 +230,29 @@ class NativeWire extends FlutterRustBridgeWasmWireBase<NativeWasmModule> {
 
   void wire_what_is_the_answer(NativePortType port_) => wasmModule.wire_what_is_the_answer(port_);
 
+  void wire_add_block__method__WorldManager(NativePortType port_, List<dynamic> that, List<dynamic> position, String block) => wasmModule.wire_add_block__method__WorldManager(port_, that, position, block);
+
+  void wire_remove_block__method__WorldManager(NativePortType port_, List<dynamic> that, List<dynamic> position) => wasmModule.wire_remove_block__method__WorldManager(port_, that, position);
+
   void wire_add_entity__method__WorldManager(NativePortType port_, List<dynamic> that, String entity) => wasmModule.wire_add_entity__method__WorldManager(port_, that, entity);
 
   void wire_entities__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_entities__method__WorldManager(port_, that);
 
   void wire_create_message_stream__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_create_message_stream__method__WorldManager(port_, that);
 
+  void wire_player_position__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_player_position__method__WorldManager(port_, that);
+
+  void wire_send_message__method__WorldManager(NativePortType port_, List<dynamic> that, List<dynamic> message) => wasmModule.wire_send_message__method__WorldManager(port_, that, message);
+
+  void wire_move_player__method__WorldManager(NativePortType port_, List<dynamic> that, Object x, Object y, Object z) => wasmModule.wire_move_player__method__WorldManager(port_, that, x, y, z);
+
   dynamic /*  */ drop_opaque_MutexOptionStreamSinkNativeMessage(ptr) => wasmModule.drop_opaque_MutexOptionStreamSinkNativeMessage(ptr);
 
   int /* *const c_void */ share_opaque_MutexOptionStreamSinkNativeMessage(ptr) => wasmModule.share_opaque_MutexOptionStreamSinkNativeMessage(ptr);
+
+  dynamic /*  */ drop_opaque_MutexPlayer(ptr) => wasmModule.drop_opaque_MutexPlayer(ptr);
+
+  int /* *const c_void */ share_opaque_MutexPlayer(ptr) => wasmModule.share_opaque_MutexPlayer(ptr);
 
   dynamic /*  */ drop_opaque_MutexWorld(ptr) => wasmModule.drop_opaque_MutexWorld(ptr);
 

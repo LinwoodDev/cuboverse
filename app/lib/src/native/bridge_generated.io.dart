@@ -26,6 +26,13 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
   }
 
   @protected
+  wire_MutexPlayer api2wire_MutexPlayer(MutexPlayer raw) {
+    final ptr = inner.new_MutexPlayer();
+    _api_fill_to_wire_MutexPlayer(raw, ptr);
+    return ptr;
+  }
+
+  @protected
   wire_MutexWorld api2wire_MutexWorld(MutexWorld raw) {
     final ptr = inner.new_MutexWorld();
     _api_fill_to_wire_MutexWorld(raw, ptr);
@@ -38,10 +45,59 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
   }
 
   @protected
+  ffi.Pointer<wire_BlockInformation> api2wire_box_autoadd_block_information(BlockInformation raw) {
+    final ptr = inner.new_box_autoadd_block_information_0();
+    _api_fill_to_wire_block_information(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
+  ffi.Pointer<wire_ChunkLocation> api2wire_box_autoadd_chunk_location(ChunkLocation raw) {
+    final ptr = inner.new_box_autoadd_chunk_location_0();
+    _api_fill_to_wire_chunk_location(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
+  ffi.Pointer<wire_ChunkPosition> api2wire_box_autoadd_chunk_position(ChunkPosition raw) {
+    final ptr = inner.new_box_autoadd_chunk_position_0();
+    _api_fill_to_wire_chunk_position(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
+  ffi.Pointer<wire_GlobalPosition> api2wire_box_autoadd_global_position(GlobalPosition raw) {
+    final ptr = inner.new_box_autoadd_global_position_0();
+    _api_fill_to_wire_global_position(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
+  ffi.Pointer<wire_NativeMessage> api2wire_box_autoadd_native_message(NativeMessage raw) {
+    final ptr = inner.new_box_autoadd_native_message_0();
+    _api_fill_to_wire_native_message(raw, ptr.ref);
+    return ptr;
+  }
+
+  @protected
   ffi.Pointer<wire_WorldManager> api2wire_box_autoadd_world_manager(WorldManager raw) {
     final ptr = inner.new_box_autoadd_world_manager_0();
     _api_fill_to_wire_world_manager(raw, ptr.ref);
     return ptr;
+  }
+
+  @protected
+  int api2wire_i64(int raw) {
+    return raw;
+  }
+
+  @protected
+  ffi.Pointer<wire_list_block_information> api2wire_list_block_information(List<BlockInformation> raw) {
+    final ans = inner.new_list_block_information_0(raw.length);
+    for (var i = 0; i < raw.length; ++i) {
+      _api_fill_to_wire_block_information(raw[i], ans.ref.ptr[i]);
+    }
+    return ans;
   }
 
   @protected
@@ -55,6 +111,8 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 
   late final OpaqueTypeFinalizer _MutexOptionStreamSinkNativeMessageFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexOptionStreamSinkNativeMessagePtr);
   OpaqueTypeFinalizer get MutexOptionStreamSinkNativeMessageFinalizer => _MutexOptionStreamSinkNativeMessageFinalizer;
+  late final OpaqueTypeFinalizer _MutexPlayerFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexPlayerPtr);
+  OpaqueTypeFinalizer get MutexPlayerFinalizer => _MutexPlayerFinalizer;
   late final OpaqueTypeFinalizer _MutexWorldFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexWorldPtr);
   OpaqueTypeFinalizer get MutexWorldFinalizer => _MutexWorldFinalizer;
 // Section: api_fill_to_wire
@@ -63,17 +121,112 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
     wireObj.ptr = apiObj.shareOrMove();
   }
 
+  void _api_fill_to_wire_MutexPlayer(MutexPlayer apiObj, wire_MutexPlayer wireObj) {
+    wireObj.ptr = apiObj.shareOrMove();
+  }
+
   void _api_fill_to_wire_MutexWorld(MutexWorld apiObj, wire_MutexWorld wireObj) {
     wireObj.ptr = apiObj.shareOrMove();
+  }
+
+  void _api_fill_to_wire_block_information(BlockInformation apiObj, wire_BlockInformation wireObj) {
+    wireObj.name = api2wire_String(apiObj.name);
+    _api_fill_to_wire_chunk_position(apiObj.position, wireObj.position);
+  }
+
+  void _api_fill_to_wire_box_autoadd_block_information(BlockInformation apiObj, ffi.Pointer<wire_BlockInformation> wireObj) {
+    _api_fill_to_wire_block_information(apiObj, wireObj.ref);
+  }
+
+  void _api_fill_to_wire_box_autoadd_chunk_location(ChunkLocation apiObj, ffi.Pointer<wire_ChunkLocation> wireObj) {
+    _api_fill_to_wire_chunk_location(apiObj, wireObj.ref);
+  }
+
+  void _api_fill_to_wire_box_autoadd_chunk_position(ChunkPosition apiObj, ffi.Pointer<wire_ChunkPosition> wireObj) {
+    _api_fill_to_wire_chunk_position(apiObj, wireObj.ref);
+  }
+
+  void _api_fill_to_wire_box_autoadd_global_position(GlobalPosition apiObj, ffi.Pointer<wire_GlobalPosition> wireObj) {
+    _api_fill_to_wire_global_position(apiObj, wireObj.ref);
+  }
+
+  void _api_fill_to_wire_box_autoadd_native_message(NativeMessage apiObj, ffi.Pointer<wire_NativeMessage> wireObj) {
+    _api_fill_to_wire_native_message(apiObj, wireObj.ref);
   }
 
   void _api_fill_to_wire_box_autoadd_world_manager(WorldManager apiObj, ffi.Pointer<wire_WorldManager> wireObj) {
     _api_fill_to_wire_world_manager(apiObj, wireObj.ref);
   }
 
+  void _api_fill_to_wire_chunk_location(ChunkLocation apiObj, wire_ChunkLocation wireObj) {
+    wireObj.field0 = api2wire_i32(apiObj.field0);
+    wireObj.field1 = api2wire_i32(apiObj.field1);
+    wireObj.field2 = api2wire_i32(apiObj.field2);
+  }
+
+  void _api_fill_to_wire_chunk_position(ChunkPosition apiObj, wire_ChunkPosition wireObj) {
+    wireObj.field0 = api2wire_i8(apiObj.field0);
+    wireObj.field1 = api2wire_i8(apiObj.field1);
+    wireObj.field2 = api2wire_i8(apiObj.field2);
+  }
+
+  void _api_fill_to_wire_global_position(GlobalPosition apiObj, wire_GlobalPosition wireObj) {
+    _api_fill_to_wire_chunk_location(apiObj.field0, wireObj.field0);
+    _api_fill_to_wire_chunk_position(apiObj.field1, wireObj.field1);
+  }
+
+  void _api_fill_to_wire_native_message(NativeMessage apiObj, wire_NativeMessage wireObj) {
+    if (apiObj is NativeMessage_AddBlock) {
+      var pre_chunk = api2wire_box_autoadd_chunk_location(apiObj.chunk);
+      var pre_block = api2wire_box_autoadd_block_information(apiObj.block);
+      wireObj.tag = 0;
+      wireObj.kind = inner.inflate_NativeMessage_AddBlock();
+      wireObj.kind.ref.AddBlock.ref.chunk = pre_chunk;
+      wireObj.kind.ref.AddBlock.ref.block = pre_block;
+      return;
+    }
+    if (apiObj is NativeMessage_RemoveBlock) {
+      var pre_position = api2wire_box_autoadd_chunk_position(apiObj.position);
+      var pre_chunk = api2wire_box_autoadd_chunk_location(apiObj.chunk);
+      wireObj.tag = 1;
+      wireObj.kind = inner.inflate_NativeMessage_RemoveBlock();
+      wireObj.kind.ref.RemoveBlock.ref.position = pre_position;
+      wireObj.kind.ref.RemoveBlock.ref.chunk = pre_chunk;
+      return;
+    }
+    if (apiObj is NativeMessage_AddChunk) {
+      var pre_location = api2wire_box_autoadd_chunk_location(apiObj.location);
+      var pre_blocks = api2wire_list_block_information(apiObj.blocks);
+      wireObj.tag = 2;
+      wireObj.kind = inner.inflate_NativeMessage_AddChunk();
+      wireObj.kind.ref.AddChunk.ref.location = pre_location;
+      wireObj.kind.ref.AddChunk.ref.blocks = pre_blocks;
+      return;
+    }
+    if (apiObj is NativeMessage_RemoveChunk) {
+      var pre_location = api2wire_box_autoadd_chunk_location(apiObj.location);
+      wireObj.tag = 3;
+      wireObj.kind = inner.inflate_NativeMessage_RemoveChunk();
+      wireObj.kind.ref.RemoveChunk.ref.location = pre_location;
+      return;
+    }
+    if (apiObj is NativeMessage_PlayerTeleported) {
+      var pre_x = api2wire_i64(apiObj.x);
+      var pre_y = api2wire_i64(apiObj.y);
+      var pre_z = api2wire_i64(apiObj.z);
+      wireObj.tag = 4;
+      wireObj.kind = inner.inflate_NativeMessage_PlayerTeleported();
+      wireObj.kind.ref.PlayerTeleported.ref.x = pre_x;
+      wireObj.kind.ref.PlayerTeleported.ref.y = pre_y;
+      wireObj.kind.ref.PlayerTeleported.ref.z = pre_z;
+      return;
+    }
+  }
+
   void _api_fill_to_wire_world_manager(WorldManager apiObj, wire_WorldManager wireObj) {
     wireObj.world = api2wire_MutexWorld(apiObj.world);
     wireObj.sink = api2wire_MutexOptionStreamSinkNativeMessage(apiObj.sink);
+    wireObj.player = api2wire_MutexPlayer(apiObj.player);
   }
 }
 
@@ -175,6 +328,38 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_what_is_the_answerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>('wire_what_is_the_answer');
   late final _wire_what_is_the_answer = _wire_what_is_the_answerPtr.asFunction<void Function(int)>();
 
+  void wire_add_block__method__WorldManager(
+    int port_,
+    ffi.Pointer<wire_WorldManager> that,
+    ffi.Pointer<wire_GlobalPosition> position,
+    ffi.Pointer<wire_uint_8_list> block,
+  ) {
+    return _wire_add_block__method__WorldManager(
+      port_,
+      that,
+      position,
+      block,
+    );
+  }
+
+  late final _wire_add_block__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>, ffi.Pointer<wire_GlobalPosition>, ffi.Pointer<wire_uint_8_list>)>>('wire_add_block__method__WorldManager');
+  late final _wire_add_block__method__WorldManager = _wire_add_block__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>, ffi.Pointer<wire_GlobalPosition>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_remove_block__method__WorldManager(
+    int port_,
+    ffi.Pointer<wire_WorldManager> that,
+    ffi.Pointer<wire_GlobalPosition> position,
+  ) {
+    return _wire_remove_block__method__WorldManager(
+      port_,
+      that,
+      position,
+    );
+  }
+
+  late final _wire_remove_block__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>, ffi.Pointer<wire_GlobalPosition>)>>('wire_remove_block__method__WorldManager');
+  late final _wire_remove_block__method__WorldManager = _wire_remove_block__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>, ffi.Pointer<wire_GlobalPosition>)>();
+
   void wire_add_entity__method__WorldManager(
     int port_,
     ffi.Pointer<wire_WorldManager> that,
@@ -216,12 +401,66 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_create_message_stream__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>)>>('wire_create_message_stream__method__WorldManager');
   late final _wire_create_message_stream__method__WorldManager = _wire_create_message_stream__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>)>();
 
+  void wire_player_position__method__WorldManager(
+    int port_,
+    ffi.Pointer<wire_WorldManager> that,
+  ) {
+    return _wire_player_position__method__WorldManager(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_player_position__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>)>>('wire_player_position__method__WorldManager');
+  late final _wire_player_position__method__WorldManager = _wire_player_position__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>)>();
+
+  void wire_send_message__method__WorldManager(
+    int port_,
+    ffi.Pointer<wire_WorldManager> that,
+    ffi.Pointer<wire_NativeMessage> message,
+  ) {
+    return _wire_send_message__method__WorldManager(
+      port_,
+      that,
+      message,
+    );
+  }
+
+  late final _wire_send_message__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>, ffi.Pointer<wire_NativeMessage>)>>('wire_send_message__method__WorldManager');
+  late final _wire_send_message__method__WorldManager = _wire_send_message__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>, ffi.Pointer<wire_NativeMessage>)>();
+
+  void wire_move_player__method__WorldManager(
+    int port_,
+    ffi.Pointer<wire_WorldManager> that,
+    int x,
+    int y,
+    int z,
+  ) {
+    return _wire_move_player__method__WorldManager(
+      port_,
+      that,
+      x,
+      y,
+      z,
+    );
+  }
+
+  late final _wire_move_player__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>, ffi.Int64, ffi.Int64, ffi.Int64)>>('wire_move_player__method__WorldManager');
+  late final _wire_move_player__method__WorldManager = _wire_move_player__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>, int, int, int)>();
+
   wire_MutexOptionStreamSinkNativeMessage new_MutexOptionStreamSinkNativeMessage() {
     return _new_MutexOptionStreamSinkNativeMessage();
   }
 
   late final _new_MutexOptionStreamSinkNativeMessagePtr = _lookup<ffi.NativeFunction<wire_MutexOptionStreamSinkNativeMessage Function()>>('new_MutexOptionStreamSinkNativeMessage');
   late final _new_MutexOptionStreamSinkNativeMessage = _new_MutexOptionStreamSinkNativeMessagePtr.asFunction<wire_MutexOptionStreamSinkNativeMessage Function()>();
+
+  wire_MutexPlayer new_MutexPlayer() {
+    return _new_MutexPlayer();
+  }
+
+  late final _new_MutexPlayerPtr = _lookup<ffi.NativeFunction<wire_MutexPlayer Function()>>('new_MutexPlayer');
+  late final _new_MutexPlayer = _new_MutexPlayerPtr.asFunction<wire_MutexPlayer Function()>();
 
   wire_MutexWorld new_MutexWorld() {
     return _new_MutexWorld();
@@ -230,12 +469,58 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _new_MutexWorldPtr = _lookup<ffi.NativeFunction<wire_MutexWorld Function()>>('new_MutexWorld');
   late final _new_MutexWorld = _new_MutexWorldPtr.asFunction<wire_MutexWorld Function()>();
 
+  ffi.Pointer<wire_BlockInformation> new_box_autoadd_block_information_0() {
+    return _new_box_autoadd_block_information_0();
+  }
+
+  late final _new_box_autoadd_block_information_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<wire_BlockInformation> Function()>>('new_box_autoadd_block_information_0');
+  late final _new_box_autoadd_block_information_0 = _new_box_autoadd_block_information_0Ptr.asFunction<ffi.Pointer<wire_BlockInformation> Function()>();
+
+  ffi.Pointer<wire_ChunkLocation> new_box_autoadd_chunk_location_0() {
+    return _new_box_autoadd_chunk_location_0();
+  }
+
+  late final _new_box_autoadd_chunk_location_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<wire_ChunkLocation> Function()>>('new_box_autoadd_chunk_location_0');
+  late final _new_box_autoadd_chunk_location_0 = _new_box_autoadd_chunk_location_0Ptr.asFunction<ffi.Pointer<wire_ChunkLocation> Function()>();
+
+  ffi.Pointer<wire_ChunkPosition> new_box_autoadd_chunk_position_0() {
+    return _new_box_autoadd_chunk_position_0();
+  }
+
+  late final _new_box_autoadd_chunk_position_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<wire_ChunkPosition> Function()>>('new_box_autoadd_chunk_position_0');
+  late final _new_box_autoadd_chunk_position_0 = _new_box_autoadd_chunk_position_0Ptr.asFunction<ffi.Pointer<wire_ChunkPosition> Function()>();
+
+  ffi.Pointer<wire_GlobalPosition> new_box_autoadd_global_position_0() {
+    return _new_box_autoadd_global_position_0();
+  }
+
+  late final _new_box_autoadd_global_position_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<wire_GlobalPosition> Function()>>('new_box_autoadd_global_position_0');
+  late final _new_box_autoadd_global_position_0 = _new_box_autoadd_global_position_0Ptr.asFunction<ffi.Pointer<wire_GlobalPosition> Function()>();
+
+  ffi.Pointer<wire_NativeMessage> new_box_autoadd_native_message_0() {
+    return _new_box_autoadd_native_message_0();
+  }
+
+  late final _new_box_autoadd_native_message_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<wire_NativeMessage> Function()>>('new_box_autoadd_native_message_0');
+  late final _new_box_autoadd_native_message_0 = _new_box_autoadd_native_message_0Ptr.asFunction<ffi.Pointer<wire_NativeMessage> Function()>();
+
   ffi.Pointer<wire_WorldManager> new_box_autoadd_world_manager_0() {
     return _new_box_autoadd_world_manager_0();
   }
 
   late final _new_box_autoadd_world_manager_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<wire_WorldManager> Function()>>('new_box_autoadd_world_manager_0');
   late final _new_box_autoadd_world_manager_0 = _new_box_autoadd_world_manager_0Ptr.asFunction<ffi.Pointer<wire_WorldManager> Function()>();
+
+  ffi.Pointer<wire_list_block_information> new_list_block_information_0(
+    int len,
+  ) {
+    return _new_list_block_information_0(
+      len,
+    );
+  }
+
+  late final _new_list_block_information_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<wire_list_block_information> Function(ffi.Int32)>>('new_list_block_information_0');
+  late final _new_list_block_information_0 = _new_list_block_information_0Ptr.asFunction<ffi.Pointer<wire_list_block_information> Function(int)>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,
@@ -270,6 +555,28 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _share_opaque_MutexOptionStreamSinkNativeMessagePtr = _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>('share_opaque_MutexOptionStreamSinkNativeMessage');
   late final _share_opaque_MutexOptionStreamSinkNativeMessage = _share_opaque_MutexOptionStreamSinkNativeMessagePtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
 
+  void drop_opaque_MutexPlayer(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _drop_opaque_MutexPlayer(
+      ptr,
+    );
+  }
+
+  late final _drop_opaque_MutexPlayerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>('drop_opaque_MutexPlayer');
+  late final _drop_opaque_MutexPlayer = _drop_opaque_MutexPlayerPtr.asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<ffi.Void> share_opaque_MutexPlayer(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _share_opaque_MutexPlayer(
+      ptr,
+    );
+  }
+
+  late final _share_opaque_MutexPlayerPtr = _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>('share_opaque_MutexPlayer');
+  late final _share_opaque_MutexPlayer = _share_opaque_MutexPlayerPtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
+
   void drop_opaque_MutexWorld(
     ffi.Pointer<ffi.Void> ptr,
   ) {
@@ -291,6 +598,41 @@ class NativeWire implements FlutterRustBridgeWireBase {
 
   late final _share_opaque_MutexWorldPtr = _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>('share_opaque_MutexWorld');
   late final _share_opaque_MutexWorld = _share_opaque_MutexWorldPtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<NativeMessageKind> inflate_NativeMessage_AddBlock() {
+    return _inflate_NativeMessage_AddBlock();
+  }
+
+  late final _inflate_NativeMessage_AddBlockPtr = _lookup<ffi.NativeFunction<ffi.Pointer<NativeMessageKind> Function()>>('inflate_NativeMessage_AddBlock');
+  late final _inflate_NativeMessage_AddBlock = _inflate_NativeMessage_AddBlockPtr.asFunction<ffi.Pointer<NativeMessageKind> Function()>();
+
+  ffi.Pointer<NativeMessageKind> inflate_NativeMessage_RemoveBlock() {
+    return _inflate_NativeMessage_RemoveBlock();
+  }
+
+  late final _inflate_NativeMessage_RemoveBlockPtr = _lookup<ffi.NativeFunction<ffi.Pointer<NativeMessageKind> Function()>>('inflate_NativeMessage_RemoveBlock');
+  late final _inflate_NativeMessage_RemoveBlock = _inflate_NativeMessage_RemoveBlockPtr.asFunction<ffi.Pointer<NativeMessageKind> Function()>();
+
+  ffi.Pointer<NativeMessageKind> inflate_NativeMessage_AddChunk() {
+    return _inflate_NativeMessage_AddChunk();
+  }
+
+  late final _inflate_NativeMessage_AddChunkPtr = _lookup<ffi.NativeFunction<ffi.Pointer<NativeMessageKind> Function()>>('inflate_NativeMessage_AddChunk');
+  late final _inflate_NativeMessage_AddChunk = _inflate_NativeMessage_AddChunkPtr.asFunction<ffi.Pointer<NativeMessageKind> Function()>();
+
+  ffi.Pointer<NativeMessageKind> inflate_NativeMessage_RemoveChunk() {
+    return _inflate_NativeMessage_RemoveChunk();
+  }
+
+  late final _inflate_NativeMessage_RemoveChunkPtr = _lookup<ffi.NativeFunction<ffi.Pointer<NativeMessageKind> Function()>>('inflate_NativeMessage_RemoveChunk');
+  late final _inflate_NativeMessage_RemoveChunk = _inflate_NativeMessage_RemoveChunkPtr.asFunction<ffi.Pointer<NativeMessageKind> Function()>();
+
+  ffi.Pointer<NativeMessageKind> inflate_NativeMessage_PlayerTeleported() {
+    return _inflate_NativeMessage_PlayerTeleported();
+  }
+
+  late final _inflate_NativeMessage_PlayerTeleportedPtr = _lookup<ffi.NativeFunction<ffi.Pointer<NativeMessageKind> Function()>>('inflate_NativeMessage_PlayerTeleported');
+  late final _inflate_NativeMessage_PlayerTeleported = _inflate_NativeMessage_PlayerTeleportedPtr.asFunction<ffi.Pointer<NativeMessageKind> Function()>();
 
   void free_WireSyncReturn(
     WireSyncReturn ptr,
@@ -314,10 +656,44 @@ final class wire_MutexOptionStreamSinkNativeMessage extends ffi.Struct {
   external ffi.Pointer<ffi.Void> ptr;
 }
 
+final class wire_MutexPlayer extends ffi.Struct {
+  external ffi.Pointer<ffi.Void> ptr;
+}
+
 final class wire_WorldManager extends ffi.Struct {
   external wire_MutexWorld world;
 
   external wire_MutexOptionStreamSinkNativeMessage sink;
+
+  external wire_MutexPlayer player;
+}
+
+final class wire_ChunkLocation extends ffi.Struct {
+  @ffi.Int32()
+  external int field0;
+
+  @ffi.Int32()
+  external int field1;
+
+  @ffi.Int32()
+  external int field2;
+}
+
+final class wire_ChunkPosition extends ffi.Struct {
+  @ffi.Int8()
+  external int field0;
+
+  @ffi.Int8()
+  external int field1;
+
+  @ffi.Int8()
+  external int field2;
+}
+
+final class wire_GlobalPosition extends ffi.Struct {
+  external wire_ChunkLocation field0;
+
+  external wire_ChunkPosition field1;
 }
 
 final class wire_uint_8_list extends ffi.Struct {
@@ -325,6 +701,71 @@ final class wire_uint_8_list extends ffi.Struct {
 
   @ffi.Int32()
   external int len;
+}
+
+final class wire_BlockInformation extends ffi.Struct {
+  external ffi.Pointer<wire_uint_8_list> name;
+
+  external wire_ChunkPosition position;
+}
+
+final class wire_NativeMessage_AddBlock extends ffi.Struct {
+  external ffi.Pointer<wire_ChunkLocation> chunk;
+
+  external ffi.Pointer<wire_BlockInformation> block;
+}
+
+final class wire_NativeMessage_RemoveBlock extends ffi.Struct {
+  external ffi.Pointer<wire_ChunkPosition> position;
+
+  external ffi.Pointer<wire_ChunkLocation> chunk;
+}
+
+final class wire_list_block_information extends ffi.Struct {
+  external ffi.Pointer<wire_BlockInformation> ptr;
+
+  @ffi.Int32()
+  external int len;
+}
+
+final class wire_NativeMessage_AddChunk extends ffi.Struct {
+  external ffi.Pointer<wire_ChunkLocation> location;
+
+  external ffi.Pointer<wire_list_block_information> blocks;
+}
+
+final class wire_NativeMessage_RemoveChunk extends ffi.Struct {
+  external ffi.Pointer<wire_ChunkLocation> location;
+}
+
+final class wire_NativeMessage_PlayerTeleported extends ffi.Struct {
+  @ffi.Int64()
+  external int x;
+
+  @ffi.Int64()
+  external int y;
+
+  @ffi.Int64()
+  external int z;
+}
+
+final class NativeMessageKind extends ffi.Union {
+  external ffi.Pointer<wire_NativeMessage_AddBlock> AddBlock;
+
+  external ffi.Pointer<wire_NativeMessage_RemoveBlock> RemoveBlock;
+
+  external ffi.Pointer<wire_NativeMessage_AddChunk> AddChunk;
+
+  external ffi.Pointer<wire_NativeMessage_RemoveChunk> RemoveChunk;
+
+  external ffi.Pointer<wire_NativeMessage_PlayerTeleported> PlayerTeleported;
+}
+
+final class wire_NativeMessage extends ffi.Struct {
+  @ffi.Int32()
+  external int tag;
+
+  external ffi.Pointer<NativeMessageKind> kind;
 }
 
 typedef DartPostCObjectFnType = ffi.Pointer<ffi.NativeFunction<ffi.Bool Function(DartPort port_id, ffi.Pointer<ffi.Void> message)>>;
