@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{time::Duration, sync::MutexGuard};
 
 use super::*;
 
@@ -22,6 +22,9 @@ impl Drop for WorldTicker {
 }
 
 impl WorldManager {
+    pub fn get_messenger(&self) -> MutexGuard<'_, WorldMessenger> {
+        self.messenger.lock().unwrap()
+    }
     pub(crate) fn start_update_loop(&self) {
         let world = self.world.clone();
         let player = self.player.clone();
@@ -31,8 +34,9 @@ impl WorldManager {
                 world.lock().unwrap().tick();
                 let mut player = player.lock().unwrap();
                 let result = player.tick_player(&mut *world.lock().unwrap());
+                let messenger = messenger.lock().unwrap();
                 if result.teleported {
-                    messenger.lock().unwrap().send_player_teleported(&player);
+                    messenger.send_player_teleported(&player);
                 }
                 thread::sleep(UPDATE_INTERVAL);
             }

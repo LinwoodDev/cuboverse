@@ -6,6 +6,7 @@ import 'package:cuboverse/src/native.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -18,6 +19,7 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
   late final CameraComponent cameraComponent;
   late final CuboversePlayer player;
   final WorldManager worldManager;
+  final Map<ChunkLocation, CuboverseChunk> chunks = {};
 
   CuboverseWorld(this.worldManager);
 
@@ -27,7 +29,6 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
     cameraComponent = CameraComponent(world: world);
     cameraComponent.viewfinder.zoom = 10;
     addAll([cameraComponent, world]);
-    world.addAll([CuboverseChunk(), player]);
     cameraComponent.follow(player);
     worldManager.createMessageStream().listen(_onMessage);
     worldManager.addBlock(
@@ -48,7 +49,26 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
         player.globalPosition =
             Vector3(value.x.toDouble(), value.y.toDouble(), value.z.toDouble());
       },
-      orElse: () {},
+      addBlock: (value) => chunks[value.chunk]?.addBlock(value.block),
+      removeBlock: (value) => chunks[value.chunk]?.removeBlock(value.position),
+      addChunk: (value) {
+        final chunk = CuboverseChunk(value.location);
+        chunks[value.location] = chunk;
+        world.add(chunk);
+        chunk.addBlocks(value.blocks);
+      },
+      removeChunk: (value) {
+        final chunk = chunks[value.location];
+        if (chunk != null) {
+          world.remove(chunk);
+          chunks.remove(value.location);
+        }
+      },
+      orElse: () {
+        if (kDebugMode) {
+          print("Unknown message: $event");
+        }
+      },
     );
   }
 

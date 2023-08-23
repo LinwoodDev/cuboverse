@@ -33,7 +33,10 @@ pub fn what_is_the_answer() -> i32 {
 impl WorldManager {
     pub fn add_block(&self, position: GlobalBlockPosition, block: String) {
         let mut world = self.world.lock().unwrap();
-        world.get_chunk(position.0).add_block(position.1, block);
+        let block = world.get_chunk(position.0).add_block(position.1, block);
+        if let Some(block) = block {
+            self.get_messenger().send_add_block(position, &block);
+        }
     }
     pub fn remove_block(&self, position: GlobalBlockPosition) {
         let mut world = self.world.lock().unwrap();
@@ -64,11 +67,11 @@ impl WorldManager {
         world.entities.values().flatten().count()
     }
     pub fn create_message_stream(&self, s: StreamSink<NativeMessage>) {
-        self.messenger.lock().unwrap().0 = Some(s);
+        self.get_messenger().0 = Some(s);
         self.start_update_loop();
     }
     pub fn close(&self) {
-        self.messenger.lock().unwrap().0 = None;
+        self.get_messenger().0 = None;
     }
     pub fn player_position(&self) -> GlobalEntityPosition {
         let player = self.player.lock().unwrap();
@@ -78,6 +81,6 @@ impl WorldManager {
         let mut player = self.player.lock().unwrap();
         player.position = player.position.move_position(x, y, z);
         let (x, y, z) = player.position.global_position();
-        self.messenger.lock().unwrap().send_message(NativeMessage::PlayerTeleported { x, y, z });
+        self.get_messenger().send_message(NativeMessage::PlayerTeleported { x, y, z });
     }
 }

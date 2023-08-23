@@ -49,6 +49,13 @@ pub enum NativeMessage {
 
 pub struct WorldMessenger(pub Option<StreamSink<NativeMessage>>);
 
+pub(crate) fn to_block_information(position : BlockPosition, block : &Block) -> BlockInformation {
+    BlockInformation {
+        name: block.name.clone(),
+        position,
+    }
+}
+
 impl WorldMessenger {
     pub fn send_message(&self, message: NativeMessage) {
         if let Some(s) = &self.0 {
@@ -62,5 +69,28 @@ impl WorldMessenger {
             y: pos.1,
             z: pos.2,
         });
+    }
+
+    pub(crate) fn send_add_block(&self, position : GlobalBlockPosition, block: &Block) {
+        self.send_message(NativeMessage::AddBlock { chunk: position.0, block: to_block_information(position.1, block) });
+    }
+
+    pub(crate) fn send_remove_block(&self, chunk: ChunkLocation, position: BlockPosition) {
+        self.send_message(NativeMessage::RemoveBlock { chunk, position });
+    }
+
+    pub(crate) fn send_add_chunk(&self, location: ChunkLocation, chunk: &Chunk) {
+        self.send_message(NativeMessage::AddChunk {
+            location,
+            blocks: chunk
+                .get_blocks()
+                .iter()
+                .map(|(k, v)| to_block_information(*k, v))
+                .collect(),
+        });
+    }
+
+    pub(crate) fn send_remove_chunk(&self, location: ChunkLocation) {
+        self.send_message(NativeMessage::RemoveChunk { location });
     }
 }

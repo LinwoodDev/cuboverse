@@ -15,11 +15,15 @@ impl Chunk {
         }
     }
 
-    pub fn add_block(&mut self, position : BlockPosition, block : String) {
+    pub fn get_blocks(&self) -> &HashMap<BlockPosition, Block> {
+        &self.blocks
+    }
+
+    pub fn add_block(&mut self, position : BlockPosition, block : String) -> Option<Block> {
         if !position.is_valid() {
-            return;
+            return None;
         }
-        self.blocks.insert(position, Block {
+        return self.blocks.insert(position, Block {
             name: block,
         });
     }
