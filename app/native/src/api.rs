@@ -7,15 +7,14 @@ pub use std::thread;
 pub use std::thread::JoinHandle;
 
 use flutter_rust_bridge::{RustOpaque, StreamSink};
+use standard::world::create_standard_world;
 
 pub use self::manager::*;
 pub use self::message::*;
 
 pub fn create_world_manager() -> WorldManager {
     WorldManager {
-        world: RustOpaque::new(Mutex::new(World {
-            ..Default::default()
-        })),
+        world: RustOpaque::new(Mutex::new(create_standard_world())),
         messenger: RustOpaque::new(Mutex::new(WorldMessenger(None))),
         player: RustOpaque::new(Mutex::new(Player {
             position: GlobalEntityPosition(ChunkLocation(0, 0, 0), EntityPosition(0.0, 0.0, 0.0)),
@@ -78,9 +77,12 @@ impl WorldManager {
         player.position.clone()
     }
     pub fn move_player(&self, x: f64, y: f64, z: f64) {
+        println!("Moving player by {}, {}, {}", x, y, z);
         let mut player = self.player.lock().unwrap();
+        println!("Got player");
         player.position = player.position.move_position(x, y, z);
-        let (x, y, z) = player.position.global_position();
-        self.get_messenger().send_message(NativeMessage::PlayerTeleported { x, y, z });
+        println!("Moved player");
+        self.get_messenger().send_player_teleported(&player);
+        println!("Sent player");
     }
 }

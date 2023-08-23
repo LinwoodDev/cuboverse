@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:cuboverse/game/chunk.dart';
 import 'package:cuboverse/game/player.dart';
+import 'package:cuboverse/game/renderer.dart';
+import 'package:cuboverse/helpers/position.dart';
 import 'package:cuboverse/src/native.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
@@ -27,20 +30,39 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
   FutureOr<void> onLoad() {
     player = CuboversePlayer();
     cameraComponent = CameraComponent(world: world);
-    cameraComponent.viewfinder.zoom = 10;
-    addAll([cameraComponent, world]);
+    addAll([world, cameraComponent]);
+    world.add(player);
     cameraComponent.follow(player);
+    cameraComponent.viewfinder
+      ..zoom = 5
+      ..anchor = Anchor.center;
     worldManager.createMessageStream().listen(_onMessage);
-    worldManager.addBlock(
-        position: const GlobalBlockPosition(
-            field0: ChunkLocation(field0: 0, field1: 0, field2: 0),
-            field1: BlockPosition(field0: 0, field1: 0, field2: -1)),
-        block: "test");
   }
 
   @override
   void onDetach() {
     worldManager.close();
+  }
+
+  void addChunk(ChunkLocation location, List<BlockInformation> blocks) {
+    world.removeAll(chunks.values);
+    rebuild(location, blocks);
+  }
+
+  void removeChunk(ChunkLocation location) {
+    final chunk = chunks.remove(location);
+    if (chunk == null) return;
+    world.remove(chunk);
+  }
+
+  void rebuild(ChunkLocation location, List<BlockInformation> blocks) {
+    chunks[location] = CuboverseChunk(location)..addBlocks(blocks);
+    world.addAll(chunks.values.sorted(
+      (a, b) => compareChunkPriorities(
+        a.location.toVector3(),
+        b.location.toVector3(),
+      ),
+    ));
   }
 
   void _onMessage(NativeMessage event) {
@@ -51,19 +73,8 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
       },
       addBlock: (value) => chunks[value.chunk]?.addBlock(value.block),
       removeBlock: (value) => chunks[value.chunk]?.removeBlock(value.position),
-      addChunk: (value) {
-        final chunk = CuboverseChunk(value.location);
-        chunks[value.location] = chunk;
-        world.add(chunk);
-        chunk.addBlocks(value.blocks);
-      },
-      removeChunk: (value) {
-        final chunk = chunks[value.location];
-        if (chunk != null) {
-          world.remove(chunk);
-          chunks.remove(value.location);
-        }
-      },
+      addChunk: (value) => addChunk(value.location, value.blocks),
+      removeChunk: (value) => removeChunk(value.location),
       orElse: () {
         if (kDebugMode) {
           print("Unknown message: $event");

@@ -1,5 +1,3 @@
-use std::ops::Div;
-
 use crate::{world::{World, ChunkLocation, CHUNK_SIZE}, block::{BlockPosition, GlobalBlockPosition}, physics::{Veloctiy, RigidBody}};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -18,14 +16,6 @@ impl EntityPosition {
     pub fn get_block_position(&self) -> BlockPosition {
         BlockPosition(self.0 as i8, self.1 as i8, self.2 as i8)
     }
-
-    pub fn get_bottom_block_position(&self) -> BlockPosition {
-        BlockPosition(
-            self.0.ceil() as i8 - 1,
-            self.1.ceil() as i8 - 1,
-            self.2.ceil() as i8 - 1,
-        )
-    }
 }
 
 
@@ -36,14 +26,14 @@ impl GlobalEntityPosition {
     pub fn new(x : f64, y : f64, z: f64) -> Self {
         let chunk_size = CHUNK_SIZE as f64;
         let location = ChunkLocation(
-            x.div(chunk_size) as i32,
-            y.div(chunk_size) as i32,
-            z.div(chunk_size) as i32,
+            (x / chunk_size) as i32 + if x < 0.0 { -1 } else { 0 },
+            (y / chunk_size) as i32 + if y < 0.0 { -1 } else { 0 },
+            (z / chunk_size) as i32 + if z < 0.0 { -1 } else { 0 },
         );
         let position = EntityPosition(
-            (x % chunk_size) as f32,
-            (y % chunk_size) as f32,
-            (z % chunk_size) as f32,
+            ((x + if x < 0.0 { chunk_size } else { 0.0 }) % chunk_size) as f32,
+            ((y + if y < 0.0 { chunk_size } else { 0.0 }) % chunk_size) as f32,
+            ((z + if z < 0.0 { chunk_size } else { 0.0 }) % chunk_size) as f32,
         );
         return GlobalEntityPosition(location, position);
     }
@@ -61,7 +51,7 @@ impl GlobalEntityPosition {
     }
 
     pub fn get_bottom_block_position(&self) -> GlobalBlockPosition {
-        GlobalBlockPosition(self.0, self.1.get_bottom_block_position())
+        self.move_position(0.0, 0.0, -1.0).get_block_position()
     }
 
     pub fn move_position(&self, x : f64, y : f64, z: f64) -> GlobalEntityPosition {

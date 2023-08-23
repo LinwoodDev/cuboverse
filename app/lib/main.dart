@@ -67,8 +67,14 @@ class _MyHomePageState extends State<MyHomePage> {
     initManager();
   }
 
+  @override
+  void dispose() {
+    worldManager?.close();
+    super.dispose();
+  }
+
   Future<void> initManager() async {
-    worldManager = await api.createWorldManager();
+    worldManager ??= await api.createWorldManager();
   }
 
   Future<void> _incrementCounter() async {
@@ -77,6 +83,13 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       counter = newCounter ?? -1;
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant MyHomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    initManager();
   }
 
   @override

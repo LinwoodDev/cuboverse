@@ -1,4 +1,4 @@
-use std::{time::Duration, sync::MutexGuard};
+use std::{sync::MutexGuard, time::Duration};
 
 use super::*;
 
@@ -31,16 +31,27 @@ impl WorldManager {
         let messenger = self.messenger.clone();
         let handle = thread::spawn(move || {
             while messenger.lock().unwrap().0.is_some() {
-                world.lock().unwrap().tick();
-                let mut player = player.lock().unwrap();
-                let result = player.tick_player(&mut *world.lock().unwrap());
-                let messenger = messenger.lock().unwrap();
-                if result.teleported {
-                    messenger.send_player_teleported(&player);
+                {
+                    world.lock().unwrap().tick();
+                    let mut player = player.lock().unwrap();
+                    let result = player.tick_player(&mut *world.lock().unwrap());
+                    let messenger = messenger.lock().unwrap();
+                    if result.teleported {
+                        messenger.send_player_teleported(&player);
+                    }
                 }
                 thread::sleep(UPDATE_INTERVAL);
             }
         });
+        self.init_world();
         self.update_thread.lock().unwrap().0 = Some(handle);
+    }
+
+    pub(crate) fn init_world(&self) {
+        self.world.lock().unwrap().chunks.iter().for_each(|(k, v)| {
+            self.get_messenger().send_add_chunk(k.clone(), v);
+        });
+        self.get_messenger()
+            .send_player_teleported(&self.player.lock().unwrap());
     }
 }

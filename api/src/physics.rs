@@ -49,14 +49,13 @@ pub trait RigidBody {
             velocity.1 = 0.0;
         }
         let global_pos = self.get_global_position(chunk_location);
-        let block_position = global_pos.get_block_position();
+        let block_position = global_pos.get_bottom_block_position();
         let chunk = world.get_chunk(block_position.0);
         if chunk.has_block(block_position.1) {
             velocity.2 = 0.0;
         }
         self.set_velocity(velocity);
         let new_pos = global_pos.move_position(velocity.0 as f64, velocity.1 as f64, velocity.2 as f64);
-        println!("Moving entity with {:?} to {:?}, old: {:?}", velocity, global_pos, old);
         self.set_global_position(new_pos, chunk_location, world);
         return TickResult { teleported: new_pos != global_pos };
     }

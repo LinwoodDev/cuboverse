@@ -8,7 +8,7 @@ import 'renderer.dart';
 class CuboversePlayer extends PositionComponent {
   Vector3 _globalPosition = Vector3.zero();
 
-  CuboversePlayer() : super(size: Vector2(16, 16));
+  CuboversePlayer() : super(size: Vector2(16, 16), priority: 1);
 
   Vector3 get globalPosition => _globalPosition;
   set globalPosition(Vector3 value) {

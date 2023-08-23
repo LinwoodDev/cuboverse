@@ -1,6 +1,5 @@
-use std::ops::Div;
-
 use crate::{world::{ChunkLocation, CHUNK_SIZE}, entity::{GlobalEntityPosition, EntityPosition}};
+
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub struct BlockPosition(pub i8, pub i8, pub i8);
 
@@ -26,14 +25,14 @@ impl GlobalBlockPosition {
     pub fn new(x: i64, y: i64, z: i64) -> Self {
         let chunk_size = CHUNK_SIZE as i64;
         let location = ChunkLocation(
-            x.div(chunk_size) as i32,
-            y.div(chunk_size) as i32,
-            z.div(chunk_size) as i32,
+            (x / chunk_size) as i32 + if x < 0 { -1 } else { 0 },
+            (y / chunk_size) as i32 + if y < 0 { -1 } else { 0 },
+            (z / chunk_size) as i32 + if z < 0 { -1 } else { 0 },
         );
         let position = BlockPosition(
-            (x % chunk_size) as i8,
-            (y % chunk_size) as i8,
-            (z % chunk_size) as i8,
+            (x % chunk_size + if x < 0 { chunk_size } else { 0 }) as i8,
+            (y % chunk_size + if y < 0 { chunk_size } else { 0 }) as i8,
+            (z % chunk_size + if z < 0 { chunk_size } else { 0 }) as i8,
         );
         return GlobalBlockPosition(location, position);
     }

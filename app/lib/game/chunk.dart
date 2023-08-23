@@ -1,4 +1,6 @@
 import 'package:collection/collection.dart';
+import 'package:cuboverse/game/renderer.dart';
+import 'package:cuboverse/helpers/position.dart';
 import 'package:cuboverse/src/native/bridge_definitions.dart';
 import 'package:flame/components.dart';
 
@@ -7,7 +9,10 @@ import 'block.dart';
 class CuboverseChunk extends PositionComponent {
   final Map<BlockPosition, CuboverseBlock> blocks = {};
   final ChunkLocation location;
-  CuboverseChunk(this.location) : super();
+  CuboverseChunk(this.location)
+      : super(
+          position: toRenderPosition(location.toVector3()),
+        );
 
   void addBlock(BlockInformation block) => addBlocks([block]);
   void addBlocks(List<BlockInformation> blocks) {
@@ -19,7 +24,12 @@ class CuboverseChunk extends PositionComponent {
     this
         .blocks
         .addEntries(blocks.map((e) => MapEntry(e.position, CuboverseBlock(e))));
-    addAll(this.blocks.values.sorted(compareChunkPriorities));
+    addAll(this.blocks.values.sorted(
+          (a, b) => compareChunkPriorities(
+            a.blockInformation.position.toVector3(),
+            b.blockInformation.position.toVector3(),
+          ),
+        ));
   }
 
   void removeBlock(BlockPosition position) => removeBlocks([position]);
@@ -27,14 +37,4 @@ class CuboverseChunk extends PositionComponent {
     removeAll(positions.map((e) => blocks[e]).whereNotNull());
     positions.forEach(blocks.remove);
   }
-}
-
-int compareChunkPriorities(CuboverseBlock blockA, CuboverseBlock blockB) {
-  final a = blockA.blockInformation.position;
-  final b = blockB.blockInformation.position;
-  final zCompare = a.field2.compareTo(b.field2);
-  if (zCompare != 0) return zCompare;
-  final yCompare = a.field1.compareTo(b.field1);
-  if (yCompare != 0) return yCompare;
-  return a.field0.compareTo(b.field0);
 }

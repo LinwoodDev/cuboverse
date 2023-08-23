@@ -26,6 +26,11 @@ pub struct World {
 }
 
 impl World {
+    pub fn new() -> Self {
+        World {
+            ..Default::default()
+        }
+    }
     pub fn get_chunk(&mut self, location : ChunkLocation) -> &mut Chunk {
         self.chunks.entry(location).or_insert_with(|| Chunk::new())
     }

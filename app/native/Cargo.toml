@@ -10,6 +10,7 @@ crate-type = ["lib","staticlib","cdylib",]
 [dependencies]
 flutter_rust_bridge = "1"
 api = { path = "../../api" }
+standard = { path = "../../standard" }
 
 [build-dependencies]
 flutter_rust_bridge_codegen = { version = "1" }
