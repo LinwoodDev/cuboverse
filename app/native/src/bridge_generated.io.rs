@@ -15,7 +15,7 @@ pub extern "C" fn wire_what_is_the_answer(port_: i64) {
 pub extern "C" fn wire_add_block__method__WorldManager(
     port_: i64,
     that: *mut wire_WorldManager,
-    position: *mut wire_GlobalPosition,
+    position: *mut wire_GlobalBlockPosition,
     block: *mut wire_uint_8_list,
 ) {
     wire_add_block__method__WorldManager_impl(port_, that, position, block)
@@ -25,7 +25,7 @@ pub extern "C" fn wire_add_block__method__WorldManager(
 pub extern "C" fn wire_remove_block__method__WorldManager(
     port_: i64,
     that: *mut wire_WorldManager,
-    position: *mut wire_GlobalPosition,
+    position: *mut wire_GlobalBlockPosition,
 ) {
     wire_remove_block__method__WorldManager_impl(port_, that, position)
 }
@@ -53,6 +53,11 @@ pub extern "C" fn wire_create_message_stream__method__WorldManager(
 }
 
 #[no_mangle]
+pub extern "C" fn wire_close__method__WorldManager(port_: i64, that: *mut wire_WorldManager) {
+    wire_close__method__WorldManager_impl(port_, that)
+}
+
+#[no_mangle]
 pub extern "C" fn wire_player_position__method__WorldManager(
     port_: i64,
     that: *mut wire_WorldManager,
@@ -61,32 +66,17 @@ pub extern "C" fn wire_player_position__method__WorldManager(
 }
 
 #[no_mangle]
-pub extern "C" fn wire_send_message__method__WorldManager(
-    port_: i64,
-    that: *mut wire_WorldManager,
-    message: *mut wire_NativeMessage,
-) {
-    wire_send_message__method__WorldManager_impl(port_, that, message)
-}
-
-#[no_mangle]
 pub extern "C" fn wire_move_player__method__WorldManager(
     port_: i64,
     that: *mut wire_WorldManager,
-    x: i64,
-    y: i64,
-    z: i64,
+    x: f64,
+    y: f64,
+    z: f64,
 ) {
     wire_move_player__method__WorldManager_impl(port_, that, x, y, z)
 }
 
 // Section: allocate functions
-
-#[no_mangle]
-pub extern "C" fn new_MutexOptionStreamSinkNativeMessage() -> wire_MutexOptionStreamSinkNativeMessage
-{
-    wire_MutexOptionStreamSinkNativeMessage::new_with_null_ptr()
-}
 
 #[no_mangle]
 pub extern "C" fn new_MutexPlayer() -> wire_MutexPlayer {
@@ -99,42 +89,23 @@ pub extern "C" fn new_MutexWorld() -> wire_MutexWorld {
 }
 
 #[no_mangle]
-pub extern "C" fn new_box_autoadd_block_information_0() -> *mut wire_BlockInformation {
-    support::new_leak_box_ptr(wire_BlockInformation::new_with_null_ptr())
+pub extern "C" fn new_MutexWorldMessenger() -> wire_MutexWorldMessenger {
+    wire_MutexWorldMessenger::new_with_null_ptr()
 }
 
 #[no_mangle]
-pub extern "C" fn new_box_autoadd_chunk_location_0() -> *mut wire_ChunkLocation {
-    support::new_leak_box_ptr(wire_ChunkLocation::new_with_null_ptr())
+pub extern "C" fn new_MutexWorldTicker() -> wire_MutexWorldTicker {
+    wire_MutexWorldTicker::new_with_null_ptr()
 }
 
 #[no_mangle]
-pub extern "C" fn new_box_autoadd_chunk_position_0() -> *mut wire_ChunkPosition {
-    support::new_leak_box_ptr(wire_ChunkPosition::new_with_null_ptr())
-}
-
-#[no_mangle]
-pub extern "C" fn new_box_autoadd_global_position_0() -> *mut wire_GlobalPosition {
-    support::new_leak_box_ptr(wire_GlobalPosition::new_with_null_ptr())
-}
-
-#[no_mangle]
-pub extern "C" fn new_box_autoadd_native_message_0() -> *mut wire_NativeMessage {
-    support::new_leak_box_ptr(wire_NativeMessage::new_with_null_ptr())
+pub extern "C" fn new_box_autoadd_global_block_position_0() -> *mut wire_GlobalBlockPosition {
+    support::new_leak_box_ptr(wire_GlobalBlockPosition::new_with_null_ptr())
 }
 
 #[no_mangle]
 pub extern "C" fn new_box_autoadd_world_manager_0() -> *mut wire_WorldManager {
     support::new_leak_box_ptr(wire_WorldManager::new_with_null_ptr())
-}
-
-#[no_mangle]
-pub extern "C" fn new_list_block_information_0(len: i32) -> *mut wire_list_block_information {
-    let wrap = wire_list_block_information {
-        ptr: support::new_leak_vec_ptr(<wire_BlockInformation>::new_with_null_ptr(), len),
-        len,
-    };
-    support::new_leak_box_ptr(wrap)
 }
 
 #[no_mangle]
@@ -147,23 +118,6 @@ pub extern "C" fn new_uint_8_list_0(len: i32) -> *mut wire_uint_8_list {
 }
 
 // Section: related functions
-
-#[no_mangle]
-pub extern "C" fn drop_opaque_MutexOptionStreamSinkNativeMessage(ptr: *const c_void) {
-    unsafe {
-        Arc::<Mutex<Option<StreamSink<NativeMessage>>>>::decrement_strong_count(ptr as _);
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn share_opaque_MutexOptionStreamSinkNativeMessage(
-    ptr: *const c_void,
-) -> *const c_void {
-    unsafe {
-        Arc::<Mutex<Option<StreamSink<NativeMessage>>>>::increment_strong_count(ptr as _);
-        ptr
-    }
-}
 
 #[no_mangle]
 pub extern "C" fn drop_opaque_MutexPlayer(ptr: *const c_void) {
@@ -195,15 +149,38 @@ pub extern "C" fn share_opaque_MutexWorld(ptr: *const c_void) -> *const c_void {
     }
 }
 
-// Section: impl Wire2Api
-
-impl Wire2Api<RustOpaque<Mutex<Option<StreamSink<NativeMessage>>>>>
-    for wire_MutexOptionStreamSinkNativeMessage
-{
-    fn wire2api(self) -> RustOpaque<Mutex<Option<StreamSink<NativeMessage>>>> {
-        unsafe { support::opaque_from_dart(self.ptr as _) }
+#[no_mangle]
+pub extern "C" fn drop_opaque_MutexWorldMessenger(ptr: *const c_void) {
+    unsafe {
+        Arc::<Mutex<WorldMessenger>>::decrement_strong_count(ptr as _);
     }
 }
+
+#[no_mangle]
+pub extern "C" fn share_opaque_MutexWorldMessenger(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<Mutex<WorldMessenger>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn drop_opaque_MutexWorldTicker(ptr: *const c_void) {
+    unsafe {
+        Arc::<Mutex<WorldTicker>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn share_opaque_MutexWorldTicker(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<Mutex<WorldTicker>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
+
+// Section: impl Wire2Api
+
 impl Wire2Api<RustOpaque<Mutex<Player>>> for wire_MutexPlayer {
     fn wire2api(self) -> RustOpaque<Mutex<Player>> {
         unsafe { support::opaque_from_dart(self.ptr as _) }
@@ -214,48 +191,35 @@ impl Wire2Api<RustOpaque<Mutex<World>>> for wire_MutexWorld {
         unsafe { support::opaque_from_dart(self.ptr as _) }
     }
 }
+impl Wire2Api<RustOpaque<Mutex<WorldMessenger>>> for wire_MutexWorldMessenger {
+    fn wire2api(self) -> RustOpaque<Mutex<WorldMessenger>> {
+        unsafe { support::opaque_from_dart(self.ptr as _) }
+    }
+}
+impl Wire2Api<RustOpaque<Mutex<WorldTicker>>> for wire_MutexWorldTicker {
+    fn wire2api(self) -> RustOpaque<Mutex<WorldTicker>> {
+        unsafe { support::opaque_from_dart(self.ptr as _) }
+    }
+}
 impl Wire2Api<String> for *mut wire_uint_8_list {
     fn wire2api(self) -> String {
         let vec: Vec<u8> = self.wire2api();
         String::from_utf8_lossy(&vec).into_owned()
     }
 }
-impl Wire2Api<BlockInformation> for wire_BlockInformation {
-    fn wire2api(self) -> BlockInformation {
-        BlockInformation {
-            name: self.name.wire2api(),
-            position: self.position.wire2api(),
-        }
+impl Wire2Api<BlockPosition> for wire_BlockPosition {
+    fn wire2api(self) -> BlockPosition {
+        BlockPosition(
+            self.field0.wire2api(),
+            self.field1.wire2api(),
+            self.field2.wire2api(),
+        )
     }
 }
-impl Wire2Api<BlockInformation> for *mut wire_BlockInformation {
-    fn wire2api(self) -> BlockInformation {
+impl Wire2Api<GlobalBlockPosition> for *mut wire_GlobalBlockPosition {
+    fn wire2api(self) -> GlobalBlockPosition {
         let wrap = unsafe { support::box_from_leak_ptr(self) };
-        Wire2Api::<BlockInformation>::wire2api(*wrap).into()
-    }
-}
-impl Wire2Api<ChunkLocation> for *mut wire_ChunkLocation {
-    fn wire2api(self) -> ChunkLocation {
-        let wrap = unsafe { support::box_from_leak_ptr(self) };
-        Wire2Api::<ChunkLocation>::wire2api(*wrap).into()
-    }
-}
-impl Wire2Api<ChunkPosition> for *mut wire_ChunkPosition {
-    fn wire2api(self) -> ChunkPosition {
-        let wrap = unsafe { support::box_from_leak_ptr(self) };
-        Wire2Api::<ChunkPosition>::wire2api(*wrap).into()
-    }
-}
-impl Wire2Api<GlobalPosition> for *mut wire_GlobalPosition {
-    fn wire2api(self) -> GlobalPosition {
-        let wrap = unsafe { support::box_from_leak_ptr(self) };
-        Wire2Api::<GlobalPosition>::wire2api(*wrap).into()
-    }
-}
-impl Wire2Api<NativeMessage> for *mut wire_NativeMessage {
-    fn wire2api(self) -> NativeMessage {
-        let wrap = unsafe { support::box_from_leak_ptr(self) };
-        Wire2Api::<NativeMessage>::wire2api(*wrap).into()
+        Wire2Api::<GlobalBlockPosition>::wire2api(*wrap).into()
     }
 }
 impl Wire2Api<WorldManager> for *mut wire_WorldManager {
@@ -273,75 +237,10 @@ impl Wire2Api<ChunkLocation> for wire_ChunkLocation {
         )
     }
 }
-impl Wire2Api<ChunkPosition> for wire_ChunkPosition {
-    fn wire2api(self) -> ChunkPosition {
-        ChunkPosition(
-            self.field0.wire2api(),
-            self.field1.wire2api(),
-            self.field2.wire2api(),
-        )
-    }
-}
-impl Wire2Api<GlobalPosition> for wire_GlobalPosition {
-    fn wire2api(self) -> GlobalPosition {
-        GlobalPosition(self.field0.wire2api(), self.field1.wire2api())
-    }
-}
 
-impl Wire2Api<Vec<BlockInformation>> for *mut wire_list_block_information {
-    fn wire2api(self) -> Vec<BlockInformation> {
-        let vec = unsafe {
-            let wrap = support::box_from_leak_ptr(self);
-            support::vec_from_leak_ptr(wrap.ptr, wrap.len)
-        };
-        vec.into_iter().map(Wire2Api::wire2api).collect()
-    }
-}
-impl Wire2Api<NativeMessage> for wire_NativeMessage {
-    fn wire2api(self) -> NativeMessage {
-        match self.tag {
-            0 => unsafe {
-                let ans = support::box_from_leak_ptr(self.kind);
-                let ans = support::box_from_leak_ptr(ans.AddBlock);
-                NativeMessage::AddBlock {
-                    chunk: ans.chunk.wire2api(),
-                    block: ans.block.wire2api(),
-                }
-            },
-            1 => unsafe {
-                let ans = support::box_from_leak_ptr(self.kind);
-                let ans = support::box_from_leak_ptr(ans.RemoveBlock);
-                NativeMessage::RemoveBlock {
-                    position: ans.position.wire2api(),
-                    chunk: ans.chunk.wire2api(),
-                }
-            },
-            2 => unsafe {
-                let ans = support::box_from_leak_ptr(self.kind);
-                let ans = support::box_from_leak_ptr(ans.AddChunk);
-                NativeMessage::AddChunk {
-                    location: ans.location.wire2api(),
-                    blocks: ans.blocks.wire2api(),
-                }
-            },
-            3 => unsafe {
-                let ans = support::box_from_leak_ptr(self.kind);
-                let ans = support::box_from_leak_ptr(ans.RemoveChunk);
-                NativeMessage::RemoveChunk {
-                    location: ans.location.wire2api(),
-                }
-            },
-            4 => unsafe {
-                let ans = support::box_from_leak_ptr(self.kind);
-                let ans = support::box_from_leak_ptr(ans.PlayerTeleported);
-                NativeMessage::PlayerTeleported {
-                    x: ans.x.wire2api(),
-                    y: ans.y.wire2api(),
-                    z: ans.z.wire2api(),
-                }
-            },
-            _ => unreachable!(),
-        }
+impl Wire2Api<GlobalBlockPosition> for wire_GlobalBlockPosition {
+    fn wire2api(self) -> GlobalBlockPosition {
+        GlobalBlockPosition(self.field0.wire2api(), self.field1.wire2api())
     }
 }
 
@@ -357,18 +256,13 @@ impl Wire2Api<WorldManager> for wire_WorldManager {
     fn wire2api(self) -> WorldManager {
         WorldManager {
             world: self.world.wire2api(),
-            sink: self.sink.wire2api(),
+            messenger: self.messenger.wire2api(),
             player: self.player.wire2api(),
+            update_thread: self.update_thread.wire2api(),
         }
     }
 }
 // Section: wire structs
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_MutexOptionStreamSinkNativeMessage {
-    ptr: *const core::ffi::c_void,
-}
 
 #[repr(C)]
 #[derive(Clone)]
@@ -384,9 +278,22 @@ pub struct wire_MutexWorld {
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_BlockInformation {
-    name: *mut wire_uint_8_list,
-    position: wire_ChunkPosition,
+pub struct wire_MutexWorldMessenger {
+    ptr: *const core::ffi::c_void,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_MutexWorldTicker {
+    ptr: *const core::ffi::c_void,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_BlockPosition {
+    field0: i8,
+    field1: i8,
+    field2: i8,
 }
 
 #[repr(C)]
@@ -399,24 +306,9 @@ pub struct wire_ChunkLocation {
 
 #[repr(C)]
 #[derive(Clone)]
-pub struct wire_ChunkPosition {
-    field0: i8,
-    field1: i8,
-    field2: i8,
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_GlobalPosition {
+pub struct wire_GlobalBlockPosition {
     field0: wire_ChunkLocation,
-    field1: wire_ChunkPosition,
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_list_block_information {
-    ptr: *mut wire_BlockInformation,
-    len: i32,
+    field1: wire_BlockPosition,
 }
 
 #[repr(C)]
@@ -430,59 +322,9 @@ pub struct wire_uint_8_list {
 #[derive(Clone)]
 pub struct wire_WorldManager {
     world: wire_MutexWorld,
-    sink: wire_MutexOptionStreamSinkNativeMessage,
+    messenger: wire_MutexWorldMessenger,
     player: wire_MutexPlayer,
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_NativeMessage {
-    tag: i32,
-    kind: *mut NativeMessageKind,
-}
-
-#[repr(C)]
-pub union NativeMessageKind {
-    AddBlock: *mut wire_NativeMessage_AddBlock,
-    RemoveBlock: *mut wire_NativeMessage_RemoveBlock,
-    AddChunk: *mut wire_NativeMessage_AddChunk,
-    RemoveChunk: *mut wire_NativeMessage_RemoveChunk,
-    PlayerTeleported: *mut wire_NativeMessage_PlayerTeleported,
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_NativeMessage_AddBlock {
-    chunk: *mut wire_ChunkLocation,
-    block: *mut wire_BlockInformation,
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_NativeMessage_RemoveBlock {
-    position: *mut wire_ChunkPosition,
-    chunk: *mut wire_ChunkLocation,
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_NativeMessage_AddChunk {
-    location: *mut wire_ChunkLocation,
-    blocks: *mut wire_list_block_information,
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_NativeMessage_RemoveChunk {
-    location: *mut wire_ChunkLocation,
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct wire_NativeMessage_PlayerTeleported {
-    x: i64,
-    y: i64,
-    z: i64,
+    update_thread: wire_MutexWorldTicker,
 }
 
 // Section: impl NewWithNullPtr
@@ -497,13 +339,6 @@ impl<T> NewWithNullPtr for *mut T {
     }
 }
 
-impl NewWithNullPtr for wire_MutexOptionStreamSinkNativeMessage {
-    fn new_with_null_ptr() -> Self {
-        Self {
-            ptr: core::ptr::null(),
-        }
-    }
-}
 impl NewWithNullPtr for wire_MutexPlayer {
     fn new_with_null_ptr() -> Self {
         Self {
@@ -518,17 +353,32 @@ impl NewWithNullPtr for wire_MutexWorld {
         }
     }
 }
-
-impl NewWithNullPtr for wire_BlockInformation {
+impl NewWithNullPtr for wire_MutexWorldMessenger {
     fn new_with_null_ptr() -> Self {
         Self {
-            name: core::ptr::null_mut(),
-            position: Default::default(),
+            ptr: core::ptr::null(),
+        }
+    }
+}
+impl NewWithNullPtr for wire_MutexWorldTicker {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            ptr: core::ptr::null(),
         }
     }
 }
 
-impl Default for wire_BlockInformation {
+impl NewWithNullPtr for wire_BlockPosition {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            field0: Default::default(),
+            field1: Default::default(),
+            field2: Default::default(),
+        }
+    }
+}
+
+impl Default for wire_BlockPosition {
     fn default() -> Self {
         Self::new_with_null_ptr()
     }
@@ -550,23 +400,7 @@ impl Default for wire_ChunkLocation {
     }
 }
 
-impl NewWithNullPtr for wire_ChunkPosition {
-    fn new_with_null_ptr() -> Self {
-        Self {
-            field0: Default::default(),
-            field1: Default::default(),
-            field2: Default::default(),
-        }
-    }
-}
-
-impl Default for wire_ChunkPosition {
-    fn default() -> Self {
-        Self::new_with_null_ptr()
-    }
-}
-
-impl NewWithNullPtr for wire_GlobalPosition {
+impl NewWithNullPtr for wire_GlobalBlockPosition {
     fn new_with_null_ptr() -> Self {
         Self {
             field0: Default::default(),
@@ -575,83 +409,19 @@ impl NewWithNullPtr for wire_GlobalPosition {
     }
 }
 
-impl Default for wire_GlobalPosition {
+impl Default for wire_GlobalBlockPosition {
     fn default() -> Self {
         Self::new_with_null_ptr()
     }
-}
-
-impl Default for wire_NativeMessage {
-    fn default() -> Self {
-        Self::new_with_null_ptr()
-    }
-}
-
-impl NewWithNullPtr for wire_NativeMessage {
-    fn new_with_null_ptr() -> Self {
-        Self {
-            tag: -1,
-            kind: core::ptr::null_mut(),
-        }
-    }
-}
-
-#[no_mangle]
-pub extern "C" fn inflate_NativeMessage_AddBlock() -> *mut NativeMessageKind {
-    support::new_leak_box_ptr(NativeMessageKind {
-        AddBlock: support::new_leak_box_ptr(wire_NativeMessage_AddBlock {
-            chunk: core::ptr::null_mut(),
-            block: core::ptr::null_mut(),
-        }),
-    })
-}
-
-#[no_mangle]
-pub extern "C" fn inflate_NativeMessage_RemoveBlock() -> *mut NativeMessageKind {
-    support::new_leak_box_ptr(NativeMessageKind {
-        RemoveBlock: support::new_leak_box_ptr(wire_NativeMessage_RemoveBlock {
-            position: core::ptr::null_mut(),
-            chunk: core::ptr::null_mut(),
-        }),
-    })
-}
-
-#[no_mangle]
-pub extern "C" fn inflate_NativeMessage_AddChunk() -> *mut NativeMessageKind {
-    support::new_leak_box_ptr(NativeMessageKind {
-        AddChunk: support::new_leak_box_ptr(wire_NativeMessage_AddChunk {
-            location: core::ptr::null_mut(),
-            blocks: core::ptr::null_mut(),
-        }),
-    })
-}
-
-#[no_mangle]
-pub extern "C" fn inflate_NativeMessage_RemoveChunk() -> *mut NativeMessageKind {
-    support::new_leak_box_ptr(NativeMessageKind {
-        RemoveChunk: support::new_leak_box_ptr(wire_NativeMessage_RemoveChunk {
-            location: core::ptr::null_mut(),
-        }),
-    })
-}
-
-#[no_mangle]
-pub extern "C" fn inflate_NativeMessage_PlayerTeleported() -> *mut NativeMessageKind {
-    support::new_leak_box_ptr(NativeMessageKind {
-        PlayerTeleported: support::new_leak_box_ptr(wire_NativeMessage_PlayerTeleported {
-            x: Default::default(),
-            y: Default::default(),
-            z: Default::default(),
-        }),
-    })
 }
 
 impl NewWithNullPtr for wire_WorldManager {
     fn new_with_null_ptr() -> Self {
         Self {
             world: wire_MutexWorld::new_with_null_ptr(),
-            sink: wire_MutexOptionStreamSinkNativeMessage::new_with_null_ptr(),
+            messenger: wire_MutexWorldMessenger::new_with_null_ptr(),
             player: wire_MutexPlayer::new_with_null_ptr(),
+            update_thread: wire_MutexWorldTicker::new_with_null_ptr(),
         }
     }
 }

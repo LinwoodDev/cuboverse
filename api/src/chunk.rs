@@ -1,25 +1,11 @@
 use std::collections::HashMap;
 
-use crate::world::CHUNK_SIZE;
+use crate::block::{BlockPosition, Block};
 
-
-#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
-pub struct ChunkPosition (pub i8, pub i8, pub i8);
-
-impl ChunkPosition {
-    pub fn is_valid(&self) -> bool {
-        self.0 >= 0 && self.1 >= 0 && self.2 >= 0 && self.0 < CHUNK_SIZE && self.1 < CHUNK_SIZE && self.2 < CHUNK_SIZE
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct Block {
-    pub name: String,
-}
 
 #[derive(Debug, Clone, Default)]
 pub struct Chunk {
-    blocks: HashMap<ChunkPosition, Block>,
+    blocks: HashMap<BlockPosition, Block>,
 }
 
 impl Chunk {
@@ -29,7 +15,7 @@ impl Chunk {
         }
     }
 
-    pub fn add_block(&mut self, position : ChunkPosition, block : String) {
+    pub fn add_block(&mut self, position : BlockPosition, block : String) {
         if !position.is_valid() {
             return;
         }
@@ -38,7 +24,11 @@ impl Chunk {
         });
     }
 
-    pub fn remove_block(&mut self, position : &ChunkPosition) -> Option<Block> {
+    pub fn remove_block(&mut self, position : &BlockPosition) -> Option<Block> {
         self.blocks.remove(position)
+    }
+
+    pub fn has_block(&self, block_position: BlockPosition) -> bool {
+        self.blocks.contains_key(&block_position)
     }
 }

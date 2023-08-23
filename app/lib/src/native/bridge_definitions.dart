@@ -22,11 +22,11 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kWhatIsTheAnswerConstMeta;
 
-  Future<void> addBlockMethodWorldManager({required WorldManager that, required GlobalPosition position, required String block, dynamic hint});
+  Future<void> addBlockMethodWorldManager({required WorldManager that, required GlobalBlockPosition position, required String block, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kAddBlockMethodWorldManagerConstMeta;
 
-  Future<void> removeBlockMethodWorldManager({required WorldManager that, required GlobalPosition position, dynamic hint});
+  Future<void> removeBlockMethodWorldManager({required WorldManager that, required GlobalBlockPosition position, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kRemoveBlockMethodWorldManagerConstMeta;
 
@@ -42,21 +42,17 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kCreateMessageStreamMethodWorldManagerConstMeta;
 
-  Future<GlobalPosition> playerPositionMethodWorldManager({required WorldManager that, dynamic hint});
+  Future<void> closeMethodWorldManager({required WorldManager that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kCloseMethodWorldManagerConstMeta;
+
+  Future<GlobalEntityPosition> playerPositionMethodWorldManager({required WorldManager that, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kPlayerPositionMethodWorldManagerConstMeta;
 
-  Future<void> sendMessageMethodWorldManager({required WorldManager that, required NativeMessage message, dynamic hint});
-
-  FlutterRustBridgeTaskConstMeta get kSendMessageMethodWorldManagerConstMeta;
-
-  Future<void> movePlayerMethodWorldManager({required WorldManager that, required int x, required int y, required int z, dynamic hint});
+  Future<void> movePlayerMethodWorldManager({required WorldManager that, required double x, required double y, required double z, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kMovePlayerMethodWorldManagerConstMeta;
-
-  DropFnType get dropOpaqueMutexOptionStreamSinkNativeMessage;
-  ShareFnType get shareOpaqueMutexOptionStreamSinkNativeMessage;
-  OpaqueTypeFinalizer get MutexOptionStreamSinkNativeMessageFinalizer;
 
   DropFnType get dropOpaqueMutexPlayer;
   ShareFnType get shareOpaqueMutexPlayer;
@@ -65,22 +61,14 @@ abstract class Native {
   DropFnType get dropOpaqueMutexWorld;
   ShareFnType get shareOpaqueMutexWorld;
   OpaqueTypeFinalizer get MutexWorldFinalizer;
-}
 
-@sealed
-class MutexOptionStreamSinkNativeMessage extends FrbOpaque {
-  MutexOptionStreamSinkNativeMessage.fromRaw(
-    int ptr,
-    int size,
-  ) : super.unsafe(ptr, size);
-  @override
-  DropFnType get dropFn => api.dropOpaqueMutexOptionStreamSinkNativeMessage;
+  DropFnType get dropOpaqueMutexWorldMessenger;
+  ShareFnType get shareOpaqueMutexWorldMessenger;
+  OpaqueTypeFinalizer get MutexWorldMessengerFinalizer;
 
-  @override
-  ShareFnType get shareFn => api.shareOpaqueMutexOptionStreamSinkNativeMessage;
-
-  @override
-  OpaqueTypeFinalizer get staticFinalizer => api.MutexOptionStreamSinkNativeMessageFinalizer;
+  DropFnType get dropOpaqueMutexWorldTicker;
+  ShareFnType get shareOpaqueMutexWorldTicker;
+  OpaqueTypeFinalizer get MutexWorldTickerFinalizer;
 }
 
 @sealed
@@ -115,13 +103,57 @@ class MutexWorld extends FrbOpaque {
   OpaqueTypeFinalizer get staticFinalizer => api.MutexWorldFinalizer;
 }
 
+@sealed
+class MutexWorldMessenger extends FrbOpaque {
+  MutexWorldMessenger.fromRaw(
+    int ptr,
+    int size,
+  ) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => api.dropOpaqueMutexWorldMessenger;
+
+  @override
+  ShareFnType get shareFn => api.shareOpaqueMutexWorldMessenger;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => api.MutexWorldMessengerFinalizer;
+}
+
+@sealed
+class MutexWorldTicker extends FrbOpaque {
+  MutexWorldTicker.fromRaw(
+    int ptr,
+    int size,
+  ) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => api.dropOpaqueMutexWorldTicker;
+
+  @override
+  ShareFnType get shareFn => api.shareOpaqueMutexWorldTicker;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => api.MutexWorldTickerFinalizer;
+}
+
 class BlockInformation {
   final String name;
-  final ChunkPosition position;
+  final BlockPosition position;
 
   const BlockInformation({
     required this.name,
     required this.position,
+  });
+}
+
+class BlockPosition {
+  final int field0;
+  final int field1;
+  final int field2;
+
+  const BlockPosition({
+    required this.field0,
+    required this.field1,
+    required this.field2,
   });
 }
 
@@ -137,23 +169,33 @@ class ChunkLocation {
   });
 }
 
-class ChunkPosition {
-  final int field0;
-  final int field1;
-  final int field2;
+class EntityPosition {
+  final double field0;
+  final double field1;
+  final double field2;
 
-  const ChunkPosition({
+  const EntityPosition({
     required this.field0,
     required this.field1,
     required this.field2,
   });
 }
 
-class GlobalPosition {
+class GlobalBlockPosition {
   final ChunkLocation field0;
-  final ChunkPosition field1;
+  final BlockPosition field1;
 
-  const GlobalPosition({
+  const GlobalBlockPosition({
+    required this.field0,
+    required this.field1,
+  });
+}
+
+class GlobalEntityPosition {
+  final ChunkLocation field0;
+  final EntityPosition field1;
+
+  const GlobalEntityPosition({
     required this.field0,
     required this.field1,
   });
@@ -166,7 +208,7 @@ sealed class NativeMessage with _$NativeMessage {
     required BlockInformation block,
   }) = NativeMessage_AddBlock;
   const factory NativeMessage.removeBlock({
-    required ChunkPosition position,
+    required BlockPosition position,
     required ChunkLocation chunk,
   }) = NativeMessage_RemoveBlock;
   const factory NativeMessage.addChunk({
@@ -177,30 +219,32 @@ sealed class NativeMessage with _$NativeMessage {
     required ChunkLocation location,
   }) = NativeMessage_RemoveChunk;
   const factory NativeMessage.playerTeleported({
-    required int x,
-    required int y,
-    required int z,
+    required double x,
+    required double y,
+    required double z,
   }) = NativeMessage_PlayerTeleported;
 }
 
 class WorldManager {
   final MutexWorld world;
-  final MutexOptionStreamSinkNativeMessage sink;
+  final MutexWorldMessenger messenger;
   final MutexPlayer player;
+  final MutexWorldTicker updateThread;
 
   const WorldManager({
     required this.world,
-    required this.sink,
+    required this.messenger,
     required this.player,
+    required this.updateThread,
   });
 
-  Future<void> addBlock({required GlobalPosition position, required String block, dynamic hint}) => api.addBlockMethodWorldManager(
+  Future<void> addBlock({required GlobalBlockPosition position, required String block, dynamic hint}) => api.addBlockMethodWorldManager(
         that: this,
         position: position,
         block: block,
       );
 
-  Future<void> removeBlock({required GlobalPosition position, dynamic hint}) => api.removeBlockMethodWorldManager(
+  Future<void> removeBlock({required GlobalBlockPosition position, dynamic hint}) => api.removeBlockMethodWorldManager(
         that: this,
         position: position,
       );
@@ -218,16 +262,15 @@ class WorldManager {
         that: this,
       );
 
-  Future<GlobalPosition> playerPosition({dynamic hint}) => api.playerPositionMethodWorldManager(
+  Future<void> close({dynamic hint}) => api.closeMethodWorldManager(
         that: this,
       );
 
-  Future<void> sendMessage({required NativeMessage message, dynamic hint}) => api.sendMessageMethodWorldManager(
+  Future<GlobalEntityPosition> playerPosition({dynamic hint}) => api.playerPositionMethodWorldManager(
         that: this,
-        message: message,
       );
 
-  Future<void> movePlayer({required int x, required int y, required int z, dynamic hint}) => api.movePlayerMethodWorldManager(
+  Future<void> movePlayer({required double x, required double y, required double z, dynamic hint}) => api.movePlayerMethodWorldManager(
         that: this,
         x: x,
         y: y,

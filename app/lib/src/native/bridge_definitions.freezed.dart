@@ -18,28 +18,28 @@ mixin _$NativeMessage {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ChunkLocation chunk, BlockInformation block) addBlock,
-    required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
+    required TResult Function(BlockPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(int x, int y, int z) playerTeleported,
+    required TResult Function(double x, double y, double z) playerTeleported,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult? Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(int x, int y, int z)? playerTeleported,
+    TResult? Function(double x, double y, double z)? playerTeleported,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(int x, int y, int z)? playerTeleported,
+    TResult Function(double x, double y, double z)? playerTeleported,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -150,10 +150,10 @@ class _$NativeMessage_AddBlock implements NativeMessage_AddBlock {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ChunkLocation chunk, BlockInformation block) addBlock,
-    required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
+    required TResult Function(BlockPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(int x, int y, int z) playerTeleported,
+    required TResult Function(double x, double y, double z) playerTeleported,
   }) {
     return addBlock(chunk, block);
   }
@@ -162,10 +162,10 @@ class _$NativeMessage_AddBlock implements NativeMessage_AddBlock {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult? Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(int x, int y, int z)? playerTeleported,
+    TResult? Function(double x, double y, double z)? playerTeleported,
   }) {
     return addBlock?.call(chunk, block);
   }
@@ -174,10 +174,10 @@ class _$NativeMessage_AddBlock implements NativeMessage_AddBlock {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(int x, int y, int z)? playerTeleported,
+    TResult Function(double x, double y, double z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (addBlock != null) {
@@ -240,7 +240,7 @@ abstract class NativeMessage_AddBlock implements NativeMessage {
 abstract class _$$NativeMessage_RemoveBlockCopyWith<$Res> {
   factory _$$NativeMessage_RemoveBlockCopyWith(_$NativeMessage_RemoveBlock value, $Res Function(_$NativeMessage_RemoveBlock) then) = __$$NativeMessage_RemoveBlockCopyWithImpl<$Res>;
   @useResult
-  $Res call({ChunkPosition position, ChunkLocation chunk});
+  $Res call({BlockPosition position, ChunkLocation chunk});
 }
 
 /// @nodoc
@@ -257,7 +257,7 @@ class __$$NativeMessage_RemoveBlockCopyWithImpl<$Res> extends _$NativeMessageCop
       position: null == position
           ? _value.position
           : position // ignore: cast_nullable_to_non_nullable
-              as ChunkPosition,
+              as BlockPosition,
       chunk: null == chunk
           ? _value.chunk
           : chunk // ignore: cast_nullable_to_non_nullable
@@ -272,7 +272,7 @@ class _$NativeMessage_RemoveBlock implements NativeMessage_RemoveBlock {
   const _$NativeMessage_RemoveBlock({required this.position, required this.chunk});
 
   @override
-  final ChunkPosition position;
+  final BlockPosition position;
   @override
   final ChunkLocation chunk;
 
@@ -298,10 +298,10 @@ class _$NativeMessage_RemoveBlock implements NativeMessage_RemoveBlock {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ChunkLocation chunk, BlockInformation block) addBlock,
-    required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
+    required TResult Function(BlockPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(int x, int y, int z) playerTeleported,
+    required TResult Function(double x, double y, double z) playerTeleported,
   }) {
     return removeBlock(position, chunk);
   }
@@ -310,10 +310,10 @@ class _$NativeMessage_RemoveBlock implements NativeMessage_RemoveBlock {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult? Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(int x, int y, int z)? playerTeleported,
+    TResult? Function(double x, double y, double z)? playerTeleported,
   }) {
     return removeBlock?.call(position, chunk);
   }
@@ -322,10 +322,10 @@ class _$NativeMessage_RemoveBlock implements NativeMessage_RemoveBlock {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(int x, int y, int z)? playerTeleported,
+    TResult Function(double x, double y, double z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (removeBlock != null) {
@@ -376,9 +376,9 @@ class _$NativeMessage_RemoveBlock implements NativeMessage_RemoveBlock {
 }
 
 abstract class NativeMessage_RemoveBlock implements NativeMessage {
-  const factory NativeMessage_RemoveBlock({required final ChunkPosition position, required final ChunkLocation chunk}) = _$NativeMessage_RemoveBlock;
+  const factory NativeMessage_RemoveBlock({required final BlockPosition position, required final ChunkLocation chunk}) = _$NativeMessage_RemoveBlock;
 
-  ChunkPosition get position;
+  BlockPosition get position;
   ChunkLocation get chunk;
   @JsonKey(ignore: true)
   _$$NativeMessage_RemoveBlockCopyWith<_$NativeMessage_RemoveBlock> get copyWith => throw _privateConstructorUsedError;
@@ -451,10 +451,10 @@ class _$NativeMessage_AddChunk implements NativeMessage_AddChunk {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ChunkLocation chunk, BlockInformation block) addBlock,
-    required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
+    required TResult Function(BlockPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(int x, int y, int z) playerTeleported,
+    required TResult Function(double x, double y, double z) playerTeleported,
   }) {
     return addChunk(location, blocks);
   }
@@ -463,10 +463,10 @@ class _$NativeMessage_AddChunk implements NativeMessage_AddChunk {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult? Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(int x, int y, int z)? playerTeleported,
+    TResult? Function(double x, double y, double z)? playerTeleported,
   }) {
     return addChunk?.call(location, blocks);
   }
@@ -475,10 +475,10 @@ class _$NativeMessage_AddChunk implements NativeMessage_AddChunk {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(int x, int y, int z)? playerTeleported,
+    TResult Function(double x, double y, double z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (addChunk != null) {
@@ -592,10 +592,10 @@ class _$NativeMessage_RemoveChunk implements NativeMessage_RemoveChunk {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ChunkLocation chunk, BlockInformation block) addBlock,
-    required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
+    required TResult Function(BlockPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(int x, int y, int z) playerTeleported,
+    required TResult Function(double x, double y, double z) playerTeleported,
   }) {
     return removeChunk(location);
   }
@@ -604,10 +604,10 @@ class _$NativeMessage_RemoveChunk implements NativeMessage_RemoveChunk {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult? Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(int x, int y, int z)? playerTeleported,
+    TResult? Function(double x, double y, double z)? playerTeleported,
   }) {
     return removeChunk?.call(location);
   }
@@ -616,10 +616,10 @@ class _$NativeMessage_RemoveChunk implements NativeMessage_RemoveChunk {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(int x, int y, int z)? playerTeleported,
+    TResult Function(double x, double y, double z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (removeChunk != null) {
@@ -681,7 +681,7 @@ abstract class NativeMessage_RemoveChunk implements NativeMessage {
 abstract class _$$NativeMessage_PlayerTeleportedCopyWith<$Res> {
   factory _$$NativeMessage_PlayerTeleportedCopyWith(_$NativeMessage_PlayerTeleported value, $Res Function(_$NativeMessage_PlayerTeleported) then) = __$$NativeMessage_PlayerTeleportedCopyWithImpl<$Res>;
   @useResult
-  $Res call({int x, int y, int z});
+  $Res call({double x, double y, double z});
 }
 
 /// @nodoc
@@ -699,15 +699,15 @@ class __$$NativeMessage_PlayerTeleportedCopyWithImpl<$Res> extends _$NativeMessa
       x: null == x
           ? _value.x
           : x // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       y: null == y
           ? _value.y
           : y // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
       z: null == z
           ? _value.z
           : z // ignore: cast_nullable_to_non_nullable
-              as int,
+              as double,
     ));
   }
 }
@@ -718,11 +718,11 @@ class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported
   const _$NativeMessage_PlayerTeleported({required this.x, required this.y, required this.z});
 
   @override
-  final int x;
+  final double x;
   @override
-  final int y;
+  final double y;
   @override
-  final int z;
+  final double z;
 
   @override
   String toString() {
@@ -746,10 +746,10 @@ class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(ChunkLocation chunk, BlockInformation block) addBlock,
-    required TResult Function(ChunkPosition position, ChunkLocation chunk) removeBlock,
+    required TResult Function(BlockPosition position, ChunkLocation chunk) removeBlock,
     required TResult Function(ChunkLocation location, List<BlockInformation> blocks) addChunk,
     required TResult Function(ChunkLocation location) removeChunk,
-    required TResult Function(int x, int y, int z) playerTeleported,
+    required TResult Function(double x, double y, double z) playerTeleported,
   }) {
     return playerTeleported(x, y, z);
   }
@@ -758,10 +758,10 @@ class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult? Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult? Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult? Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult? Function(ChunkLocation location)? removeChunk,
-    TResult? Function(int x, int y, int z)? playerTeleported,
+    TResult? Function(double x, double y, double z)? playerTeleported,
   }) {
     return playerTeleported?.call(x, y, z);
   }
@@ -770,10 +770,10 @@ class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(ChunkLocation chunk, BlockInformation block)? addBlock,
-    TResult Function(ChunkPosition position, ChunkLocation chunk)? removeBlock,
+    TResult Function(BlockPosition position, ChunkLocation chunk)? removeBlock,
     TResult Function(ChunkLocation location, List<BlockInformation> blocks)? addChunk,
     TResult Function(ChunkLocation location)? removeChunk,
-    TResult Function(int x, int y, int z)? playerTeleported,
+    TResult Function(double x, double y, double z)? playerTeleported,
     required TResult orElse(),
   }) {
     if (playerTeleported != null) {
@@ -824,11 +824,11 @@ class _$NativeMessage_PlayerTeleported implements NativeMessage_PlayerTeleported
 }
 
 abstract class NativeMessage_PlayerTeleported implements NativeMessage {
-  const factory NativeMessage_PlayerTeleported({required final int x, required final int y, required final int z}) = _$NativeMessage_PlayerTeleported;
+  const factory NativeMessage_PlayerTeleported({required final double x, required final double y, required final double z}) = _$NativeMessage_PlayerTeleported;
 
-  int get x;
-  int get y;
-  int get z;
+  double get x;
+  double get y;
+  double get z;
   @JsonKey(ignore: true)
   _$$NativeMessage_PlayerTeleportedCopyWith<_$NativeMessage_PlayerTeleported> get copyWith => throw _privateConstructorUsedError;
 }

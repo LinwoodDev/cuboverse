@@ -1,12 +1,11 @@
-use std::{collections::{HashMap, hash_map::Entry}, ops::Div};
-use crate::chunk::*;
+use std::collections::HashMap;
+use crate::{chunk::*, entity::Entity, physics::RigidBody};
 
 pub const CHUNK_SIZE: i8 = 16;
 
+
 #[derive(Debug, Clone, Copy,Hash, PartialEq, Eq)]
 pub struct ChunkLocation(pub i32,pub i32, pub i32);
-#[derive(Debug, Clone)]
-pub struct EntityLocation(pub f32, pub f32, pub f32);
 
 
 #[derive(Debug, Clone)]
@@ -28,50 +27,43 @@ pub struct World {
 
 impl World {
     pub fn get_chunk(&mut self, location : ChunkLocation) -> &mut Chunk {
-        match self.chunks.entry(location) {
-            Entry::Occupied(o) => o.into_mut(),
-            Entry::Vacant(v) => v.insert(Chunk::new()),
+        self.chunks.entry(location).or_insert_with(|| Chunk::new())
+    }
+
+    pub fn add_entity(&mut self, entity : Entity, location : ChunkLocation) {
+        let chunk = self.entities.entry(location).or_insert_with(|| Vec::new());
+        chunk.push(entity);
+    }
+
+    pub fn move_entity(&mut self, entity : &Entity, old : ChunkLocation, new : ChunkLocation) {
+        if old == new {
+            return;
+        }
+        let entities = &mut self.entities;
+        let old_chunk = entities.get_mut(&old);
+        let Some(old_chunk) = old_chunk else {
+            return;
+        };
+        let index = old_chunk.iter().position(|e| e == entity);
+        let Some(index) = index else {
+            return;
+        };
+        let entity = old_chunk.remove(index);
+        let new_chunk = entities.entry(new).or_insert_with(|| Vec::new());
+        new_chunk.push(entity);
+    }
+
+    pub fn tick(&mut self) {
+        let entities = self.entities.clone();
+        for (chunk_location, mut entities) in entities {
+            // Clone the chunk location for the tick call
+            let cloned_chunk_location = chunk_location.clone();
+
+            // Iterate through entities associated with the current chunk location
+            for entity in entities.iter_mut() {
+                entity.tick(self, cloned_chunk_location.clone());
+            }
         }
     }
 }
 
-#[derive(Debug, Clone)]
-pub struct Entity {
-    pub position: ChunkPosition,
-    pub name: String,
-    pub health: i32,
-    pub max_health: i32,
-}
-
-#[derive(Debug, Clone, Copy)]
-pub struct GlobalPosition(pub ChunkLocation, pub ChunkPosition);
-
-impl GlobalPosition {
-    pub fn new(x : i64, y : i64, z: i64) -> Self {
-        let chunk_size = CHUNK_SIZE as i64;
-        let location = ChunkLocation(
-            x.div(chunk_size) as i32,
-            y.div(chunk_size) as i32,
-            z.div(chunk_size) as i32,
-        );
-        let position = ChunkPosition(
-            (x % chunk_size) as i8,
-            (y % chunk_size) as i8,
-            (z % chunk_size) as i8,
-        );
-        return GlobalPosition(location, position);
-    }
-
-    pub fn global_position(&self) -> (i64, i64, i64) {
-        (
-            self.0.0 as i64 * CHUNK_SIZE as i64 + self.1.0 as i64,
-            self.0.1 as i64 * CHUNK_SIZE as i64 + self.1.1 as i64,
-            self.0.2 as i64 * CHUNK_SIZE as i64 + self.1.2 as i64,
-        )
-    }
-
-    pub fn move_position(&self, x : i64, y : i64, z: i64) -> GlobalPosition {
-        let current = self.global_position();
-        GlobalPosition::new(current.0 + x, current.1 + y, current.2 + z)
-    }
-}

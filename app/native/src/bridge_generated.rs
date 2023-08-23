@@ -45,7 +45,7 @@ fn wire_what_is_the_answer_impl(port_: MessagePort) {
 fn wire_add_block__method__WorldManager_impl(
     port_: MessagePort,
     that: impl Wire2Api<WorldManager> + UnwindSafe,
-    position: impl Wire2Api<GlobalPosition> + UnwindSafe,
+    position: impl Wire2Api<GlobalBlockPosition> + UnwindSafe,
     block: impl Wire2Api<String> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
@@ -65,7 +65,7 @@ fn wire_add_block__method__WorldManager_impl(
 fn wire_remove_block__method__WorldManager_impl(
     port_: MessagePort,
     that: impl Wire2Api<WorldManager> + UnwindSafe,
-    position: impl Wire2Api<GlobalPosition> + UnwindSafe,
+    position: impl Wire2Api<GlobalBlockPosition> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
         WrapInfo {
@@ -135,11 +135,27 @@ fn wire_create_message_stream__method__WorldManager_impl(
         },
     )
 }
+fn wire_close__method__WorldManager_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<WorldManager> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+        WrapInfo {
+            debug_name: "close__method__WorldManager",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| Ok(WorldManager::close(&api_that))
+        },
+    )
+}
 fn wire_player_position__method__WorldManager_impl(
     port_: MessagePort,
     that: impl Wire2Api<WorldManager> + UnwindSafe,
 ) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, mirror_GlobalPosition>(
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, mirror_GlobalEntityPosition>(
         WrapInfo {
             debug_name: "player_position__method__WorldManager",
             port: Some(port_),
@@ -151,30 +167,12 @@ fn wire_player_position__method__WorldManager_impl(
         },
     )
 }
-fn wire_send_message__method__WorldManager_impl(
-    port_: MessagePort,
-    that: impl Wire2Api<WorldManager> + UnwindSafe,
-    message: impl Wire2Api<NativeMessage> + UnwindSafe,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
-        WrapInfo {
-            debug_name: "send_message__method__WorldManager",
-            port: Some(port_),
-            mode: FfiCallMode::Normal,
-        },
-        move || {
-            let api_that = that.wire2api();
-            let api_message = message.wire2api();
-            move |task_callback| Ok(WorldManager::send_message(&api_that, api_message))
-        },
-    )
-}
 fn wire_move_player__method__WorldManager_impl(
     port_: MessagePort,
     that: impl Wire2Api<WorldManager> + UnwindSafe,
-    x: impl Wire2Api<i64> + UnwindSafe,
-    y: impl Wire2Api<i64> + UnwindSafe,
-    z: impl Wire2Api<i64> + UnwindSafe,
+    x: impl Wire2Api<f64> + UnwindSafe,
+    y: impl Wire2Api<f64> + UnwindSafe,
+    z: impl Wire2Api<f64> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
         WrapInfo {
@@ -194,17 +192,26 @@ fn wire_move_player__method__WorldManager_impl(
 // Section: wrapper structs
 
 #[derive(Clone)]
+pub struct mirror_BlockPosition(BlockPosition);
+
+#[derive(Clone)]
 pub struct mirror_ChunkLocation(ChunkLocation);
 
 #[derive(Clone)]
-pub struct mirror_ChunkPosition(ChunkPosition);
+pub struct mirror_EntityPosition(EntityPosition);
 
 #[derive(Clone)]
-pub struct mirror_GlobalPosition(GlobalPosition);
+pub struct mirror_GlobalEntityPosition(GlobalEntityPosition);
 
 // Section: static checks
 
 const _: fn() = || {
+    {
+        let BlockPosition_ = None::<BlockPosition>.unwrap();
+        let _: i8 = BlockPosition_.0;
+        let _: i8 = BlockPosition_.1;
+        let _: i8 = BlockPosition_.2;
+    }
     {
         let ChunkLocation_ = None::<ChunkLocation>.unwrap();
         let _: i32 = ChunkLocation_.0;
@@ -212,15 +219,15 @@ const _: fn() = || {
         let _: i32 = ChunkLocation_.2;
     }
     {
-        let ChunkPosition_ = None::<ChunkPosition>.unwrap();
-        let _: i8 = ChunkPosition_.0;
-        let _: i8 = ChunkPosition_.1;
-        let _: i8 = ChunkPosition_.2;
+        let EntityPosition_ = None::<EntityPosition>.unwrap();
+        let _: f32 = EntityPosition_.0;
+        let _: f32 = EntityPosition_.1;
+        let _: f32 = EntityPosition_.2;
     }
     {
-        let GlobalPosition_ = None::<GlobalPosition>.unwrap();
-        let _: ChunkLocation = GlobalPosition_.0;
-        let _: ChunkPosition = GlobalPosition_.1;
+        let GlobalEntityPosition_ = None::<GlobalEntityPosition>.unwrap();
+        let _: ChunkLocation = GlobalEntityPosition_.0;
+        let _: EntityPosition = GlobalEntityPosition_.1;
     }
 };
 // Section: allocate functions
@@ -242,13 +249,14 @@ where
     }
 }
 
-impl Wire2Api<i32> for i32 {
-    fn wire2api(self) -> i32 {
+impl Wire2Api<f64> for f64 {
+    fn wire2api(self) -> f64 {
         self
     }
 }
-impl Wire2Api<i64> for i64 {
-    fn wire2api(self) -> i64 {
+
+impl Wire2Api<i32> for i32 {
+    fn wire2api(self) -> i32 {
         self
     }
 }
@@ -257,7 +265,6 @@ impl Wire2Api<i8> for i8 {
         self
     }
 }
-
 impl Wire2Api<u8> for u8 {
     fn wire2api(self) -> u8 {
         self
@@ -282,6 +289,23 @@ impl rust2dart::IntoIntoDart<BlockInformation> for BlockInformation {
     }
 }
 
+impl support::IntoDart for mirror_BlockPosition {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.0 .0.into_into_dart().into_dart(),
+            self.0 .1.into_into_dart().into_dart(),
+            self.0 .2.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for mirror_BlockPosition {}
+impl rust2dart::IntoIntoDart<mirror_BlockPosition> for BlockPosition {
+    fn into_into_dart(self) -> mirror_BlockPosition {
+        mirror_BlockPosition(self)
+    }
+}
+
 impl support::IntoDart for mirror_ChunkLocation {
     fn into_dart(self) -> support::DartAbi {
         vec![
@@ -299,7 +323,7 @@ impl rust2dart::IntoIntoDart<mirror_ChunkLocation> for ChunkLocation {
     }
 }
 
-impl support::IntoDart for mirror_ChunkPosition {
+impl support::IntoDart for mirror_EntityPosition {
     fn into_dart(self) -> support::DartAbi {
         vec![
             self.0 .0.into_into_dart().into_dart(),
@@ -309,14 +333,14 @@ impl support::IntoDart for mirror_ChunkPosition {
         .into_dart()
     }
 }
-impl support::IntoDartExceptPrimitive for mirror_ChunkPosition {}
-impl rust2dart::IntoIntoDart<mirror_ChunkPosition> for ChunkPosition {
-    fn into_into_dart(self) -> mirror_ChunkPosition {
-        mirror_ChunkPosition(self)
+impl support::IntoDartExceptPrimitive for mirror_EntityPosition {}
+impl rust2dart::IntoIntoDart<mirror_EntityPosition> for EntityPosition {
+    fn into_into_dart(self) -> mirror_EntityPosition {
+        mirror_EntityPosition(self)
     }
 }
 
-impl support::IntoDart for mirror_GlobalPosition {
+impl support::IntoDart for mirror_GlobalEntityPosition {
     fn into_dart(self) -> support::DartAbi {
         vec![
             self.0 .0.into_into_dart().into_dart(),
@@ -325,10 +349,10 @@ impl support::IntoDart for mirror_GlobalPosition {
         .into_dart()
     }
 }
-impl support::IntoDartExceptPrimitive for mirror_GlobalPosition {}
-impl rust2dart::IntoIntoDart<mirror_GlobalPosition> for GlobalPosition {
-    fn into_into_dart(self) -> mirror_GlobalPosition {
-        mirror_GlobalPosition(self)
+impl support::IntoDartExceptPrimitive for mirror_GlobalEntityPosition {}
+impl rust2dart::IntoIntoDart<mirror_GlobalEntityPosition> for GlobalEntityPosition {
+    fn into_into_dart(self) -> mirror_GlobalEntityPosition {
+        mirror_GlobalEntityPosition(self)
     }
 }
 
@@ -374,8 +398,9 @@ impl support::IntoDart for WorldManager {
     fn into_dart(self) -> support::DartAbi {
         vec![
             self.world.into_dart(),
-            self.sink.into_dart(),
+            self.messenger.into_dart(),
             self.player.into_dart(),
+            self.update_thread.into_dart(),
         ]
         .into_dart()
     }

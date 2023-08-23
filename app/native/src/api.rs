@@ -1,9 +1,10 @@
 pub mod manager;
 pub mod message;
 
-pub use api::chunk::*;
-pub use api::world::*;
+pub use api::{chunk::*, world::*, physics::*,player::*, entity::*, block::*};
 pub use std::sync::Mutex;
+pub use std::thread;
+pub use std::thread::JoinHandle;
 
 use flutter_rust_bridge::{RustOpaque, StreamSink};
 
@@ -15,11 +16,13 @@ pub fn create_world_manager() -> WorldManager {
         world: RustOpaque::new(Mutex::new(World {
             ..Default::default()
         })),
-        sink: RustOpaque::new(Mutex::new(None)),
+        messenger: RustOpaque::new(Mutex::new(WorldMessenger(None))),
         player: RustOpaque::new(Mutex::new(Player {
-            position: GlobalPosition(ChunkLocation(0, 0, 0), ChunkPosition(0, 0, 0)),
+            position: GlobalEntityPosition(ChunkLocation(0, 0, 0), EntityPosition(0.0, 0.0, 0.0)),
             name: "Player".to_string(),
+            velocity: Veloctiy(0.0, 0.0, 0.0),
         })),
+        update_thread: RustOpaque::new(Mutex::new(WorldTicker(None))),
     }
 }
 
@@ -28,11 +31,11 @@ pub fn what_is_the_answer() -> i32 {
 }
 
 impl WorldManager {
-    pub fn add_block(&self, position: GlobalPosition, block: String) {
+    pub fn add_block(&self, position: GlobalBlockPosition, block: String) {
         let mut world = self.world.lock().unwrap();
         world.get_chunk(position.0).add_block(position.1, block);
     }
-    pub fn remove_block(&self, position: GlobalPosition) {
+    pub fn remove_block(&self, position: GlobalBlockPosition) {
         let mut world = self.world.lock().unwrap();
         world
             .get_chunk(position.0.clone())
@@ -42,10 +45,11 @@ impl WorldManager {
         let mut world = self.world.lock().unwrap();
         let key = ChunkLocation(0, 0, 0);
         let new_value = Entity {
-            position: ChunkPosition(0, 0, 0),
+            position: EntityPosition(0.0, 0.0, 0.0),
             name: entity,
             health: 100,
             max_health: 100,
+            velocity: Veloctiy(0.0, 0.0, 0.0),
         };
         let entities = &mut world.entities;
         let currents = entities.get_mut(&key);
@@ -60,22 +64,20 @@ impl WorldManager {
         world.entities.values().flatten().count()
     }
     pub fn create_message_stream(&self, s: StreamSink<NativeMessage>) {
-        *self.sink.lock().unwrap() = Some(s);
+        self.messenger.lock().unwrap().0 = Some(s);
+        self.start_update_loop();
     }
-    pub fn player_position(&self) -> GlobalPosition {
+    pub fn close(&self) {
+        self.messenger.lock().unwrap().0 = None;
+    }
+    pub fn player_position(&self) -> GlobalEntityPosition {
         let player = self.player.lock().unwrap();
         player.position.clone()
     }
-    pub fn send_message(&self, message: NativeMessage) {
-        let sink = self.sink.lock().unwrap();
-        if let Some(s) = sink.as_ref() {
-            s.add(message);
-        }
-    }
-    pub fn move_player(&self, x: i64, y: i64, z: i64) {
+    pub fn move_player(&self, x: f64, y: f64, z: f64) {
         let mut player = self.player.lock().unwrap();
         player.position = player.position.move_position(x, y, z);
         let (x, y, z) = player.position.global_position();
-        self.send_message(NativeMessage::PlayerTeleported { x, y, z });
+        self.messenger.lock().unwrap().send_message(NativeMessage::PlayerTeleported { x, y, z });
     }
 }

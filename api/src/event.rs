@@ -1,8 +1,8 @@
-use crate::{world::*, chunk::*};
+use crate::{world::*, chunk::*, block::*, entity::*};
 
 pub struct BlockTickEvent {
     pub block : Block,
-    pub chunk_position : ChunkPosition,
+    pub position : BlockPosition,
     pub chunk : Chunk,
     pub world : World,
 }

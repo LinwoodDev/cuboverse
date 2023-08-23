@@ -30,6 +30,16 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
     world.addAll([CuboverseChunk(), player]);
     cameraComponent.follow(player);
     worldManager.createMessageStream().listen(_onMessage);
+    worldManager.addBlock(
+        position: const GlobalBlockPosition(
+            field0: ChunkLocation(field0: 0, field1: 0, field2: 0),
+            field1: BlockPosition(field0: 0, field1: 0, field2: -1)),
+        block: "test");
+  }
+
+  @override
+  void onDetach() {
+    worldManager.close();
   }
 
   void _onMessage(NativeMessage event) {
@@ -72,8 +82,7 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
       handled = true;
     }
     if (movement != Vector3.zero()) {
-      worldManager.movePlayer(
-          x: movement.x.toInt(), y: movement.y.toInt(), z: movement.z.toInt());
+      worldManager.movePlayer(x: movement.x, y: movement.y, z: movement.z);
     }
     if (handled) {
       return KeyEventResult.handled;
