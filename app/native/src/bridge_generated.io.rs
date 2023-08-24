@@ -69,11 +69,21 @@ pub extern "C" fn wire_player_position__method__WorldManager(
 pub extern "C" fn wire_move_player__method__WorldManager(
     port_: i64,
     that: *mut wire_WorldManager,
-    x: f64,
-    y: f64,
-    z: f64,
+    x: *mut f64,
+    y: *mut f64,
+    z: *mut f64,
+    relative: *mut bool,
+    teleport: *mut bool,
 ) {
-    wire_move_player__method__WorldManager_impl(port_, that, x, y, z)
+    wire_move_player__method__WorldManager_impl(port_, that, x, y, z, relative, teleport)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_player_on_ground__method__WorldManager(
+    port_: i64,
+    that: *mut wire_WorldManager,
+) {
+    wire_player_on_ground__method__WorldManager_impl(port_, that)
 }
 
 // Section: allocate functions
@@ -96,6 +106,16 @@ pub extern "C" fn new_MutexWorldMessenger() -> wire_MutexWorldMessenger {
 #[no_mangle]
 pub extern "C" fn new_MutexWorldTicker() -> wire_MutexWorldTicker {
     wire_MutexWorldTicker::new_with_null_ptr()
+}
+
+#[no_mangle]
+pub extern "C" fn new_box_autoadd_bool_0(value: bool) -> *mut bool {
+    support::new_leak_box_ptr(value)
+}
+
+#[no_mangle]
+pub extern "C" fn new_box_autoadd_f64_0(value: f64) -> *mut f64 {
+    support::new_leak_box_ptr(value)
 }
 
 #[no_mangle]
@@ -214,6 +234,17 @@ impl Wire2Api<BlockPosition> for wire_BlockPosition {
             self.field1.wire2api(),
             self.field2.wire2api(),
         )
+    }
+}
+
+impl Wire2Api<bool> for *mut bool {
+    fn wire2api(self) -> bool {
+        unsafe { *support::box_from_leak_ptr(self) }
+    }
+}
+impl Wire2Api<f64> for *mut f64 {
+    fn wire2api(self) -> f64 {
+        unsafe { *support::box_from_leak_ptr(self) }
     }
 }
 impl Wire2Api<GlobalBlockPosition> for *mut wire_GlobalBlockPosition {

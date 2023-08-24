@@ -200,20 +200,24 @@ class NativeImpl implements Native {
         ],
       );
 
-  Future<void> movePlayerMethodWorldManager({required WorldManager that, required double x, required double y, required double z, dynamic hint}) {
+  Future<void> movePlayerMethodWorldManager({required WorldManager that, double? x, double? y, double? z, bool? relative, bool? teleport, dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
-    var arg1 = api2wire_f64(x);
-    var arg2 = api2wire_f64(y);
-    var arg3 = api2wire_f64(z);
+    var arg1 = _platform.api2wire_opt_box_autoadd_f64(x);
+    var arg2 = _platform.api2wire_opt_box_autoadd_f64(y);
+    var arg3 = _platform.api2wire_opt_box_autoadd_f64(z);
+    var arg4 = _platform.api2wire_opt_box_autoadd_bool(relative);
+    var arg5 = _platform.api2wire_opt_box_autoadd_bool(teleport);
     return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) => _platform.inner.wire_move_player__method__WorldManager(port_, arg0, arg1, arg2, arg3),
+      callFfi: (port_) => _platform.inner.wire_move_player__method__WorldManager(port_, arg0, arg1, arg2, arg3, arg4, arg5),
       parseSuccessData: _wire2api_unit,
       constMeta: kMovePlayerMethodWorldManagerConstMeta,
       argValues: [
         that,
         x,
         y,
-        z
+        z,
+        relative,
+        teleport
       ],
       hint: hint,
     ));
@@ -225,7 +229,29 @@ class NativeImpl implements Native {
           "that",
           "x",
           "y",
-          "z"
+          "z",
+          "relative",
+          "teleport"
+        ],
+      );
+
+  Future<bool> playerOnGroundMethodWorldManager({required WorldManager that, dynamic hint}) {
+    var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_player_on_ground__method__WorldManager(port_, arg0),
+      parseSuccessData: _wire2api_bool,
+      constMeta: kPlayerOnGroundMethodWorldManagerConstMeta,
+      argValues: [
+        that
+      ],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kPlayerOnGroundMethodWorldManagerConstMeta => const FlutterRustBridgeTaskConstMeta(
+        debugName: "player_on_ground__method__WorldManager",
+        argNames: [
+          "that"
         ],
       );
 
@@ -299,6 +325,10 @@ class NativeImpl implements Native {
       field1: _wire2api_i8(arr[1]),
       field2: _wire2api_i8(arr[2]),
     );
+  }
+
+  bool _wire2api_bool(dynamic raw) {
+    return raw as bool;
   }
 
   BlockInformation _wire2api_box_autoadd_block_information(dynamic raw) {
@@ -423,6 +453,11 @@ class NativeImpl implements Native {
 }
 
 // Section: api2wire
+
+@protected
+bool api2wire_bool(bool raw) {
+  return raw;
+}
 
 @protected
 double api2wire_f64(double raw) {

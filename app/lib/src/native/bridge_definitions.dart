@@ -50,9 +50,13 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kPlayerPositionMethodWorldManagerConstMeta;
 
-  Future<void> movePlayerMethodWorldManager({required WorldManager that, required double x, required double y, required double z, dynamic hint});
+  Future<void> movePlayerMethodWorldManager({required WorldManager that, double? x, double? y, double? z, bool? relative, bool? teleport, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kMovePlayerMethodWorldManagerConstMeta;
+
+  Future<bool> playerOnGroundMethodWorldManager({required WorldManager that, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kPlayerOnGroundMethodWorldManagerConstMeta;
 
   DropFnType get dropOpaqueMutexPlayer;
   ShareFnType get shareOpaqueMutexPlayer;
@@ -270,10 +274,16 @@ class WorldManager {
         that: this,
       );
 
-  Future<void> movePlayer({required double x, required double y, required double z, dynamic hint}) => api.movePlayerMethodWorldManager(
+  Future<void> movePlayer({double? x, double? y, double? z, bool? relative, bool? teleport, dynamic hint}) => api.movePlayerMethodWorldManager(
         that: this,
         x: x,
         y: y,
         z: z,
+        relative: relative,
+        teleport: teleport,
+      );
+
+  Future<bool> playerOnGround({dynamic hint}) => api.playerOnGroundMethodWorldManager(
+        that: this,
       );
 }

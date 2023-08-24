@@ -52,6 +52,16 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
   }
 
   @protected
+  ffi.Pointer<ffi.Bool> api2wire_box_autoadd_bool(bool raw) {
+    return inner.new_box_autoadd_bool_0(api2wire_bool(raw));
+  }
+
+  @protected
+  ffi.Pointer<ffi.Double> api2wire_box_autoadd_f64(double raw) {
+    return inner.new_box_autoadd_f64_0(api2wire_f64(raw));
+  }
+
+  @protected
   ffi.Pointer<wire_GlobalBlockPosition> api2wire_box_autoadd_global_block_position(GlobalBlockPosition raw) {
     final ptr = inner.new_box_autoadd_global_block_position_0();
     _api_fill_to_wire_global_block_position(raw, ptr.ref);
@@ -63,6 +73,16 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
     final ptr = inner.new_box_autoadd_world_manager_0();
     _api_fill_to_wire_world_manager(raw, ptr.ref);
     return ptr;
+  }
+
+  @protected
+  ffi.Pointer<ffi.Bool> api2wire_opt_box_autoadd_bool(bool? raw) {
+    return raw == null ? ffi.nullptr : api2wire_box_autoadd_bool(raw);
+  }
+
+  @protected
+  ffi.Pointer<ffi.Double> api2wire_opt_box_autoadd_f64(double? raw) {
+    return raw == null ? ffi.nullptr : api2wire_box_autoadd_f64(raw);
   }
 
   @protected
@@ -333,9 +353,11 @@ class NativeWire implements FlutterRustBridgeWireBase {
   void wire_move_player__method__WorldManager(
     int port_,
     ffi.Pointer<wire_WorldManager> that,
-    double x,
-    double y,
-    double z,
+    ffi.Pointer<ffi.Double> x,
+    ffi.Pointer<ffi.Double> y,
+    ffi.Pointer<ffi.Double> z,
+    ffi.Pointer<ffi.Bool> relative,
+    ffi.Pointer<ffi.Bool> teleport,
   ) {
     return _wire_move_player__method__WorldManager(
       port_,
@@ -343,11 +365,26 @@ class NativeWire implements FlutterRustBridgeWireBase {
       x,
       y,
       z,
+      relative,
+      teleport,
     );
   }
 
-  late final _wire_move_player__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>, ffi.Double, ffi.Double, ffi.Double)>>('wire_move_player__method__WorldManager');
-  late final _wire_move_player__method__WorldManager = _wire_move_player__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>, double, double, double)>();
+  late final _wire_move_player__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>, ffi.Pointer<ffi.Double>, ffi.Pointer<ffi.Double>, ffi.Pointer<ffi.Double>, ffi.Pointer<ffi.Bool>, ffi.Pointer<ffi.Bool>)>>('wire_move_player__method__WorldManager');
+  late final _wire_move_player__method__WorldManager = _wire_move_player__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>, ffi.Pointer<ffi.Double>, ffi.Pointer<ffi.Double>, ffi.Pointer<ffi.Double>, ffi.Pointer<ffi.Bool>, ffi.Pointer<ffi.Bool>)>();
+
+  void wire_player_on_ground__method__WorldManager(
+    int port_,
+    ffi.Pointer<wire_WorldManager> that,
+  ) {
+    return _wire_player_on_ground__method__WorldManager(
+      port_,
+      that,
+    );
+  }
+
+  late final _wire_player_on_ground__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>)>>('wire_player_on_ground__method__WorldManager');
+  late final _wire_player_on_ground__method__WorldManager = _wire_player_on_ground__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>)>();
 
   wire_MutexPlayer new_MutexPlayer() {
     return _new_MutexPlayer();
@@ -376,6 +413,28 @@ class NativeWire implements FlutterRustBridgeWireBase {
 
   late final _new_MutexWorldTickerPtr = _lookup<ffi.NativeFunction<wire_MutexWorldTicker Function()>>('new_MutexWorldTicker');
   late final _new_MutexWorldTicker = _new_MutexWorldTickerPtr.asFunction<wire_MutexWorldTicker Function()>();
+
+  ffi.Pointer<ffi.Bool> new_box_autoadd_bool_0(
+    bool value,
+  ) {
+    return _new_box_autoadd_bool_0(
+      value,
+    );
+  }
+
+  late final _new_box_autoadd_bool_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Bool> Function(ffi.Bool)>>('new_box_autoadd_bool_0');
+  late final _new_box_autoadd_bool_0 = _new_box_autoadd_bool_0Ptr.asFunction<ffi.Pointer<ffi.Bool> Function(bool)>();
+
+  ffi.Pointer<ffi.Double> new_box_autoadd_f64_0(
+    double value,
+  ) {
+    return _new_box_autoadd_f64_0(
+      value,
+    );
+  }
+
+  late final _new_box_autoadd_f64_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Double> Function(ffi.Double)>>('new_box_autoadd_f64_0');
+  late final _new_box_autoadd_f64_0 = _new_box_autoadd_f64_0Ptr.asFunction<ffi.Pointer<ffi.Double> Function(double)>();
 
   ffi.Pointer<wire_GlobalBlockPosition> new_box_autoadd_global_block_position_0() {
     return _new_box_autoadd_global_block_position_0();

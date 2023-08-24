@@ -1,4 +1,4 @@
-use crate::{world::{World, ChunkLocation, CHUNK_SIZE}, block::{BlockPosition, GlobalBlockPosition}, physics::{Veloctiy, RigidBody}};
+use crate::{world::{World, ChunkLocation, CHUNK_SIZE}, block::{BlockPosition, GlobalBlockPosition}, physics::{Velocity, RigidBody}};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct EntityPosition(pub f32, pub f32, pub f32);
@@ -50,8 +50,8 @@ impl GlobalEntityPosition {
         GlobalBlockPosition(self.0, self.1.get_block_position())
     }
 
-    pub fn get_bottom_block_position(&self) -> GlobalBlockPosition {
-        self.move_position(0.0, 0.0, -1.0).get_block_position()
+    pub fn get_offset_block_position(&self, x:f64, y:f64, z:f64) -> GlobalBlockPosition {
+        self.move_position(x,y,z).get_block_position()
     }
 
     pub fn move_position(&self, x : f64, y : f64, z: f64) -> GlobalEntityPosition {
@@ -63,18 +63,18 @@ impl GlobalEntityPosition {
 #[derive(Debug, Clone, PartialEq)]
 pub struct Entity {
     pub position: EntityPosition,
-    pub velocity : Veloctiy,
+    pub velocity : Velocity,
     pub name: String,
     pub health: i32,
     pub max_health: i32,
 }
 
 impl RigidBody for Entity {
-    fn get_velocity(&self) -> Veloctiy {
+    fn get_velocity(&self) -> Velocity {
         self.velocity 
     }
 
-    fn set_velocity(&mut self, velocity: Veloctiy) {
+    fn set_velocity(&mut self, velocity: Velocity) {
         self.velocity = velocity;
     }
 

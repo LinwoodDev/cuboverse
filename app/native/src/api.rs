@@ -19,7 +19,7 @@ pub fn create_world_manager() -> WorldManager {
         player: RustOpaque::new(Mutex::new(Player {
             position: GlobalEntityPosition(ChunkLocation(0, 0, 0), EntityPosition(0.0, 0.0, 0.0)),
             name: "Player".to_string(),
-            velocity: Veloctiy(0.0, 0.0, 0.0),
+            velocity: Velocity(0.0, 0.0, 0.0),
         })),
         update_thread: RustOpaque::new(Mutex::new(WorldTicker(None))),
     }
@@ -51,7 +51,7 @@ impl WorldManager {
             name: entity,
             health: 100,
             max_health: 100,
-            velocity: Veloctiy(0.0, 0.0, 0.0),
+            velocity: Velocity(0.0, 0.0, 0.0),
         };
         let entities = &mut world.entities;
         let currents = entities.get_mut(&key);
@@ -76,13 +76,13 @@ impl WorldManager {
         let player = self.player.lock().unwrap();
         player.position.clone()
     }
-    pub fn move_player(&self, x: f64, y: f64, z: f64) {
-        println!("Moving player by {}, {}, {}", x, y, z);
+    pub fn move_player(&self, x: Option<f64>, y: Option<f64>, z: Option<f64>, relative: Option<bool>, teleport: Option<bool>) {
         let mut player = self.player.lock().unwrap();
-        println!("Got player");
-        player.position = player.position.move_position(x, y, z);
-        println!("Moved player");
+        player.move_player(x, y, z, relative, teleport);
         self.get_messenger().send_player_teleported(&player);
-        println!("Sent player");
+    }
+    pub fn player_on_ground(&self) -> bool {
+        let player = self.player.lock().unwrap();
+        self.world.lock().unwrap().has_block(player.position.get_offset_block_position(0.0, 0.0, -1.0))
     }
 }

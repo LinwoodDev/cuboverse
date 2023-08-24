@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    initManager();
+    _initManager();
   }
 
   @override
@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  Future<void> initManager() async {
+  Future<void> _initManager() async {
     worldManager ??= await api.createWorldManager();
   }
 
@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void didUpdateWidget(covariant MyHomePage oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    initManager();
+    _initManager();
   }
 
   @override
@@ -137,10 +137,15 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Scaffold(
-                      appBar: AppBar(title: const Text("Game")),
-                      body: GameWidget(game: CuboverseWorld(worldManager!))))),
+              onPressed: () async {
+                final navigator = Navigator.of(context);
+                await _initManager();
+                navigator.push(MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                        appBar: AppBar(title: const Text("Game")),
+                        body:
+                            GameWidget(game: CuboverseWorld(worldManager!)))));
+              },
               child: const Text("Game"),
             ),
           ],

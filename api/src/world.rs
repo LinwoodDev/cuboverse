@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::{chunk::*, entity::Entity, physics::RigidBody};
+use crate::{chunk::*, entity::Entity, physics::RigidBody, block::GlobalBlockPosition};
 
 pub const CHUNK_SIZE: i8 = 16;
 
@@ -69,6 +69,14 @@ impl World {
                 entity.tick(self, cloned_chunk_location.clone());
             }
         }
+    }
+
+    pub fn has_block(&self, position : GlobalBlockPosition) -> bool {
+        let chunk = self.chunks.get(&position.0);
+        let Some(chunk) = chunk else {
+            return false;
+        };
+        chunk.has_block(position.1)
     }
 }
 

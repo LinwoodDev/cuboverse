@@ -170,9 +170,11 @@ fn wire_player_position__method__WorldManager_impl(
 fn wire_move_player__method__WorldManager_impl(
     port_: MessagePort,
     that: impl Wire2Api<WorldManager> + UnwindSafe,
-    x: impl Wire2Api<f64> + UnwindSafe,
-    y: impl Wire2Api<f64> + UnwindSafe,
-    z: impl Wire2Api<f64> + UnwindSafe,
+    x: impl Wire2Api<Option<f64>> + UnwindSafe,
+    y: impl Wire2Api<Option<f64>> + UnwindSafe,
+    z: impl Wire2Api<Option<f64>> + UnwindSafe,
+    relative: impl Wire2Api<Option<bool>> + UnwindSafe,
+    teleport: impl Wire2Api<Option<bool>> + UnwindSafe,
 ) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
         WrapInfo {
@@ -185,7 +187,34 @@ fn wire_move_player__method__WorldManager_impl(
             let api_x = x.wire2api();
             let api_y = y.wire2api();
             let api_z = z.wire2api();
-            move |task_callback| Ok(WorldManager::move_player(&api_that, api_x, api_y, api_z))
+            let api_relative = relative.wire2api();
+            let api_teleport = teleport.wire2api();
+            move |task_callback| {
+                Ok(WorldManager::move_player(
+                    &api_that,
+                    api_x,
+                    api_y,
+                    api_z,
+                    api_relative,
+                    api_teleport,
+                ))
+            }
+        },
+    )
+}
+fn wire_player_on_ground__method__WorldManager_impl(
+    port_: MessagePort,
+    that: impl Wire2Api<WorldManager> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, bool>(
+        WrapInfo {
+            debug_name: "player_on_ground__method__WorldManager",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_that = that.wire2api();
+            move |task_callback| Ok(WorldManager::player_on_ground(&api_that))
         },
     )
 }
@@ -249,6 +278,12 @@ where
     }
 }
 
+impl Wire2Api<bool> for bool {
+    fn wire2api(self) -> bool {
+        self
+    }
+}
+
 impl Wire2Api<f64> for f64 {
     fn wire2api(self) -> f64 {
         self
@@ -265,6 +300,7 @@ impl Wire2Api<i8> for i8 {
         self
     }
 }
+
 impl Wire2Api<u8> for u8 {
     fn wire2api(self) -> u8 {
         self

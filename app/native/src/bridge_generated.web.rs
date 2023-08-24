@@ -59,11 +59,18 @@ pub fn wire_player_position__method__WorldManager(port_: MessagePort, that: JsVa
 pub fn wire_move_player__method__WorldManager(
     port_: MessagePort,
     that: JsValue,
-    x: f64,
-    y: f64,
-    z: f64,
+    x: JsValue,
+    y: JsValue,
+    z: JsValue,
+    relative: JsValue,
+    teleport: JsValue,
 ) {
-    wire_move_player__method__WorldManager_impl(port_, that, x, y, z)
+    wire_move_player__method__WorldManager_impl(port_, that, x, y, z, relative, teleport)
+}
+
+#[wasm_bindgen]
+pub fn wire_player_on_ground__method__WorldManager(port_: MessagePort, that: JsValue) {
+    wire_player_on_ground__method__WorldManager_impl(port_, that)
 }
 
 // Section: allocate functions
@@ -253,6 +260,11 @@ impl Wire2Api<String> for JsValue {
         self.as_string().expect("non-UTF-8 string, or not a string")
     }
 }
+impl Wire2Api<bool> for JsValue {
+    fn wire2api(self) -> bool {
+        self.is_truthy()
+    }
+}
 impl Wire2Api<f64> for JsValue {
     fn wire2api(self) -> f64 {
         self.unchecked_into_f64() as _
@@ -266,6 +278,16 @@ impl Wire2Api<i32> for JsValue {
 impl Wire2Api<i8> for JsValue {
     fn wire2api(self) -> i8 {
         self.unchecked_into_f64() as _
+    }
+}
+impl Wire2Api<Option<bool>> for JsValue {
+    fn wire2api(self) -> Option<bool> {
+        (!self.is_undefined() && !self.is_null()).then(|| self.wire2api())
+    }
+}
+impl Wire2Api<Option<f64>> for JsValue {
+    fn wire2api(self) -> Option<f64> {
+        (!self.is_undefined() && !self.is_null()).then(|| self.wire2api())
     }
 }
 impl Wire2Api<u8> for JsValue {

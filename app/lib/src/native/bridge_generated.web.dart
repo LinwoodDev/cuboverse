@@ -55,6 +55,16 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
   }
 
   @protected
+  bool api2wire_box_autoadd_bool(bool raw) {
+    return api2wire_bool(raw);
+  }
+
+  @protected
+  double api2wire_box_autoadd_f64(double raw) {
+    return api2wire_f64(raw);
+  }
+
+  @protected
   List<dynamic> api2wire_box_autoadd_global_block_position(GlobalBlockPosition raw) {
     return api2wire_global_block_position(raw);
   }
@@ -79,6 +89,16 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
       api2wire_chunk_location(raw.field0),
       api2wire_block_position(raw.field1)
     ];
+  }
+
+  @protected
+  bool? api2wire_opt_box_autoadd_bool(bool? raw) {
+    return raw == null ? null : api2wire_box_autoadd_bool(raw);
+  }
+
+  @protected
+  double? api2wire_opt_box_autoadd_f64(double? raw) {
+    return raw == null ? null : api2wire_box_autoadd_f64(raw);
   }
 
   @protected
@@ -135,7 +155,9 @@ class NativeWasmModule implements WasmModule {
 
   external dynamic /* void */ wire_player_position__method__WorldManager(NativePortType port_, List<dynamic> that);
 
-  external dynamic /* void */ wire_move_player__method__WorldManager(NativePortType port_, List<dynamic> that, double x, double y, double z);
+  external dynamic /* void */ wire_move_player__method__WorldManager(NativePortType port_, List<dynamic> that, double? x, double? y, double? z, bool? relative, bool? teleport);
+
+  external dynamic /* void */ wire_player_on_ground__method__WorldManager(NativePortType port_, List<dynamic> that);
 
   external dynamic /*  */ drop_opaque_MutexPlayer(ptr);
 
@@ -177,7 +199,9 @@ class NativeWire extends FlutterRustBridgeWasmWireBase<NativeWasmModule> {
 
   void wire_player_position__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_player_position__method__WorldManager(port_, that);
 
-  void wire_move_player__method__WorldManager(NativePortType port_, List<dynamic> that, double x, double y, double z) => wasmModule.wire_move_player__method__WorldManager(port_, that, x, y, z);
+  void wire_move_player__method__WorldManager(NativePortType port_, List<dynamic> that, double? x, double? y, double? z, bool? relative, bool? teleport) => wasmModule.wire_move_player__method__WorldManager(port_, that, x, y, z, relative, teleport);
+
+  void wire_player_on_ground__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_player_on_ground__method__WorldManager(port_, that);
 
   dynamic /*  */ drop_opaque_MutexPlayer(ptr) => wasmModule.drop_opaque_MutexPlayer(ptr);
 
