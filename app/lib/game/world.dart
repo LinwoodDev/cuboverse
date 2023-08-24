@@ -134,6 +134,14 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
       handled = true;
     }
     _movement /= 15;
+    if (keysPressed.contains(LogicalKeyboardKey.escape)) {
+      handled = true;
+      if (overlays.isActive("pause")) {
+        overlays.remove("pause");
+      } else {
+        overlays.add("pause");
+      }
+    }
     if (handled) {
       return KeyEventResult.handled;
     }

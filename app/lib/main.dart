@@ -1,7 +1,7 @@
-import 'package:cuboverse/game/world.dart';
 import 'package:cuboverse/src/native.dart';
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+
+import 'pages/game/page.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -140,11 +140,8 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () async {
                 final navigator = Navigator.of(context);
                 await _initManager();
-                navigator.push(MaterialPageRoute(
-                    builder: (context) => Scaffold(
-                        appBar: AppBar(title: const Text("Game")),
-                        body:
-                            GameWidget(game: CuboverseWorld(worldManager!)))));
+                navigator.push(
+                    MaterialPageRoute(builder: (context) => const GamePage()));
               },
               child: const Text("Game"),
             ),
