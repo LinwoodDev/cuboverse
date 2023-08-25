@@ -5,13 +5,34 @@ import 'package:flutter/material.dart';
 import '../../game/world.dart';
 import '../../overlays/pause.dart';
 
-class GamePage extends StatelessWidget {
+class GamePage extends StatefulWidget {
   const GamePage({super.key});
+
+  @override
+  State<GamePage> createState() => _GamePageState();
+}
+
+class _GamePageState extends State<GamePage> {
+  late final Future<WorldManager> _manager;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _manager = api.createWorldManager();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _manager.then((value) => value.close());
+  }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<WorldManager>(
-      future: api.createWorldManager(),
+      future: _manager,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text("Error: ${snapshot.error}");

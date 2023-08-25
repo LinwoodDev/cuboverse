@@ -22,6 +22,6 @@ class CuboverseBlock extends PositionComponent with TapCallbacks {
 
   @override
   void onTapUp(TapUpEvent event) {
-    print("Tapped on block with $blockInformation");
+    print("Tapped on block at ${blockInformation.position.toVector3()}");
   }
 }

@@ -30,29 +30,38 @@ impl WorldManager {
         self.world.lock().unwrap()
     }
     pub(crate) fn start_update_loop(&self) {
-        let world = self.world.clone();
-        let player = self.player.clone();
-        let messenger = self.messenger.clone();
-        let handle = thread::spawn(move || {
-            while messenger.lock().unwrap().0.is_some() {
-                {
-                    world.lock().unwrap().tick();
-                    let mut player = player.lock().unwrap();
-                    let old_chunk = player.position.0;
-                    let result = player.tick_player(&mut *world.lock().unwrap());
-                    let messenger = messenger.lock().unwrap();
-                    if result.teleported {
-                        messenger.send_player_teleported(&player);
-                        if old_chunk != player.position.0 {
-                            self.test_chunks();
+        self.update_thread.lock().unwrap().0 = Some({
+            let world = self.world.clone();
+            let player = self.player.clone();
+            let messenger = self.messenger.clone();
+            let loaded_chunks = self.loaded_chunks.clone();
+            thread::spawn(move || {
+                while messenger.lock().unwrap().0.is_some() {
+                    {
+                        let mut world = world.lock().unwrap();
+                        world.tick();
+                        let mut player = player.lock().unwrap();
+                        let old_chunk = player.position.0;
+                        let result = player.tick_player(&mut world);
+                        let messenger = messenger.lock().unwrap();
+                        if result.teleported {
+                            messenger.send_player_teleported(&player);
+                            if old_chunk != player.position.0 {
+                                let mut chunks = loaded_chunks.lock().unwrap();
+                                Self::run_test_chunks(
+                                    &player.position.0,
+                                    &mut chunks,
+                                    &messenger,
+                                    &mut world,
+                                );
+                            }
                         }
                     }
+                    thread::sleep(UPDATE_INTERVAL);
                 }
-                thread::sleep(UPDATE_INTERVAL);
-            }
+            })
         });
         self.init_world();
-        self.update_thread.lock().unwrap().0 = Some(handle);
     }
 
     pub(crate) fn init_world(&self) {

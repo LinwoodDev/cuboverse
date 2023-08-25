@@ -60,14 +60,11 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
     _currentlyMoving = false;
   }
 
-  @override
-  void onDetach() {
-    worldManager.close();
-  }
-
   void addChunk(ChunkLocation location, List<BlockInformation> blocks) {
-    world.removeAll(chunks.values);
-    rebuild(location, blocks);
+    final chunk = CuboverseChunk(location)..addBlocks(blocks);
+    chunks[location] = chunk;
+    world.add(chunk);
+    rebalance();
   }
 
   void removeChunk(ChunkLocation location) {
@@ -76,14 +73,17 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
     world.remove(chunk);
   }
 
-  void rebuild(ChunkLocation location, List<BlockInformation> blocks) {
-    chunks[location] = CuboverseChunk(location)..addBlocks(blocks);
-    world.addAll(chunks.values.sorted(
+  void rebalance() {
+    final balanced = chunks.keys.sorted(
       (a, b) => compareChunkPriorities(
-        a.location.toVector3(),
-        b.location.toVector3(),
+        a.toVector3(),
+        b.toVector3(),
       ),
-    ));
+    );
+    balanced.forEachIndexed((index, element) {
+      chunks[element]?.priority = index;
+    });
+    player.priority = balanced.length;
   }
 
   void _onMessage(NativeMessage event) {

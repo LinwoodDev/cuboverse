@@ -88,11 +88,14 @@ impl WorldManager {
         relative: Option<bool>,
         teleport: Option<bool>,
     ) {
-        let mut player = self.player.lock().unwrap();
-        let old_chunk = player.position.0;
-        player.move_player(x, y, z, relative, teleport);
-        self.get_messenger().send_player_teleported(&player);
-        if old_chunk != player.position.0 {
+        let should_test_chunks = {
+            let mut player = self.player.lock().unwrap();
+            let old_chunk = player.position.0;
+            player.move_player(x, y, z, relative, teleport);
+            self.get_messenger().send_player_teleported(&player);
+            old_chunk != player.position.0
+        };
+        if should_test_chunks {
             self.test_chunks();
         }
     }
