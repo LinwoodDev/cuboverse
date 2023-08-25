@@ -7,6 +7,12 @@ pub const CHUNK_SIZE: i8 = 16;
 #[derive(Debug, Clone, Copy,Hash, PartialEq, Eq)]
 pub struct ChunkLocation(pub i32,pub i32, pub i32);
 
+impl ChunkLocation {
+    pub fn distance(&self, other :&ChunkLocation) -> u32 {
+        self.0.abs_diff(other.0) + self.1.abs_diff(other.1) + self.2.abs_diff(other.2)
+    }
+}
+
 
 #[derive(Debug, Clone)]
 pub struct Item {

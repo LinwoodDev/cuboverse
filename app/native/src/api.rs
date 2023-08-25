@@ -1,5 +1,6 @@
 pub mod manager;
 pub mod message;
+pub mod loader;
 
 pub use api::{chunk::*, world::*, physics::*,player::*, entity::*, block::*};
 pub use std::sync::Mutex;
@@ -9,18 +10,22 @@ pub use std::thread::JoinHandle;
 use flutter_rust_bridge::{RustOpaque, StreamSink};
 use standard::world::create_standard_world;
 
+pub use self::loader::*;
 pub use self::manager::*;
 pub use self::message::*;
 
 pub fn create_world_manager() -> WorldManager {
+    let player = Player {
+        position: GlobalEntityPosition(ChunkLocation(0, 0, 0), EntityPosition(0.0, 0.0, 0.0)),
+        name: "Player".to_string(),
+        velocity: Velocity(0.0, 0.0, 0.0),
+    };
+    let world = create_standard_world();
     WorldManager {
-        world: RustOpaque::new(Mutex::new(create_standard_world())),
+        loaded_chunks: RustOpaque::new(Mutex::new(Vec::new())),
+        world: RustOpaque::new(Mutex::new(world)),
         messenger: RustOpaque::new(Mutex::new(WorldMessenger(None))),
-        player: RustOpaque::new(Mutex::new(Player {
-            position: GlobalEntityPosition(ChunkLocation(0, 0, 0), EntityPosition(0.0, 0.0, 0.0)),
-            name: "Player".to_string(),
-            velocity: Velocity(0.0, 0.0, 0.0),
-        })),
+        player: RustOpaque::new(Mutex::new(player)),
         update_thread: RustOpaque::new(Mutex::new(WorldTicker(None))),
     }
 }
@@ -31,20 +36,17 @@ pub fn what_is_the_answer() -> i32 {
 
 impl WorldManager {
     pub fn add_block(&self, position: GlobalBlockPosition, block: String) {
-        let mut world = self.world.lock().unwrap();
-        let block = world.get_chunk(position.0).add_block(position.1, block);
+        let block = self.get_world().get_chunk(position.0).add_block(position.1, block);
         if let Some(block) = block {
             self.get_messenger().send_add_block(position, &block);
         }
     }
     pub fn remove_block(&self, position: GlobalBlockPosition) {
-        let mut world = self.world.lock().unwrap();
-        world
+        self.get_world()
             .get_chunk(position.0.clone())
             .remove_block(&position.1);
     }
     pub fn add_entity(&self, entity: String) {
-        let mut world = self.world.lock().unwrap();
         let key = ChunkLocation(0, 0, 0);
         let new_value = Entity {
             position: EntityPosition(0.0, 0.0, 0.0),
@@ -53,7 +55,7 @@ impl WorldManager {
             max_health: 100,
             velocity: Velocity(0.0, 0.0, 0.0),
         };
-        let entities = &mut world.entities;
+        let entities = &mut self.get_world().entities;
         let currents = entities.get_mut(&key);
         if let Some(k) = currents {
             k.push(new_value);
@@ -62,8 +64,7 @@ impl WorldManager {
         }
     }
     pub fn entities(&self) -> usize {
-        let world = self.world.lock().unwrap();
-        world.entities.values().flatten().count()
+        self.get_world().entities.values().flatten().count()
     }
     pub fn create_message_stream(&self, s: StreamSink<NativeMessage>) {
         self.get_messenger().0 = Some(s);
@@ -80,9 +81,10 @@ impl WorldManager {
         let mut player = self.player.lock().unwrap();
         player.move_player(x, y, z, relative, teleport);
         self.get_messenger().send_player_teleported(&player);
+        self.test_chunks();
     }
     pub fn player_on_ground(&self) -> bool {
         let player = self.player.lock().unwrap();
-        self.world.lock().unwrap().has_block(player.position.get_offset_block_position(0.0, 0.0, -1.0))
+        self.get_world().has_block(player.position.get_offset_block_position(0.0, 0.0, -1.0))
     }
 }

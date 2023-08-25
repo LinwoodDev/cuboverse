@@ -94,6 +94,11 @@ pub extern "C" fn new_MutexPlayer() -> wire_MutexPlayer {
 }
 
 #[no_mangle]
+pub extern "C" fn new_MutexVecChunkLocation() -> wire_MutexVecChunkLocation {
+    wire_MutexVecChunkLocation::new_with_null_ptr()
+}
+
+#[no_mangle]
 pub extern "C" fn new_MutexWorld() -> wire_MutexWorld {
     wire_MutexWorld::new_with_null_ptr()
 }
@@ -155,6 +160,21 @@ pub extern "C" fn share_opaque_MutexPlayer(ptr: *const c_void) -> *const c_void 
 }
 
 #[no_mangle]
+pub extern "C" fn drop_opaque_MutexVecChunkLocation(ptr: *const c_void) {
+    unsafe {
+        Arc::<Mutex<Vec<ChunkLocation>>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn share_opaque_MutexVecChunkLocation(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<Mutex<Vec<ChunkLocation>>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
+
+#[no_mangle]
 pub extern "C" fn drop_opaque_MutexWorld(ptr: *const c_void) {
     unsafe {
         Arc::<Mutex<World>>::decrement_strong_count(ptr as _);
@@ -203,6 +223,11 @@ pub extern "C" fn share_opaque_MutexWorldTicker(ptr: *const c_void) -> *const c_
 
 impl Wire2Api<RustOpaque<Mutex<Player>>> for wire_MutexPlayer {
     fn wire2api(self) -> RustOpaque<Mutex<Player>> {
+        unsafe { support::opaque_from_dart(self.ptr as _) }
+    }
+}
+impl Wire2Api<RustOpaque<Mutex<Vec<ChunkLocation>>>> for wire_MutexVecChunkLocation {
+    fn wire2api(self) -> RustOpaque<Mutex<Vec<ChunkLocation>>> {
         unsafe { support::opaque_from_dart(self.ptr as _) }
     }
 }
@@ -288,6 +313,7 @@ impl Wire2Api<WorldManager> for wire_WorldManager {
         WorldManager {
             world: self.world.wire2api(),
             messenger: self.messenger.wire2api(),
+            loaded_chunks: self.loaded_chunks.wire2api(),
             player: self.player.wire2api(),
             update_thread: self.update_thread.wire2api(),
         }
@@ -298,6 +324,12 @@ impl Wire2Api<WorldManager> for wire_WorldManager {
 #[repr(C)]
 #[derive(Clone)]
 pub struct wire_MutexPlayer {
+    ptr: *const core::ffi::c_void,
+}
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_MutexVecChunkLocation {
     ptr: *const core::ffi::c_void,
 }
 
@@ -354,6 +386,7 @@ pub struct wire_uint_8_list {
 pub struct wire_WorldManager {
     world: wire_MutexWorld,
     messenger: wire_MutexWorldMessenger,
+    loaded_chunks: wire_MutexVecChunkLocation,
     player: wire_MutexPlayer,
     update_thread: wire_MutexWorldTicker,
 }
@@ -371,6 +404,13 @@ impl<T> NewWithNullPtr for *mut T {
 }
 
 impl NewWithNullPtr for wire_MutexPlayer {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            ptr: core::ptr::null(),
+        }
+    }
+}
+impl NewWithNullPtr for wire_MutexVecChunkLocation {
     fn new_with_null_ptr() -> Self {
         Self {
             ptr: core::ptr::null(),
@@ -451,6 +491,7 @@ impl NewWithNullPtr for wire_WorldManager {
         Self {
             world: wire_MutexWorld::new_with_null_ptr(),
             messenger: wire_MutexWorldMessenger::new_with_null_ptr(),
+            loaded_chunks: wire_MutexVecChunkLocation::new_with_null_ptr(),
             player: wire_MutexPlayer::new_with_null_ptr(),
             update_thread: wire_MutexWorldTicker::new_with_null_ptr(),
         }

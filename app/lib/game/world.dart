@@ -33,7 +33,7 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
     cameraComponent = CameraComponent(world: world);
     addAll([world, cameraComponent]);
     world.add(player);
-    cameraComponent.follow(player);
+    cameraComponent.follow(player, snap: true);
     cameraComponent.viewfinder
       ..zoom = 5
       ..anchor = Anchor.center;

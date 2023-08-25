@@ -62,6 +62,10 @@ abstract class Native {
   ShareFnType get shareOpaqueMutexPlayer;
   OpaqueTypeFinalizer get MutexPlayerFinalizer;
 
+  DropFnType get dropOpaqueMutexVecChunkLocation;
+  ShareFnType get shareOpaqueMutexVecChunkLocation;
+  OpaqueTypeFinalizer get MutexVecChunkLocationFinalizer;
+
   DropFnType get dropOpaqueMutexWorld;
   ShareFnType get shareOpaqueMutexWorld;
   OpaqueTypeFinalizer get MutexWorldFinalizer;
@@ -89,6 +93,22 @@ class MutexPlayer extends FrbOpaque {
 
   @override
   OpaqueTypeFinalizer get staticFinalizer => api.MutexPlayerFinalizer;
+}
+
+@sealed
+class MutexVecChunkLocation extends FrbOpaque {
+  MutexVecChunkLocation.fromRaw(
+    int ptr,
+    int size,
+  ) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => api.dropOpaqueMutexVecChunkLocation;
+
+  @override
+  ShareFnType get shareFn => api.shareOpaqueMutexVecChunkLocation;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => api.MutexVecChunkLocationFinalizer;
 }
 
 @sealed
@@ -232,12 +252,14 @@ sealed class NativeMessage with _$NativeMessage {
 class WorldManager {
   final MutexWorld world;
   final MutexWorldMessenger messenger;
+  final MutexVecChunkLocation loadedChunks;
   final MutexPlayer player;
   final MutexWorldTicker updateThread;
 
   const WorldManager({
     required this.world,
     required this.messenger,
+    required this.loadedChunks,
     required this.player,
     required this.updateThread,
   });

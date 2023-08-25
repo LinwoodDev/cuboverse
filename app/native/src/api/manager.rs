@@ -6,6 +6,7 @@ use super::*;
 pub struct WorldManager {
     pub(crate) world: RustOpaque<Mutex<World>>,
     pub(crate) messenger: RustOpaque<Mutex<WorldMessenger>>,
+    pub(crate) loaded_chunks: RustOpaque<Mutex<Vec<ChunkLocation>>>,
     pub(crate) player: RustOpaque<Mutex<Player>>,
     pub(crate) update_thread: RustOpaque<Mutex<WorldTicker>>,
 }
@@ -24,6 +25,9 @@ impl Drop for WorldTicker {
 impl WorldManager {
     pub fn get_messenger(&self) -> MutexGuard<'_, WorldMessenger> {
         self.messenger.lock().unwrap()
+    }
+    pub fn get_world(&self) -> MutexGuard<'_, World> {
+        self.world.lock().unwrap()
     }
     pub(crate) fn start_update_loop(&self) {
         let world = self.world.clone();
@@ -48,10 +52,8 @@ impl WorldManager {
     }
 
     pub(crate) fn init_world(&self) {
-        self.world.lock().unwrap().chunks.iter().for_each(|(k, v)| {
-            self.get_messenger().send_add_chunk(k.clone(), v);
-        });
         self.get_messenger()
             .send_player_teleported(&self.player.lock().unwrap());
+        self.test_chunks();
     }
 }

@@ -435,6 +435,7 @@ impl support::IntoDart for WorldManager {
         vec![
             self.world.into_dart(),
             self.messenger.into_dart(),
+            self.loaded_chunks.into_dart(),
             self.player.into_dart(),
             self.update_thread.into_dart(),
         ]

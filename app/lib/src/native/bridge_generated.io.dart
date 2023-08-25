@@ -26,6 +26,13 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
   }
 
   @protected
+  wire_MutexVecChunkLocation api2wire_MutexVecChunkLocation(MutexVecChunkLocation raw) {
+    final ptr = inner.new_MutexVecChunkLocation();
+    _api_fill_to_wire_MutexVecChunkLocation(raw, ptr);
+    return ptr;
+  }
+
+  @protected
   wire_MutexWorld api2wire_MutexWorld(MutexWorld raw) {
     final ptr = inner.new_MutexWorld();
     _api_fill_to_wire_MutexWorld(raw, ptr);
@@ -96,6 +103,8 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 
   late final OpaqueTypeFinalizer _MutexPlayerFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexPlayerPtr);
   OpaqueTypeFinalizer get MutexPlayerFinalizer => _MutexPlayerFinalizer;
+  late final OpaqueTypeFinalizer _MutexVecChunkLocationFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexVecChunkLocationPtr);
+  OpaqueTypeFinalizer get MutexVecChunkLocationFinalizer => _MutexVecChunkLocationFinalizer;
   late final OpaqueTypeFinalizer _MutexWorldFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexWorldPtr);
   OpaqueTypeFinalizer get MutexWorldFinalizer => _MutexWorldFinalizer;
   late final OpaqueTypeFinalizer _MutexWorldMessengerFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexWorldMessengerPtr);
@@ -105,6 +114,10 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 // Section: api_fill_to_wire
 
   void _api_fill_to_wire_MutexPlayer(MutexPlayer apiObj, wire_MutexPlayer wireObj) {
+    wireObj.ptr = apiObj.shareOrMove();
+  }
+
+  void _api_fill_to_wire_MutexVecChunkLocation(MutexVecChunkLocation apiObj, wire_MutexVecChunkLocation wireObj) {
     wireObj.ptr = apiObj.shareOrMove();
   }
 
@@ -148,6 +161,7 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
   void _api_fill_to_wire_world_manager(WorldManager apiObj, wire_WorldManager wireObj) {
     wireObj.world = api2wire_MutexWorld(apiObj.world);
     wireObj.messenger = api2wire_MutexWorldMessenger(apiObj.messenger);
+    wireObj.loaded_chunks = api2wire_MutexVecChunkLocation(apiObj.loadedChunks);
     wireObj.player = api2wire_MutexPlayer(apiObj.player);
     wireObj.update_thread = api2wire_MutexWorldTicker(apiObj.updateThread);
   }
@@ -393,6 +407,13 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _new_MutexPlayerPtr = _lookup<ffi.NativeFunction<wire_MutexPlayer Function()>>('new_MutexPlayer');
   late final _new_MutexPlayer = _new_MutexPlayerPtr.asFunction<wire_MutexPlayer Function()>();
 
+  wire_MutexVecChunkLocation new_MutexVecChunkLocation() {
+    return _new_MutexVecChunkLocation();
+  }
+
+  late final _new_MutexVecChunkLocationPtr = _lookup<ffi.NativeFunction<wire_MutexVecChunkLocation Function()>>('new_MutexVecChunkLocation');
+  late final _new_MutexVecChunkLocation = _new_MutexVecChunkLocationPtr.asFunction<wire_MutexVecChunkLocation Function()>();
+
   wire_MutexWorld new_MutexWorld() {
     return _new_MutexWorld();
   }
@@ -483,6 +504,28 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _share_opaque_MutexPlayerPtr = _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>('share_opaque_MutexPlayer');
   late final _share_opaque_MutexPlayer = _share_opaque_MutexPlayerPtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
 
+  void drop_opaque_MutexVecChunkLocation(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _drop_opaque_MutexVecChunkLocation(
+      ptr,
+    );
+  }
+
+  late final _drop_opaque_MutexVecChunkLocationPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>('drop_opaque_MutexVecChunkLocation');
+  late final _drop_opaque_MutexVecChunkLocation = _drop_opaque_MutexVecChunkLocationPtr.asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<ffi.Void> share_opaque_MutexVecChunkLocation(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _share_opaque_MutexVecChunkLocation(
+      ptr,
+    );
+  }
+
+  late final _share_opaque_MutexVecChunkLocationPtr = _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>('share_opaque_MutexVecChunkLocation');
+  late final _share_opaque_MutexVecChunkLocation = _share_opaque_MutexVecChunkLocationPtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
+
   void drop_opaque_MutexWorld(
     ffi.Pointer<ffi.Void> ptr,
   ) {
@@ -571,6 +614,10 @@ final class wire_MutexWorldMessenger extends ffi.Struct {
   external ffi.Pointer<ffi.Void> ptr;
 }
 
+final class wire_MutexVecChunkLocation extends ffi.Struct {
+  external ffi.Pointer<ffi.Void> ptr;
+}
+
 final class wire_MutexPlayer extends ffi.Struct {
   external ffi.Pointer<ffi.Void> ptr;
 }
@@ -583,6 +630,8 @@ final class wire_WorldManager extends ffi.Struct {
   external wire_MutexWorld world;
 
   external wire_MutexWorldMessenger messenger;
+
+  external wire_MutexVecChunkLocation loaded_chunks;
 
   external wire_MutexPlayer player;
 

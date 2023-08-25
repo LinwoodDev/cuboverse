@@ -8,13 +8,21 @@ class PauseOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return Container(
       color: Colors.black.withOpacity(0.5),
       child: Align(
         alignment: Alignment.bottomLeft,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 200, maxHeight: 400),
-          child: Card(
+          child: Material(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(16),
+              ),
+            ),
+            clipBehavior: Clip.antiAlias,
+            elevation: 20,
+            type: MaterialType.canvas,
             child: ListView(
               shrinkWrap: true,
               children: [

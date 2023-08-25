@@ -93,6 +93,21 @@ pub fn share_opaque_MutexPlayer(ptr: *const c_void) -> *const c_void {
 }
 
 #[wasm_bindgen]
+pub fn drop_opaque_MutexVecChunkLocation(ptr: *const c_void) {
+    unsafe {
+        Arc::<Mutex<Vec<ChunkLocation>>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[wasm_bindgen]
+pub fn share_opaque_MutexVecChunkLocation(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<Mutex<Vec<ChunkLocation>>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
+
+#[wasm_bindgen]
 pub fn drop_opaque_MutexWorld(ptr: *const c_void) {
     unsafe {
         Arc::<Mutex<World>>::decrement_strong_count(ptr as _);
@@ -201,15 +216,16 @@ impl Wire2Api<WorldManager> for JsValue {
         let self_ = self.dyn_into::<JsArray>().unwrap();
         assert_eq!(
             self_.length(),
-            4,
-            "Expected 4 elements, got {}",
+            5,
+            "Expected 5 elements, got {}",
             self_.length()
         );
         WorldManager {
             world: self_.get(0).wire2api(),
             messenger: self_.get(1).wire2api(),
-            player: self_.get(2).wire2api(),
-            update_thread: self_.get(3).wire2api(),
+            loaded_chunks: self_.get(2).wire2api(),
+            player: self_.get(3).wire2api(),
+            update_thread: self_.get(4).wire2api(),
         }
     }
 }
@@ -217,6 +233,16 @@ impl Wire2Api<WorldManager> for JsValue {
 
 impl Wire2Api<RustOpaque<Mutex<Player>>> for JsValue {
     fn wire2api(self) -> RustOpaque<Mutex<Player>> {
+        #[cfg(target_pointer_width = "64")]
+        {
+            compile_error!("64-bit pointers are not supported.");
+        }
+
+        unsafe { support::opaque_from_dart((self.as_f64().unwrap() as usize) as _) }
+    }
+}
+impl Wire2Api<RustOpaque<Mutex<Vec<ChunkLocation>>>> for JsValue {
+    fn wire2api(self) -> RustOpaque<Mutex<Vec<ChunkLocation>>> {
         #[cfg(target_pointer_width = "64")]
         {
             compile_error!("64-bit pointers are not supported.");

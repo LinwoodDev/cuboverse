@@ -26,6 +26,11 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
   }
 
   @protected
+  Object api2wire_MutexVecChunkLocation(MutexVecChunkLocation raw) {
+    return raw.shareOrMove();
+  }
+
+  @protected
   Object api2wire_MutexWorld(MutexWorld raw) {
     return raw.shareOrMove();
   }
@@ -111,6 +116,7 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
     return [
       api2wire_MutexWorld(raw.world),
       api2wire_MutexWorldMessenger(raw.messenger),
+      api2wire_MutexVecChunkLocation(raw.loadedChunks),
       api2wire_MutexPlayer(raw.player),
       api2wire_MutexWorldTicker(raw.updateThread)
     ];
@@ -119,6 +125,8 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
 
   late final Finalizer<PlatformPointer> _MutexPlayerFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexPlayer);
   Finalizer<PlatformPointer> get MutexPlayerFinalizer => _MutexPlayerFinalizer;
+  late final Finalizer<PlatformPointer> _MutexVecChunkLocationFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexVecChunkLocation);
+  Finalizer<PlatformPointer> get MutexVecChunkLocationFinalizer => _MutexVecChunkLocationFinalizer;
   late final Finalizer<PlatformPointer> _MutexWorldFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexWorld);
   Finalizer<PlatformPointer> get MutexWorldFinalizer => _MutexWorldFinalizer;
   late final Finalizer<PlatformPointer> _MutexWorldMessengerFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexWorldMessenger);
@@ -163,6 +171,10 @@ class NativeWasmModule implements WasmModule {
 
   external int /* *const c_void */ share_opaque_MutexPlayer(ptr);
 
+  external dynamic /*  */ drop_opaque_MutexVecChunkLocation(ptr);
+
+  external int /* *const c_void */ share_opaque_MutexVecChunkLocation(ptr);
+
   external dynamic /*  */ drop_opaque_MutexWorld(ptr);
 
   external int /* *const c_void */ share_opaque_MutexWorld(ptr);
@@ -206,6 +218,10 @@ class NativeWire extends FlutterRustBridgeWasmWireBase<NativeWasmModule> {
   dynamic /*  */ drop_opaque_MutexPlayer(ptr) => wasmModule.drop_opaque_MutexPlayer(ptr);
 
   int /* *const c_void */ share_opaque_MutexPlayer(ptr) => wasmModule.share_opaque_MutexPlayer(ptr);
+
+  dynamic /*  */ drop_opaque_MutexVecChunkLocation(ptr) => wasmModule.drop_opaque_MutexVecChunkLocation(ptr);
+
+  int /* *const c_void */ share_opaque_MutexVecChunkLocation(ptr) => wasmModule.share_opaque_MutexVecChunkLocation(ptr);
 
   dynamic /*  */ drop_opaque_MutexWorld(ptr) => wasmModule.drop_opaque_MutexWorld(ptr);
 
