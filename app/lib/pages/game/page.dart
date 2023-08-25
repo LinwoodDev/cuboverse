@@ -3,6 +3,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import '../../game/world.dart';
+import '../../overlays/options.dart';
 import '../../overlays/pause.dart';
 
 class GamePage extends StatefulWidget {
@@ -44,9 +45,8 @@ class _GamePageState extends State<GamePage> {
         return GameWidget<CuboverseWorld>(
           game: CuboverseWorld(worldManager),
           overlayBuilderMap: {
-            "pause": (context, game) {
-              return PauseOverlay(game: game);
-            },
+            "pause": (context, game) => PauseOverlay(game: game),
+            "options": (context, game) => OptionsOverlay(game: game),
           },
         );
       },

@@ -1,7 +1,10 @@
 [workspace]
 members = [
     "api",
-    "app/native",
-    "standard"
+    "standard",
+    "server"
 ]
 resolver = "2"
+exclude = [
+    "app/native"
+]

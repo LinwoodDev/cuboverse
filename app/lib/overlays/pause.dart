@@ -36,7 +36,7 @@ class PauseOverlay extends StatelessWidget {
                 ListTile(
                   title: const Text("Options"),
                   onTap: () {
-                    Navigator.of(context).pop();
+                    game.overlays.add("options");
                   },
                 ),
                 ListTile(
