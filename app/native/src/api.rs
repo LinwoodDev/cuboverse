@@ -1,8 +1,8 @@
+pub mod loader;
 pub mod manager;
 pub mod message;
-pub mod loader;
 
-pub use api::{chunk::*, world::*, physics::*,player::*, entity::*, block::*};
+pub use api::{block::*, chunk::*, entity::*, physics::*, player::*, world::*};
 pub use std::sync::Mutex;
 pub use std::thread;
 pub use std::thread::JoinHandle;
@@ -36,7 +36,10 @@ pub fn what_is_the_answer() -> i32 {
 
 impl WorldManager {
     pub fn add_block(&self, position: GlobalBlockPosition, block: String) {
-        let block = self.get_world().get_chunk(position.0).add_block(position.1, block);
+        let block = self
+            .get_world()
+            .get_chunk(position.0)
+            .add_block(position.1, block);
         if let Some(block) = block {
             self.get_messenger().send_add_block(position, &block);
         }
@@ -77,14 +80,25 @@ impl WorldManager {
         let player = self.player.lock().unwrap();
         player.position.clone()
     }
-    pub fn move_player(&self, x: Option<f64>, y: Option<f64>, z: Option<f64>, relative: Option<bool>, teleport: Option<bool>) {
+    pub fn move_player(
+        &self,
+        x: Option<f64>,
+        y: Option<f64>,
+        z: Option<f64>,
+        relative: Option<bool>,
+        teleport: Option<bool>,
+    ) {
         let mut player = self.player.lock().unwrap();
+        let old_chunk = player.position.0;
         player.move_player(x, y, z, relative, teleport);
         self.get_messenger().send_player_teleported(&player);
-        self.test_chunks();
+        if old_chunk != player.position.0 {
+            self.test_chunks();
+        }
     }
     pub fn player_on_ground(&self) -> bool {
         let player = self.player.lock().unwrap();
-        self.get_world().has_block(player.position.get_offset_block_position(0.0, 0.0, -1.0))
+        self.get_world()
+            .has_block(player.position.get_offset_block_position(0.0, 0.0, -1.0))
     }
 }

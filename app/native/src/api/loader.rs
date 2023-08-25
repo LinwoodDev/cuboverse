@@ -10,18 +10,18 @@ impl WorldManager {
     fn test_chunks_unloading(&self) {
         let player_location = &self.player_position().0;
         self.loaded_chunks.lock().unwrap().retain(|e| {
-            let should_remove = e.distance(player_location) <= RENDER_DISTANCE.into();
-            if should_remove {
+            let keep = e.distance(player_location) <= RENDER_DISTANCE.into();
+            if !keep {
                 self.get_messenger().send_remove_chunk(e.clone());
             }
-            should_remove
+            keep
         });
     }
 
     fn test_chunks_loading(&self) {
         let player_location = &self.player_position().0;
         let distance = RENDER_DISTANCE as i32;
-        for x in distance..=distance {
+        for x in -distance..=distance {
             for y in -distance..=distance {
                 for z in -distance..=distance {
                     let location = ChunkLocation(
@@ -30,6 +30,7 @@ impl WorldManager {
                         z + player_location.2,
                     );
                     let mut chunks = self.loaded_chunks.lock().unwrap();
+                    println!("Load {:?}? {:?}", &location, chunks.contains(&location));
                     if !chunks.contains(&location) {
                         chunks.push(location);
                         self.get_messenger()

@@ -38,10 +38,14 @@ impl WorldManager {
                 {
                     world.lock().unwrap().tick();
                     let mut player = player.lock().unwrap();
+                    let old_chunk = player.position.0;
                     let result = player.tick_player(&mut *world.lock().unwrap());
                     let messenger = messenger.lock().unwrap();
                     if result.teleported {
                         messenger.send_player_teleported(&player);
+                        if old_chunk != player.position.0 {
+                            self.test_chunks();
+                        }
                     }
                 }
                 thread::sleep(UPDATE_INTERVAL);
