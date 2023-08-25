@@ -86,3 +86,7 @@ impl World {
     }
 }
 
+pub trait ChunkGenerator {
+    fn generate_chunk(&self, location : ChunkLocation) -> Chunk;
+}
+

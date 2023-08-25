@@ -64,7 +64,8 @@ pub trait RigidBody {
         }
 
         let global_pos = self.get_global_position(chunk_location);
-        if (world.has_block(global_pos.get_offset_block_position(0.0, 0.0, -1.0))
+        let on_ground = world.has_block(global_pos.get_offset_block_position(0.0, 0.0, -1.0));
+        if (on_ground
             && velocity.2 < 0.0)
             || (world.has_block(global_pos.get_offset_block_position(0.0, 0.0, 1.0))
                 && velocity.2 > 0.0)
@@ -92,7 +93,7 @@ pub trait RigidBody {
         } else {
             velocity.0 = 0.0;
         }
-        if velocity.1.abs() > FRICITON {
+        if velocity.1.abs() > FRICITON  {
             velocity.1 -= FRICITON * velocity.1.signum();
         } else {
             velocity.1 = 0.0;

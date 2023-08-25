@@ -1,4 +1,4 @@
-use std::{sync::MutexGuard, time::Duration};
+use std::{sync::MutexGuard, time::{Duration, SystemTime}};
 
 use super::*;
 
@@ -36,6 +36,7 @@ impl WorldManager {
             let messenger = self.messenger.clone();
             let loaded_chunks = self.loaded_chunks.clone();
             thread::spawn(move || {
+                let mut last_update = SystemTime::now();
                 while messenger.lock().unwrap().0.is_some() {
                     {
                         let mut world = world.lock().unwrap();
@@ -57,7 +58,12 @@ impl WorldManager {
                             }
                         }
                     }
-                    thread::sleep(UPDATE_INTERVAL);
+                    let now = SystemTime::now();
+                    let elapsed = now.duration_since(last_update).unwrap();
+                    if elapsed < UPDATE_INTERVAL {
+                        thread::sleep(UPDATE_INTERVAL - elapsed);
+                    }
+                    last_update = now;
                 }
             })
         });

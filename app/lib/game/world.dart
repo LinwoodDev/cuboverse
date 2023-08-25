@@ -47,16 +47,19 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
   }
 
   bool _currentlyMoving = false;
+  double _movementDelay = 0;
   Future<void> _updateMovement(double dt) async {
+    _movementDelay += dt;
     if (_currentlyMoving || !(await worldManager.playerOnGround())) return;
     _currentlyMoving = true;
     await worldManager.movePlayer(
-      x: _movement.x,
-      y: _movement.y,
-      z: _movement.z,
+      x: _movement.x * (_movementDelay - dt + 1),
+      y: _movement.y * (_movementDelay - dt + 1),
+      z: _movement.z * (_movementDelay - dt + 1),
       relative: true,
       teleport: false,
     );
+    _movementDelay = 0;
     _currentlyMoving = false;
   }
 
@@ -141,6 +144,14 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
       } else {
         overlays.add("pause");
       }
+    }
+    if (keysPressed.contains(LogicalKeyboardKey.add)) {
+      cameraComponent.viewfinder.zoom += 0.1;
+      handled = true;
+    }
+    if (keysPressed.contains(LogicalKeyboardKey.minus)) {
+      cameraComponent.viewfinder.zoom -= 0.1;
+      handled = true;
     }
     if (handled) {
       return KeyEventResult.handled;
