@@ -30,6 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   phosphor_flutter:
     git:
       url: https://github.com/CodeDoctorDE/phosphor-flutter
@@ -42,12 +46,20 @@ dependencies:
   freezed_annotation: ^2.4.1
   flame: ^1.8.2
   collection: ^1.17.2
+  intl: ^0.18.0
   material_leap:
     git:
       url: https://github.com/LinwoodDev/dart_pkgs
       path: packages/material_leap
       ref: 75a6afbbe765b628529c0e13b4117917ea0fd8e3
   flex_color_scheme: ^7.3.1
+  flutter_bloc: ^8.1.3
+  shared_preferences: ^2.2.0
+  go_router: ^10.1.0
+  dynamic_color: ^1.6.6
+  window_manager: ^0.3.5
+  args: ^2.4.2
+  flutter_localized_locales: ^2.0.4
 
 dev_dependencies:
   flutter_test:
@@ -68,7 +80,7 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  generate: true
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

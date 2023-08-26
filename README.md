@@ -17,3 +17,12 @@ A server can be used to host the game. To add custom content to the game, the se
 
 To allow using mods offline and without server, mods can be installed locally.
 Under the hood, a local server is started to host the game and the mods.
+
+## Contributing
+
+Dependencies:
+
+* [Flutter](https://flutter.dev/docs/get-started/install)
+* [Rust](https://www.rust-lang.org/tools/install)
+* [Corrosion](https://corrosion-rs.github.io/corrosion/setup_corrosion.html)
+* For linux: [CPATH](https://cjycode.com/flutter_rust_bridge/integrate/deps.html?highlight=debian#non-debian-linux)

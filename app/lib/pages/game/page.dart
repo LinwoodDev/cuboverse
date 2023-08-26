@@ -3,7 +3,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import '../../game/world.dart';
-import '../../overlays/options.dart';
+import '../options/page.dart';
 import '../../overlays/pause.dart';
 
 class GamePage extends StatefulWidget {
