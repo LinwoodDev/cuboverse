@@ -2,5 +2,20 @@
     "minimize": "Minimize",
     "maximize": "Maximize",
     "restore": "Restore",
-    "close": "Close"
+    "close": "Close",
+    "systemDefault": "System Default",
+    "personalization": "Personalization",
+    "design": "Design",
+    "theme": "Theme",
+    "classic": "Classic",
+    "light": "Light",
+    "dark": "Dark",
+    "language": "Language",
+    "nativeTitleBar": "Native Title Bar",
+    "game": "Game",
+    "information": "Information",
+    "license": "License",
+    "privacyPolicy": "Privacy Policy",
+    "imprint": "Imprint",
+    "thirdPartyLicenses": "Third Party Licenses"
 }

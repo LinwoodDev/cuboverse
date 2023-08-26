@@ -1,4 +1,6 @@
+import 'package:cuboverse/main.dart';
 import 'package:cuboverse/src/native.dart';
+import 'package:cuboverse/widgets/window.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
@@ -32,24 +34,30 @@ class _GamePageState extends State<GamePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<WorldManager>(
-      future: _manager,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text("Error: ${snapshot.error}");
-        }
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final worldManager = snapshot.data!;
-        return GameWidget<CuboverseWorld>(
-          game: CuboverseWorld(worldManager),
-          overlayBuilderMap: {
-            "pause": (context, game) => PauseOverlay(game: game),
-            "options": (context, game) => OptionsOverlay(game: game),
-          },
-        );
-      },
+    return Scaffold(
+      appBar: const WindowTitleBar(
+        onlyShowOnDesktop: true,
+        title: Text(applicationName),
+      ),
+      body: FutureBuilder<WorldManager>(
+        future: _manager,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final worldManager = snapshot.data!;
+          return GameWidget<CuboverseWorld>(
+            game: CuboverseWorld(worldManager),
+            overlayBuilderMap: {
+              "pause": (context, game) => PauseOverlay(game: game),
+              "options": (context, game) => OptionsOverlay(game: game),
+            },
+          );
+        },
+      ),
     );
   }
 }

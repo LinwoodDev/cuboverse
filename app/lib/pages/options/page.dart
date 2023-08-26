@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:material_leap/material_leap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
+import 'info.dart';
+import 'personalization.dart';
+
 enum OptionsTab {
   world,
   networking,
@@ -41,35 +44,38 @@ class OptionsOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const tabs = OptionsTab.values;
-    return Container(
-      color: Colors.black.withOpacity(0.5),
-      child: Align(
-        alignment: Alignment.center,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 600, maxHeight: 600),
-          child: Material(
-              clipBehavior: Clip.antiAlias,
-              elevation: 20,
-              type: MaterialType.card,
-              borderRadius: BorderRadius.circular(16),
-              child: DefaultTabController(
-                length: tabs.length,
-                child: Column(
-                  children: [
-                    Header(
-                      title: const Text("Options"),
-                      actions: [
-                        IconButton(
-                          onPressed: () => game.overlays.remove("options"),
-                          icon: const PhosphorIcon(PhosphorIconsLight.x),
-                        ),
-                      ],
-                    ),
-                    _buildOptionsTabBar(tabs),
-                    const Expanded(child: _OptionsTabBarView(tabs: tabs)),
-                  ],
-                ),
-              )),
+    return GestureDetector(
+      onTap: () => game.overlays.remove("options"),
+      child: Container(
+        color: Colors.black.withOpacity(0.5),
+        child: Align(
+          alignment: Alignment.center,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600, maxHeight: 600),
+            child: Material(
+                clipBehavior: Clip.antiAlias,
+                elevation: 20,
+                type: MaterialType.card,
+                borderRadius: BorderRadius.circular(16),
+                child: DefaultTabController(
+                  length: tabs.length,
+                  child: Column(
+                    children: [
+                      Header(
+                        title: const Text("Options"),
+                        actions: [
+                          IconButton(
+                            onPressed: () => game.overlays.remove("options"),
+                            icon: const PhosphorIcon(PhosphorIconsLight.x),
+                          ),
+                        ],
+                      ),
+                      _buildOptionsTabBar(tabs),
+                      const Expanded(child: _OptionsTabBarView(tabs: tabs)),
+                    ],
+                  ),
+                )),
+          ),
         ),
       ),
     );
@@ -113,6 +119,9 @@ class _OptionsTabBarView extends StatelessWidget {
   Widget build(BuildContext context) => TabBarView(
         children: tabs
             .map((e) => switch (e) {
+                  OptionsTab.personalization =>
+                    const PersonalizationOptionsView(),
+                  OptionsTab.info => const InfoOptionsView(),
                   _ => Text(e.getLocalizedName()),
                 })
             .toList(),
