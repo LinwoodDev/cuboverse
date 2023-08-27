@@ -9,15 +9,15 @@ import 'package:flame/flame.dart';
 
 class CuboverseBlock extends PositionComponent with TapCallbacks {
   final BlockInformation blockInformation;
+  late final SpriteComponent sprite;
   CuboverseBlock(this.blockInformation) : super(size: Vector2(16, 16));
 
   @override
   Future<void> onLoad() async {
     position = toRenderPosition(blockInformation.position.toVector3());
     final image = await Flame.images.load("blocks/test.png");
-    add(
-      SpriteComponent(sprite: Sprite(image), autoResize: true),
-    );
+    sprite = SpriteComponent(sprite: Sprite(image), autoResize: true);
+    add(sprite);
   }
 
   @override

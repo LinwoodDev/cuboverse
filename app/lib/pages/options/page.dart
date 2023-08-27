@@ -9,7 +9,6 @@ import 'personalization.dart';
 
 enum OptionsTab {
   world,
-  networking,
   graphics,
   personalization,
   data,
@@ -19,7 +18,6 @@ enum OptionsTab {
 
   String getLocalizedName() => switch (this) {
         OptionsTab.world => "World",
-        OptionsTab.networking => "Networking",
         OptionsTab.graphics => "Graphics",
         OptionsTab.personalization => "Personalization",
         OptionsTab.data => "Data",
@@ -28,7 +26,6 @@ enum OptionsTab {
 
   IconGetter get icon => switch (this) {
         OptionsTab.world => PhosphorIcons.globeHemisphereWest,
-        OptionsTab.networking => PhosphorIcons.cloud,
         OptionsTab.graphics => PhosphorIcons.imageSquare,
         OptionsTab.personalization => PhosphorIcons.faders,
         OptionsTab.data => PhosphorIcons.database,
