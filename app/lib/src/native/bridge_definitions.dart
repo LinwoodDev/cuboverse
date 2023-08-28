@@ -42,7 +42,7 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kCreateMessageStreamMethodWorldManagerConstMeta;
 
-  Future<void> closeMethodWorldManager({required WorldManager that, dynamic hint});
+  void closeMethodWorldManager({required WorldManager that, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kCloseMethodWorldManagerConstMeta;
 
@@ -288,7 +288,7 @@ class WorldManager {
         that: this,
       );
 
-  Future<void> close({dynamic hint}) => api.closeMethodWorldManager(
+  void close({dynamic hint}) => api.closeMethodWorldManager(
         that: this,
       );
 

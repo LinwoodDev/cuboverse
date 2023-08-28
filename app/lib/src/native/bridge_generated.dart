@@ -160,10 +160,10 @@ class NativeImpl implements Native {
         ],
       );
 
-  Future<void> closeMethodWorldManager({required WorldManager that, dynamic hint}) {
+  void closeMethodWorldManager({required WorldManager that, dynamic hint}) {
     var arg0 = _platform.api2wire_box_autoadd_world_manager(that);
-    return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) => _platform.inner.wire_close__method__WorldManager(port_, arg0),
+    return _platform.executeSync(FlutterRustBridgeSyncTask(
+      callFfi: () => _platform.inner.wire_close__method__WorldManager(arg0),
       parseSuccessData: _wire2api_unit,
       constMeta: kCloseMethodWorldManagerConstMeta,
       argValues: [

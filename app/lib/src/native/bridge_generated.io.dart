@@ -338,18 +338,16 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_create_message_stream__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>)>>('wire_create_message_stream__method__WorldManager');
   late final _wire_create_message_stream__method__WorldManager = _wire_create_message_stream__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>)>();
 
-  void wire_close__method__WorldManager(
-    int port_,
+  WireSyncReturn wire_close__method__WorldManager(
     ffi.Pointer<wire_WorldManager> that,
   ) {
     return _wire_close__method__WorldManager(
-      port_,
       that,
     );
   }
 
-  late final _wire_close__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>)>>('wire_close__method__WorldManager');
-  late final _wire_close__method__WorldManager = _wire_close__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>)>();
+  late final _wire_close__method__WorldManagerPtr = _lookup<ffi.NativeFunction<WireSyncReturn Function(ffi.Pointer<wire_WorldManager>)>>('wire_close__method__WorldManager');
+  late final _wire_close__method__WorldManager = _wire_close__method__WorldManagerPtr.asFunction<WireSyncReturn Function(ffi.Pointer<wire_WorldManager>)>();
 
   void wire_player_position__method__WorldManager(
     int port_,

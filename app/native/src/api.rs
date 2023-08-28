@@ -7,7 +7,7 @@ pub use std::sync::Mutex;
 pub use std::thread;
 pub use std::thread::JoinHandle;
 
-use flutter_rust_bridge::{RustOpaque, StreamSink};
+use flutter_rust_bridge::{RustOpaque, StreamSink, SyncReturn};
 use standard::world::create_standard_world;
 
 pub use self::loader::*;
@@ -73,8 +73,12 @@ impl WorldManager {
         self.get_messenger().0 = Some(s);
         self.start_update_loop();
     }
-    pub fn close(&self) {
+    pub fn close(&self) -> SyncReturn<()> {
+        if let Some(messenger) = &self.get_messenger().0 {
+            messenger.close();
+        }
         self.get_messenger().0 = None;
+        SyncReturn(())
     }
     pub fn player_position(&self) -> GlobalEntityPosition {
         let player = self.player.lock().unwrap();

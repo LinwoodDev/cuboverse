@@ -53,8 +53,10 @@ pub extern "C" fn wire_create_message_stream__method__WorldManager(
 }
 
 #[no_mangle]
-pub extern "C" fn wire_close__method__WorldManager(port_: i64, that: *mut wire_WorldManager) {
-    wire_close__method__WorldManager_impl(port_, that)
+pub extern "C" fn wire_close__method__WorldManager(
+    that: *mut wire_WorldManager,
+) -> support::WireSyncReturn {
+    wire_close__method__WorldManager_impl(that)
 }
 
 #[no_mangle]

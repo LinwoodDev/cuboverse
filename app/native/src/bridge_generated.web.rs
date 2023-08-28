@@ -46,8 +46,8 @@ pub fn wire_create_message_stream__method__WorldManager(port_: MessagePort, that
 }
 
 #[wasm_bindgen]
-pub fn wire_close__method__WorldManager(port_: MessagePort, that: JsValue) {
-    wire_close__method__WorldManager_impl(port_, that)
+pub fn wire_close__method__WorldManager(that: JsValue) -> support::WireSyncReturn {
+    wire_close__method__WorldManager_impl(that)
 }
 
 #[wasm_bindgen]

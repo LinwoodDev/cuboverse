@@ -136,18 +136,17 @@ fn wire_create_message_stream__method__WorldManager_impl(
     )
 }
 fn wire_close__method__WorldManager_impl(
-    port_: MessagePort,
     that: impl Wire2Api<WorldManager> + UnwindSafe,
-) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, ()>(
+) -> support::WireSyncReturn {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync(
         WrapInfo {
             debug_name: "close__method__WorldManager",
-            port: Some(port_),
-            mode: FfiCallMode::Normal,
+            port: None,
+            mode: FfiCallMode::Sync,
         },
         move || {
             let api_that = that.wire2api();
-            move |task_callback| Ok(WorldManager::close(&api_that))
+            Ok(WorldManager::close(&api_that))
         },
     )
 }

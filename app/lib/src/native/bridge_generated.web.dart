@@ -159,7 +159,7 @@ class NativeWasmModule implements WasmModule {
 
   external dynamic /* void */ wire_create_message_stream__method__WorldManager(NativePortType port_, List<dynamic> that);
 
-  external dynamic /* void */ wire_close__method__WorldManager(NativePortType port_, List<dynamic> that);
+  external dynamic /* void */ wire_close__method__WorldManager(List<dynamic> that);
 
   external dynamic /* void */ wire_player_position__method__WorldManager(NativePortType port_, List<dynamic> that);
 
@@ -207,7 +207,7 @@ class NativeWire extends FlutterRustBridgeWasmWireBase<NativeWasmModule> {
 
   void wire_create_message_stream__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_create_message_stream__method__WorldManager(port_, that);
 
-  void wire_close__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_close__method__WorldManager(port_, that);
+  dynamic /* void */ wire_close__method__WorldManager(List<dynamic> that) => wasmModule.wire_close__method__WorldManager(that);
 
   void wire_player_position__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_player_position__method__WorldManager(port_, that);
 

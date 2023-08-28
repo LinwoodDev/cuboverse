@@ -15,12 +15,13 @@ class GamePage extends StatefulWidget {
   State<GamePage> createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> {
+class _GamePageState extends State<GamePage> with WidgetsBindingObserver {
   late final Future<WorldManager> _manager;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     _manager = api.createWorldManager();
   }
@@ -29,7 +30,16 @@ class _GamePageState extends State<GamePage> {
   void dispose() {
     super.dispose();
 
-    _manager.then((value) => value.close());
+    WidgetsBinding.instance.removeObserver(this);
+    _close();
+  }
+
+  Future<void> _close() => _manager.then((value) => value.close());
+
+  @override
+  Future<bool> didPopRoute() async {
+    await _close();
+    return false;
   }
 
   @override

@@ -23,6 +23,7 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
   late final CuboversePlayer player;
   final WorldManager worldManager;
   final Map<ChunkLocation, CuboverseChunk> chunks = {};
+  late final StreamSubscription<NativeMessage> _messageSubscription;
   Vector3 _movement = Vector3.zero();
 
   CuboverseWorld(this.worldManager);
@@ -37,7 +38,14 @@ class CuboverseWorld extends FlameGame with KeyboardEvents {
     cameraComponent.viewfinder
       ..zoom = 5
       ..anchor = Anchor.center;
-    worldManager.createMessageStream().listen(_onMessage);
+    _messageSubscription =
+        worldManager.createMessageStream().listen(_onMessage);
+  }
+
+  @override
+  void onRemove() {
+    super.onRemove();
+    _messageSubscription.cancel();
   }
 
   @override
