@@ -7,6 +7,7 @@ pub struct WorldManager {
     pub(crate) world: RustOpaque<Mutex<World>>,
     pub(crate) messenger: RustOpaque<Mutex<WorldMessenger>>,
     pub(crate) loaded_chunks: RustOpaque<Mutex<Vec<ChunkLocation>>>,
+    pub(crate) chunk_generator : RustOpaque<Box<dyn ChunkGenerator>>,
     pub(crate) player: RustOpaque<Mutex<Player>>,
     pub(crate) update_thread: RustOpaque<Mutex<WorldTicker>>,
 }
@@ -29,6 +30,13 @@ impl WorldManager {
     pub fn get_world(&self) -> MutexGuard<'_, World> {
         self.world.lock().unwrap()
     }
+    pub fn get_chunk_generator(&self) -> &dyn ChunkGenerator {
+        self.chunk_generator
+    }
+    pub fn get_chunk(location : ChunkLocation) -> Chunk {
+        self.get_world().get_chunk(location, &self.get_chunk_generator())
+    }
+    
     pub(crate) fn start_update_loop(&self) {
         self.update_thread.lock().unwrap().0 = Some({
             let world = self.world.clone();

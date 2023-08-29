@@ -78,6 +78,21 @@ pub fn wire_player_on_ground__method__WorldManager(port_: MessagePort, that: JsV
 // Section: related functions
 
 #[wasm_bindgen]
+pub fn drop_opaque_BoxChunkGenerator(ptr: *const c_void) {
+    unsafe {
+        Arc::<Box<dyn ChunkGenerator>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[wasm_bindgen]
+pub fn share_opaque_BoxChunkGenerator(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<Box<dyn ChunkGenerator>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
+
+#[wasm_bindgen]
 pub fn drop_opaque_MutexPlayer(ptr: *const c_void) {
     unsafe {
         Arc::<Mutex<Player>>::decrement_strong_count(ptr as _);
@@ -216,21 +231,32 @@ impl Wire2Api<WorldManager> for JsValue {
         let self_ = self.dyn_into::<JsArray>().unwrap();
         assert_eq!(
             self_.length(),
-            5,
-            "Expected 5 elements, got {}",
+            6,
+            "Expected 6 elements, got {}",
             self_.length()
         );
         WorldManager {
             world: self_.get(0).wire2api(),
             messenger: self_.get(1).wire2api(),
             loaded_chunks: self_.get(2).wire2api(),
-            player: self_.get(3).wire2api(),
-            update_thread: self_.get(4).wire2api(),
+            chunk_generator: self_.get(3).wire2api(),
+            player: self_.get(4).wire2api(),
+            update_thread: self_.get(5).wire2api(),
         }
     }
 }
 // Section: impl Wire2Api for JsValue
 
+impl Wire2Api<RustOpaque<Box<dyn ChunkGenerator>>> for JsValue {
+    fn wire2api(self) -> RustOpaque<Box<dyn ChunkGenerator>> {
+        #[cfg(target_pointer_width = "64")]
+        {
+            compile_error!("64-bit pointers are not supported.");
+        }
+
+        unsafe { support::opaque_from_dart((self.as_f64().unwrap() as usize) as _) }
+    }
+}
 impl Wire2Api<RustOpaque<Mutex<Player>>> for JsValue {
     fn wire2api(self) -> RustOpaque<Mutex<Player>> {
         #[cfg(target_pointer_width = "64")]

@@ -1,16 +1,14 @@
-use crate::{world::{ChunkLocation, CHUNK_SIZE}, entity::{GlobalEntityPosition, EntityPosition}};
+use crate::{
+    entity::{EntityPosition, GlobalEntityPosition},
+    world::{ChunkLocation, CHUNK_SIZE},
+};
 
 #[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
-pub struct BlockPosition(pub i8, pub i8, pub i8);
+pub struct BlockPosition(pub u8, pub u8, pub u8);
 
 impl BlockPosition {
     pub fn is_valid(&self) -> bool {
-        self.0 >= 0
-            && self.1 >= 0
-            && self.2 >= 0
-            && self.0 < CHUNK_SIZE
-            && self.1 < CHUNK_SIZE
-            && self.2 < CHUNK_SIZE
+        self.0 < CHUNK_SIZE && self.1 < CHUNK_SIZE && self.2 < CHUNK_SIZE
     }
 
     pub fn get_entity_position(&self) -> EntityPosition {
@@ -30,9 +28,9 @@ impl GlobalBlockPosition {
             (z / chunk_size) as i32 + if z < 0 { -1 } else { 0 },
         );
         let position = BlockPosition(
-            (x % chunk_size + if x < 0 { chunk_size } else { 0 }) as i8,
-            (y % chunk_size + if y < 0 { chunk_size } else { 0 }) as i8,
-            (z % chunk_size + if z < 0 { chunk_size } else { 0 }) as i8,
+            (x % chunk_size) as u8 + if x < 0 { chunk_size as u8 } else { 0 },
+            (y % chunk_size) as u8 + if y < 0 { chunk_size as u8 } else { 0 },
+            (z % chunk_size) as u8 + if z < 0 { chunk_size as u8 } else { 0 },
         );
         return GlobalBlockPosition(location, position);
     }

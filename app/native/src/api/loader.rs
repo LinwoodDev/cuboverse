@@ -50,9 +50,10 @@ impl WorldManager {
                         y + player_location.1,
                         z + player_location.2,
                     );
+
                     if !loaded_chunks.contains(&location) {
                         loaded_chunks.push(location);
-                        messenger.send_add_chunk(location, &world.get_chunk(location));
+                        messenger.send_add_chunk(location, self.get_chunk(location));
                     }
                 }
             }

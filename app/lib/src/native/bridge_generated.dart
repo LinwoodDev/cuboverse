@@ -255,6 +255,10 @@ class NativeImpl implements Native {
         ],
       );
 
+  DropFnType get dropOpaqueBoxChunkGenerator => _platform.inner.drop_opaque_BoxChunkGenerator;
+  ShareFnType get shareOpaqueBoxChunkGenerator => _platform.inner.share_opaque_BoxChunkGenerator;
+  OpaqueTypeFinalizer get BoxChunkGeneratorFinalizer => _platform.BoxChunkGeneratorFinalizer;
+
   DropFnType get dropOpaqueMutexPlayer => _platform.inner.drop_opaque_MutexPlayer;
   ShareFnType get shareOpaqueMutexPlayer => _platform.inner.share_opaque_MutexPlayer;
   OpaqueTypeFinalizer get MutexPlayerFinalizer => _platform.MutexPlayerFinalizer;
@@ -279,6 +283,13 @@ class NativeImpl implements Native {
     _platform.dispose();
   }
 // Section: wire2api
+
+  BoxChunkGenerator _wire2api_BoxChunkGenerator(dynamic raw) {
+    return BoxChunkGenerator.fromRaw(
+      raw[0],
+      raw[1],
+    );
+  }
 
   MutexPlayer _wire2api_MutexPlayer(dynamic raw) {
     return MutexPlayer.fromRaw(
@@ -453,13 +464,14 @@ class NativeImpl implements Native {
 
   WorldManager _wire2api_world_manager(dynamic raw) {
     final arr = raw as List<dynamic>;
-    if (arr.length != 5) throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6) throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return WorldManager(
       world: _wire2api_MutexWorld(arr[0]),
       messenger: _wire2api_MutexWorldMessenger(arr[1]),
       loadedChunks: _wire2api_MutexVecChunkLocation(arr[2]),
-      player: _wire2api_MutexPlayer(arr[3]),
-      updateThread: _wire2api_MutexWorldTicker(arr[4]),
+      chunkGenerator: _wire2api_BoxChunkGenerator(arr[3]),
+      player: _wire2api_MutexPlayer(arr[4]),
+      updateThread: _wire2api_MutexWorldTicker(arr[5]),
     );
   }
 }

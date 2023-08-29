@@ -1,14 +1,15 @@
 pub mod loader;
 pub mod manager;
 pub mod message;
+pub mod modification;
 
-pub use api::{block::*, chunk::*, entity::*, physics::*, player::*, world::*};
+pub use api::{block::*, chunk::*, entity::*, physics::*, player::*, world::*, modification::*};
 pub use std::sync::Mutex;
 pub use std::thread;
 pub use std::thread::JoinHandle;
 
 use flutter_rust_bridge::{RustOpaque, StreamSink, SyncReturn};
-use standard::world::create_standard_world;
+use standard::world::SinusoidWorldGenerator;
 
 pub use self::loader::*;
 pub use self::manager::*;
@@ -20,13 +21,13 @@ pub fn create_world_manager() -> WorldManager {
         name: "Player".to_string(),
         velocity: Velocity(0.0, 0.0, 0.0),
     };
-    let world = create_standard_world();
     WorldManager {
         loaded_chunks: RustOpaque::new(Mutex::new(Vec::new())),
-        world: RustOpaque::new(Mutex::new(world)),
+        world: RustOpaque::new(Mutex::new(World::new())),
         messenger: RustOpaque::new(Mutex::new(WorldMessenger(None))),
         player: RustOpaque::new(Mutex::new(player)),
         update_thread: RustOpaque::new(Mutex::new(WorldTicker(None))),
+        chunK_generator: RustOpaque::new(Box::new(SinusoidWorldGenerator {})),
     }
 }
 

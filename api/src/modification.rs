@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use std::iter::FlatMap;
 use crate::world::World;
 
 #[derive(Debug, Clone)]
@@ -8,8 +10,28 @@ pub struct ModificationInfo {
     pub version: String,
 }
 
-trait Moditification {
-    fn info(&self) -> ModificationInfo;
+pub trait Moditification {
     fn load_world(&self, world: &World);
     fn unload_world(&self, world: &World);
 }
+
+pub struct ModificationState {
+    pub info: ModificationInfo,
+    pub modification: Box<dyn Moditification>,
+    pub blocks : HashMap<String, BlockType>,
+    pub items : HashMap<String, ItemType>,
+    pub localization : HashMap<String, LocalizationFile>,
+}
+
+#[derive(Debug, Clone)]
+pub struct BlockType {
+    pub texture: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct ItemType {
+    pub texture: String,
+}
+
+#[derive(Debug, Clone)]
+pub struct LocalizationFile(pub HashMap<String, String>);

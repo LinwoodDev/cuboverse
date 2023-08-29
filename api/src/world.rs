@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::{chunk::*, entity::Entity, physics::RigidBody, block::GlobalBlockPosition};
 
-pub const CHUNK_SIZE: i8 = 16;
+pub const CHUNK_SIZE: u8 = 16;
 
 
 #[derive(Debug, Clone, Copy,Hash, PartialEq, Eq)]
@@ -37,8 +37,8 @@ impl World {
             ..Default::default()
         }
     }
-    pub fn get_chunk(&mut self, location : ChunkLocation) -> &mut Chunk {
-        self.chunks.entry(location).or_insert_with(|| Chunk::new())
+    pub fn get_chunk(&mut self, location : ChunkLocation, chunk_generator : &dyn ChunkGenerator) -> &mut Chunk {
+        self.chunks.entry(location).or_insert_with(|| chunk_generator.generate_chunk(location))
     }
 
     pub fn add_entity(&mut self, entity : Entity, location : ChunkLocation) {

@@ -91,6 +91,11 @@ pub extern "C" fn wire_player_on_ground__method__WorldManager(
 // Section: allocate functions
 
 #[no_mangle]
+pub extern "C" fn new_BoxChunkGenerator() -> wire_BoxChunkGenerator {
+    wire_BoxChunkGenerator::new_with_null_ptr()
+}
+
+#[no_mangle]
 pub extern "C" fn new_MutexPlayer() -> wire_MutexPlayer {
     wire_MutexPlayer::new_with_null_ptr()
 }
@@ -145,6 +150,21 @@ pub extern "C" fn new_uint_8_list_0(len: i32) -> *mut wire_uint_8_list {
 }
 
 // Section: related functions
+
+#[no_mangle]
+pub extern "C" fn drop_opaque_BoxChunkGenerator(ptr: *const c_void) {
+    unsafe {
+        Arc::<Box<dyn ChunkGenerator>>::decrement_strong_count(ptr as _);
+    }
+}
+
+#[no_mangle]
+pub extern "C" fn share_opaque_BoxChunkGenerator(ptr: *const c_void) -> *const c_void {
+    unsafe {
+        Arc::<Box<dyn ChunkGenerator>>::increment_strong_count(ptr as _);
+        ptr
+    }
+}
 
 #[no_mangle]
 pub extern "C" fn drop_opaque_MutexPlayer(ptr: *const c_void) {
@@ -223,6 +243,11 @@ pub extern "C" fn share_opaque_MutexWorldTicker(ptr: *const c_void) -> *const c_
 
 // Section: impl Wire2Api
 
+impl Wire2Api<RustOpaque<Box<dyn ChunkGenerator>>> for wire_BoxChunkGenerator {
+    fn wire2api(self) -> RustOpaque<Box<dyn ChunkGenerator>> {
+        unsafe { support::opaque_from_dart(self.ptr as _) }
+    }
+}
 impl Wire2Api<RustOpaque<Mutex<Player>>> for wire_MutexPlayer {
     fn wire2api(self) -> RustOpaque<Mutex<Player>> {
         unsafe { support::opaque_from_dart(self.ptr as _) }
@@ -316,12 +341,19 @@ impl Wire2Api<WorldManager> for wire_WorldManager {
             world: self.world.wire2api(),
             messenger: self.messenger.wire2api(),
             loaded_chunks: self.loaded_chunks.wire2api(),
+            chunk_generator: self.chunk_generator.wire2api(),
             player: self.player.wire2api(),
             update_thread: self.update_thread.wire2api(),
         }
     }
 }
 // Section: wire structs
+
+#[repr(C)]
+#[derive(Clone)]
+pub struct wire_BoxChunkGenerator {
+    ptr: *const core::ffi::c_void,
+}
 
 #[repr(C)]
 #[derive(Clone)]
@@ -389,6 +421,7 @@ pub struct wire_WorldManager {
     world: wire_MutexWorld,
     messenger: wire_MutexWorldMessenger,
     loaded_chunks: wire_MutexVecChunkLocation,
+    chunk_generator: wire_BoxChunkGenerator,
     player: wire_MutexPlayer,
     update_thread: wire_MutexWorldTicker,
 }
@@ -405,6 +438,13 @@ impl<T> NewWithNullPtr for *mut T {
     }
 }
 
+impl NewWithNullPtr for wire_BoxChunkGenerator {
+    fn new_with_null_ptr() -> Self {
+        Self {
+            ptr: core::ptr::null(),
+        }
+    }
+}
 impl NewWithNullPtr for wire_MutexPlayer {
     fn new_with_null_ptr() -> Self {
         Self {
@@ -494,6 +534,7 @@ impl NewWithNullPtr for wire_WorldManager {
             world: wire_MutexWorld::new_with_null_ptr(),
             messenger: wire_MutexWorldMessenger::new_with_null_ptr(),
             loaded_chunks: wire_MutexVecChunkLocation::new_with_null_ptr(),
+            chunk_generator: wire_BoxChunkGenerator::new_with_null_ptr(),
             player: wire_MutexPlayer::new_with_null_ptr(),
             update_thread: wire_MutexWorldTicker::new_with_null_ptr(),
         }

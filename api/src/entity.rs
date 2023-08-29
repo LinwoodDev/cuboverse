@@ -14,7 +14,7 @@ impl EntityPosition {
     }
 
     pub fn get_block_position(&self) -> BlockPosition {
-        BlockPosition(self.0 as i8, self.1 as i8, self.2 as i8)
+        BlockPosition(self.0 as u8, self.1 as u8, self.2 as u8)
     }
 }
 

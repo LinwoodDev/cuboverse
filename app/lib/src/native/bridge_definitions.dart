@@ -58,6 +58,10 @@ abstract class Native {
 
   FlutterRustBridgeTaskConstMeta get kPlayerOnGroundMethodWorldManagerConstMeta;
 
+  DropFnType get dropOpaqueBoxChunkGenerator;
+  ShareFnType get shareOpaqueBoxChunkGenerator;
+  OpaqueTypeFinalizer get BoxChunkGeneratorFinalizer;
+
   DropFnType get dropOpaqueMutexPlayer;
   ShareFnType get shareOpaqueMutexPlayer;
   OpaqueTypeFinalizer get MutexPlayerFinalizer;
@@ -77,6 +81,22 @@ abstract class Native {
   DropFnType get dropOpaqueMutexWorldTicker;
   ShareFnType get shareOpaqueMutexWorldTicker;
   OpaqueTypeFinalizer get MutexWorldTickerFinalizer;
+}
+
+@sealed
+class BoxChunkGenerator extends FrbOpaque {
+  BoxChunkGenerator.fromRaw(
+    int ptr,
+    int size,
+  ) : super.unsafe(ptr, size);
+  @override
+  DropFnType get dropFn => api.dropOpaqueBoxChunkGenerator;
+
+  @override
+  ShareFnType get shareFn => api.shareOpaqueBoxChunkGenerator;
+
+  @override
+  OpaqueTypeFinalizer get staticFinalizer => api.BoxChunkGeneratorFinalizer;
 }
 
 @sealed
@@ -253,6 +273,7 @@ class WorldManager {
   final MutexWorld world;
   final MutexWorldMessenger messenger;
   final MutexVecChunkLocation loadedChunks;
+  final BoxChunkGenerator chunkGenerator;
   final MutexPlayer player;
   final MutexWorldTicker updateThread;
 
@@ -260,6 +281,7 @@ class WorldManager {
     required this.world,
     required this.messenger,
     required this.loadedChunks,
+    required this.chunkGenerator,
     required this.player,
     required this.updateThread,
   });

@@ -19,6 +19,13 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 // Section: api2wire
 
   @protected
+  wire_BoxChunkGenerator api2wire_BoxChunkGenerator(BoxChunkGenerator raw) {
+    final ptr = inner.new_BoxChunkGenerator();
+    _api_fill_to_wire_BoxChunkGenerator(raw, ptr);
+    return ptr;
+  }
+
+  @protected
   wire_MutexPlayer api2wire_MutexPlayer(MutexPlayer raw) {
     final ptr = inner.new_MutexPlayer();
     _api_fill_to_wire_MutexPlayer(raw, ptr);
@@ -101,6 +108,8 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
 
 // Section: finalizer
 
+  late final OpaqueTypeFinalizer _BoxChunkGeneratorFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_BoxChunkGeneratorPtr);
+  OpaqueTypeFinalizer get BoxChunkGeneratorFinalizer => _BoxChunkGeneratorFinalizer;
   late final OpaqueTypeFinalizer _MutexPlayerFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexPlayerPtr);
   OpaqueTypeFinalizer get MutexPlayerFinalizer => _MutexPlayerFinalizer;
   late final OpaqueTypeFinalizer _MutexVecChunkLocationFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexVecChunkLocationPtr);
@@ -112,6 +121,10 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
   late final OpaqueTypeFinalizer _MutexWorldTickerFinalizer = OpaqueTypeFinalizer(inner._drop_opaque_MutexWorldTickerPtr);
   OpaqueTypeFinalizer get MutexWorldTickerFinalizer => _MutexWorldTickerFinalizer;
 // Section: api_fill_to_wire
+
+  void _api_fill_to_wire_BoxChunkGenerator(BoxChunkGenerator apiObj, wire_BoxChunkGenerator wireObj) {
+    wireObj.ptr = apiObj.shareOrMove();
+  }
 
   void _api_fill_to_wire_MutexPlayer(MutexPlayer apiObj, wire_MutexPlayer wireObj) {
     wireObj.ptr = apiObj.shareOrMove();
@@ -162,6 +175,7 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> {
     wireObj.world = api2wire_MutexWorld(apiObj.world);
     wireObj.messenger = api2wire_MutexWorldMessenger(apiObj.messenger);
     wireObj.loaded_chunks = api2wire_MutexVecChunkLocation(apiObj.loadedChunks);
+    wireObj.chunk_generator = api2wire_BoxChunkGenerator(apiObj.chunkGenerator);
     wireObj.player = api2wire_MutexPlayer(apiObj.player);
     wireObj.update_thread = api2wire_MutexWorldTicker(apiObj.updateThread);
   }
@@ -398,6 +412,13 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_player_on_ground__method__WorldManagerPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64, ffi.Pointer<wire_WorldManager>)>>('wire_player_on_ground__method__WorldManager');
   late final _wire_player_on_ground__method__WorldManager = _wire_player_on_ground__method__WorldManagerPtr.asFunction<void Function(int, ffi.Pointer<wire_WorldManager>)>();
 
+  wire_BoxChunkGenerator new_BoxChunkGenerator() {
+    return _new_BoxChunkGenerator();
+  }
+
+  late final _new_BoxChunkGeneratorPtr = _lookup<ffi.NativeFunction<wire_BoxChunkGenerator Function()>>('new_BoxChunkGenerator');
+  late final _new_BoxChunkGenerator = _new_BoxChunkGeneratorPtr.asFunction<wire_BoxChunkGenerator Function()>();
+
   wire_MutexPlayer new_MutexPlayer() {
     return _new_MutexPlayer();
   }
@@ -479,6 +500,28 @@ class NativeWire implements FlutterRustBridgeWireBase {
 
   late final _new_uint_8_list_0Ptr = _lookup<ffi.NativeFunction<ffi.Pointer<wire_uint_8_list> Function(ffi.Int32)>>('new_uint_8_list_0');
   late final _new_uint_8_list_0 = _new_uint_8_list_0Ptr.asFunction<ffi.Pointer<wire_uint_8_list> Function(int)>();
+
+  void drop_opaque_BoxChunkGenerator(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _drop_opaque_BoxChunkGenerator(
+      ptr,
+    );
+  }
+
+  late final _drop_opaque_BoxChunkGeneratorPtr = _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Pointer<ffi.Void>)>>('drop_opaque_BoxChunkGenerator');
+  late final _drop_opaque_BoxChunkGenerator = _drop_opaque_BoxChunkGeneratorPtr.asFunction<void Function(ffi.Pointer<ffi.Void>)>();
+
+  ffi.Pointer<ffi.Void> share_opaque_BoxChunkGenerator(
+    ffi.Pointer<ffi.Void> ptr,
+  ) {
+    return _share_opaque_BoxChunkGenerator(
+      ptr,
+    );
+  }
+
+  late final _share_opaque_BoxChunkGeneratorPtr = _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>>('share_opaque_BoxChunkGenerator');
+  late final _share_opaque_BoxChunkGenerator = _share_opaque_BoxChunkGeneratorPtr.asFunction<ffi.Pointer<ffi.Void> Function(ffi.Pointer<ffi.Void>)>();
 
   void drop_opaque_MutexPlayer(
     ffi.Pointer<ffi.Void> ptr,
@@ -616,6 +659,10 @@ final class wire_MutexVecChunkLocation extends ffi.Struct {
   external ffi.Pointer<ffi.Void> ptr;
 }
 
+final class wire_BoxChunkGenerator extends ffi.Struct {
+  external ffi.Pointer<ffi.Void> ptr;
+}
+
 final class wire_MutexPlayer extends ffi.Struct {
   external ffi.Pointer<ffi.Void> ptr;
 }
@@ -630,6 +677,8 @@ final class wire_WorldManager extends ffi.Struct {
   external wire_MutexWorldMessenger messenger;
 
   external wire_MutexVecChunkLocation loaded_chunks;
+
+  external wire_BoxChunkGenerator chunk_generator;
 
   external wire_MutexPlayer player;
 

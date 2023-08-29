@@ -21,6 +21,11 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
 // Section: api2wire
 
   @protected
+  Object api2wire_BoxChunkGenerator(BoxChunkGenerator raw) {
+    return raw.shareOrMove();
+  }
+
+  @protected
   Object api2wire_MutexPlayer(MutexPlayer raw) {
     return raw.shareOrMove();
   }
@@ -117,12 +122,15 @@ class NativePlatform extends FlutterRustBridgeBase<NativeWire> with FlutterRustB
       api2wire_MutexWorld(raw.world),
       api2wire_MutexWorldMessenger(raw.messenger),
       api2wire_MutexVecChunkLocation(raw.loadedChunks),
+      api2wire_BoxChunkGenerator(raw.chunkGenerator),
       api2wire_MutexPlayer(raw.player),
       api2wire_MutexWorldTicker(raw.updateThread)
     ];
   }
 // Section: finalizer
 
+  late final Finalizer<PlatformPointer> _BoxChunkGeneratorFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_BoxChunkGenerator);
+  Finalizer<PlatformPointer> get BoxChunkGeneratorFinalizer => _BoxChunkGeneratorFinalizer;
   late final Finalizer<PlatformPointer> _MutexPlayerFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexPlayer);
   Finalizer<PlatformPointer> get MutexPlayerFinalizer => _MutexPlayerFinalizer;
   late final Finalizer<PlatformPointer> _MutexVecChunkLocationFinalizer = Finalizer<PlatformPointer>(inner.drop_opaque_MutexVecChunkLocation);
@@ -166,6 +174,10 @@ class NativeWasmModule implements WasmModule {
   external dynamic /* void */ wire_move_player__method__WorldManager(NativePortType port_, List<dynamic> that, double? x, double? y, double? z, bool? relative, bool? teleport);
 
   external dynamic /* void */ wire_player_on_ground__method__WorldManager(NativePortType port_, List<dynamic> that);
+
+  external dynamic /*  */ drop_opaque_BoxChunkGenerator(ptr);
+
+  external int /* *const c_void */ share_opaque_BoxChunkGenerator(ptr);
 
   external dynamic /*  */ drop_opaque_MutexPlayer(ptr);
 
@@ -214,6 +226,10 @@ class NativeWire extends FlutterRustBridgeWasmWireBase<NativeWasmModule> {
   void wire_move_player__method__WorldManager(NativePortType port_, List<dynamic> that, double? x, double? y, double? z, bool? relative, bool? teleport) => wasmModule.wire_move_player__method__WorldManager(port_, that, x, y, z, relative, teleport);
 
   void wire_player_on_ground__method__WorldManager(NativePortType port_, List<dynamic> that) => wasmModule.wire_player_on_ground__method__WorldManager(port_, that);
+
+  dynamic /*  */ drop_opaque_BoxChunkGenerator(ptr) => wasmModule.drop_opaque_BoxChunkGenerator(ptr);
+
+  int /* *const c_void */ share_opaque_BoxChunkGenerator(ptr) => wasmModule.share_opaque_BoxChunkGenerator(ptr);
 
   dynamic /*  */ drop_opaque_MutexPlayer(ptr) => wasmModule.drop_opaque_MutexPlayer(ptr);
 
