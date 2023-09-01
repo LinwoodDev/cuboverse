@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::iter::FlatMap;
 use crate::world::World;
 
 #[derive(Debug, Clone)]

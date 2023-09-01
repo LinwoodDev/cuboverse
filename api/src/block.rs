@@ -32,7 +32,7 @@ impl GlobalBlockPosition {
             (y % chunk_size) as u8 + if y < 0 { chunk_size as u8 } else { 0 },
             (z % chunk_size) as u8 + if z < 0 { chunk_size as u8 } else { 0 },
         );
-        return GlobalBlockPosition(location, position);
+        GlobalBlockPosition(location, position)
     }
 
     pub fn global_position(&self) -> (i64, i64, i64) {

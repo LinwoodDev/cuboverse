@@ -42,7 +42,7 @@ impl World {
     }
 
     pub fn add_entity(&mut self, entity : Entity, location : ChunkLocation) {
-        let chunk = self.entities.entry(location).or_insert_with(|| Vec::new());
+        let chunk = self.entities.entry(location).or_default();
         chunk.push(entity);
     }
 
@@ -60,7 +60,7 @@ impl World {
             return;
         };
         let entity = old_chunk.remove(index);
-        let new_chunk = entities.entry(new).or_insert_with(|| Vec::new());
+        let new_chunk = entities.entry(new).or_default();
         new_chunk.push(entity);
     }
 
@@ -68,11 +68,11 @@ impl World {
         let entities = self.entities.clone();
         for (chunk_location, mut entities) in entities {
             // Clone the chunk location for the tick call
-            let cloned_chunk_location = chunk_location.clone();
+            let cloned_chunk_location = chunk_location;
 
             // Iterate through entities associated with the current chunk location
             for entity in entities.iter_mut() {
-                entity.tick(self, cloned_chunk_location.clone());
+                entity.tick(self, cloned_chunk_location);
             }
         }
     }

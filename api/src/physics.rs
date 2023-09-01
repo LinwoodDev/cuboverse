@@ -46,7 +46,7 @@ pub trait RigidBody {
     fn set_velocity(&mut self, velocity: Velocity);
     fn get_position(&self) -> EntityPosition;
     fn get_global_position(&self, chunk_location: ChunkLocation) -> GlobalEntityPosition {
-        return GlobalEntityPosition(chunk_location, self.get_position());
+        GlobalEntityPosition(chunk_location, self.get_position())
     }
     fn set_global_position(
         &mut self,
@@ -57,7 +57,7 @@ pub trait RigidBody {
 
     fn tick(&mut self, world: &mut World, chunk_location: ChunkLocation) -> TickResult {
         let old = self.get_velocity();
-        let mut velocity = old.clone();
+        let mut velocity = old;
         velocity.2 -= GRAVITY;
         if velocity.2 < -MAX_VELOCITY {
             velocity.2 = -MAX_VELOCITY;
@@ -100,8 +100,8 @@ pub trait RigidBody {
         }
         self.set_velocity(velocity);
         self.set_global_position(new_pos, chunk_location, world);
-        return TickResult {
+        TickResult {
             teleported: new_pos != global_pos,
-        };
+        }
     }
 }

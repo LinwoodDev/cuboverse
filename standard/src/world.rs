@@ -26,8 +26,8 @@ impl ChunkGenerator for SinusoidWorldGenerator {
         if location.2 != -1 {
             return chunk;
         }
-        for x in 0..16 as u8{
-            for y in 0..16 as u8 {
+        for x in 0..16_u8{
+            for y in 0..16_u8 {
                 let height = ((location.0 + (x as i32)) as f32).sin() * 5.0
                     + ((location.1 + (y as i32)) as f32).sin() * 5.0
                     + 5.0;

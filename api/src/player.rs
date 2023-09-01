@@ -35,7 +35,7 @@ impl RigidBody for Player {
 
 impl Player {
     pub fn tick_player(&mut self, world: &mut World) -> TickResult {
-        self.tick(world, self.position.0.clone())
+        self.tick(world, self.position.0)
     }
 
     pub fn move_player(

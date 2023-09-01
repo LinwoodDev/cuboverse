@@ -35,7 +35,7 @@ impl GlobalEntityPosition {
             ((y + if y < 0.0 { chunk_size } else { 0.0 }) % chunk_size) as f32,
             ((z + if z < 0.0 { chunk_size } else { 0.0 }) % chunk_size) as f32,
         );
-        return GlobalEntityPosition(location, position);
+        GlobalEntityPosition(location, position)
     }
 
     pub fn global_position(&self) -> (f64, f64, f64) {
@@ -71,7 +71,7 @@ pub struct Entity {
 
 impl RigidBody for Entity {
     fn get_velocity(&self) -> Velocity {
-        self.velocity 
+        self.velocity
     }
 
     fn set_velocity(&mut self, velocity: Velocity) {

@@ -23,9 +23,9 @@ impl Chunk {
         if !position.is_valid() {
             return None;
         }
-        return self.blocks.insert(position, Block {
+        self.blocks.insert(position, Block {
             name: block,
-        });
+        })
     }
 
     pub fn remove_block(&mut self, position : &BlockPosition) -> Option<Block> {
